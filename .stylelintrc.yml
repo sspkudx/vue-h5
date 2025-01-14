@@ -1,0 +1,10 @@
+root: true
+extends:
+  - stylelint-config-standard
+  - stylelint-config-standard-less
+  - stylelint-config-recommended-vue
+  - stylelint-config-recommended-vue/less
+plugins:
+  - stylelint-prettier
+rules:
+  'prettier/prettier': true

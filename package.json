@@ -1,0 +1,45 @@
+{
+  "name": "vue-h5",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint --fix"
+  },
+  "dependencies": {
+    "axios": "^0.29.0",
+    "core-js": "^3.37.0",
+    "lodash-es": "^4.17.21",
+    "pinia": "^2.1.7",
+    "ress": "^5.0.2",
+    "vue": "^3.4.26",
+    "vue-router": "^4.3.2"
+  },
+  "devDependencies": {
+    "@mdi/font": "^7.4.47",
+    "@types/lodash-es": "^4.17.12",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-plugin-router": "^5.0.8",
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.25.0",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.4",
+    "postcss-calc": "^8.2.4",
+    "postcss-px-to-viewport": "^1.1.1",
+    "prettier": "^2.8.8",
+    "style-resources-loader": "^1.5.0",
+    "typescript": "^4.9.5"
+  },
+  "engines": {
+    "node": ">= 14.17.0"
+  }
+}
