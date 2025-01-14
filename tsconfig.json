@@ -4,6 +4,10 @@
         "module": "esnext",
         "strict": true,
         "jsx": "preserve",
+        "jsxFactory": "h",
+        "jsxFragmentFactory": "Fragment",
+        "jsxImportSource": "vue",
+        "allowJs": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "skipLibCheck": true,
@@ -13,7 +17,7 @@
         "useDefineForClassFields": true,
         "sourceMap": true,
         "baseUrl": ".",
-        "types": ["webpack-env"],
+        "types": ["webpack-env", "vue"],
         "paths": {
             "@/*": ["src/*"]
         },

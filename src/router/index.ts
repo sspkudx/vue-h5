@@ -8,7 +8,7 @@ export const router = createRouter({
             path: '/',
             name: 'home',
             component() {
-                return import(/* webpackChunkName: "HomeView" */ '../views/HomeView.vue');
+                return import(/* webpackChunkName: "HelloWorld" */ '../views/HomeView.vue');
             },
         },
         {
