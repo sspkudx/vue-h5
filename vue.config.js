@@ -1,29 +1,17 @@
 const { defineConfig } = require('@vue/cli-service');
 const path = require('path');
 
-/** 页面标题 */
+/** default page title */
 const PAGE_TITLE = 'Vue Project';
-
-const VUE_STYLE_USAGES = ['vue-modules', 'vue', 'normal-modules', 'normal'];
-
-/** Add global style-resource for less file */
-const addStyleResource = rule => {
-    rule.use('style-resource')
-        .loader('style-resources-loader')
-        .options({
-            patterns: [
-                // global fonts, mixins and less functions
-                path.resolve(__dirname, 'src/assets/styles/less/global.less'),
-            ],
-        });
-};
+/** is production environment */
+const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
 
 module.exports = defineConfig(() => {
     return {
-        transpileDependencies: true,
+        transpileDependencies: isProduction,
         lintOnSave: 'error',
         devServer: {
-            port: 3027,
+            port: 1234,
             client: {
                 overlay: {
                     warnings: false,
@@ -31,25 +19,40 @@ module.exports = defineConfig(() => {
             },
         },
         chainWebpack(config) {
-            VUE_STYLE_USAGES.forEach(type => {
-                addStyleResource(config.module.rule('less').oneOf(type));
-            });
-
             config
                 .plugin('html')
                 .tap(args => {
-                    const [htmlPluginConfiguration] = args;
+                    const [defaultConfiguration, ...rest] = args;
                     return [
                         {
-                            ...htmlPluginConfiguration,
+                            ...defaultConfiguration,
                             title: PAGE_TITLE,
                             template: path.resolve(__dirname, 'index.html'),
                             favicon: path.resolve(__dirname, 'favicon.ico'),
                         },
-                        ...args.slice(1),
-                    ];
+                    ].concat(rest);
                 })
+                .end()
+                .module.rule('tsx')
+                .test(/\.tsx$/)
+                .use('babel-loader')
+                .loader('babel-loader')
+                .end()
+                .end()
+                .rule('jsx')
+                .test(/\.jsx$/)
+                .use('babel-loader')
+                .loader('babel-loader')
                 .end();
+        },
+        css: {
+            loaderOptions: {
+                css: {
+                    modules: {
+                        auto: resourcePath => resourcePath.includes('.module.'),
+                    },
+                },
+            },
         },
     };
 });
