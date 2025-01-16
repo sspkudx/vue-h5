@@ -5,6 +5,8 @@ const path = require('path');
 const PAGE_TITLE = 'Vue Project';
 
 const VUE_STYLE_USAGES = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+/** 是否生产环境 */
+const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
 
 /** Add global style-resource for less file */
 const addStyleResource = rule => {
@@ -20,7 +22,7 @@ const addStyleResource = rule => {
 
 module.exports = defineConfig(() => {
     return {
-        transpileDependencies: true,
+        transpileDependencies: isProduction,
         lintOnSave: 'error',
         devServer: {
             port: 3027,
