@@ -1,1 +1,6 @@
 // global fonts, variables and mixins
+@fullWidth: 375;
+
+#px-to-vmin(@px, @property: width) {
+    @{property}: (@px / @fullWidth) * 100vw;
+}

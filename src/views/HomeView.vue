@@ -4,6 +4,6 @@
 
 <style lang="less" scoped>
 .home {
-    font-size: 24mpx;
+    font-size: 16mpx;
 }
 </style>
