@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import { plugins } from './plugins';
-import '@/assets/styles/less/global-conf.less';
+import '@/assets/global-conf.less';
 
 function main() {
     const mainApp = createApp(App);
