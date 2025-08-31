@@ -2,8 +2,8 @@
 
 ## 分支与 Node 版本
 
-- main 分支：适配低版本 Node（14 / 16 / 18）
-- node-high-version 分支：适配高版本 Node（>= 20）
+- main 分支：适配低版本 Node（14 / 16）
+- node-high-version 分支：适配高版本 Node（>= 18）
 
 请根据你当前的 Node 版本选择对应分支使用本模板。
 
@@ -15,7 +15,7 @@
 
 ```sh
 # 使用 pnpm（推荐）
-pnpm dlx degit sspkudx/vue-h5#main               your-app-low    # Node 14/16/18
+pnpm dlx degit sspkudx/vue-h5#main               your-app-low    # Node 14/16
 pnpm dlx degit sspkudx/vue-h5#node-high-version  your-app-high   # Node >= 18
 
 # 或使用 npx / yarn
@@ -33,11 +33,11 @@ yarn dlx degit sspkudx/vue-h5#node-high-version  your-app-high
 ```sh
 # fnm（推荐）
 fnm use 14   # 对应 main 分支
-fnm use 20   # 对应 node-high-version 分支
+fnm use 18   # 对应 node-high-version 分支
 
 # nvm
 nvm use 18
-nvm use 20
+nvm use 18
 ```
 
 ### 3) 安装依赖与运行
