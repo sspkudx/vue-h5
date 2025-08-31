@@ -16,7 +16,7 @@
 ```sh
 # 使用 pnpm（推荐）
 pnpm dlx degit sspkudx/vue-h5#main               your-app-low    # Node 14/16/18
-pnpm dlx degit sspkudx/vue-h5#node-high-version  your-app-high   # Node >= 20
+pnpm dlx degit sspkudx/vue-h5#node-high-version  your-app-high   # Node >= 18
 
 # 或使用 npx / yarn
 npx  degit sspkudx/vue-h5#main               your-app-low
@@ -52,30 +52,30 @@ pnpm lint   # 代码检查与自动修复
 ## 分支差异说明（重要）
 
 - Node 与模块系统
-  - main：面向 Node 14/16/18 的默认设置
-  - node-high-version：`package.json` 中启用 `"type": "module"`（ESM），与 Node >= 20 更兼容
+    - main：面向 Node 14/16 的默认设置
+    - node-high-version：`package.json` 中启用 `"type": "module"`（ESM），与 Node >= 18 更兼容
 
 - 配置文件格式（node-high-version）
-  - 采用 CJS 扩展名以适配 ESM 环境：`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`
-  - 避免 `require is not defined in ES module scope` 等报错
+    - 采用 CJS 扩展名以适配 ESM 环境：`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`
+    - 避免 `require is not defined in ES module scope` 等报错
 
 - Lint 配置
-  - node-high-version：使用 ESLint 9 flat config（`eslint.config.js`），支持 `.vue` / `.ts`
+    - node-high-version：使用 ESLint 9 flat config（`eslint.config.js`），支持 `.vue` / `.ts`
 
 - 依赖版本
-  - node-high-version：依赖更为新（如 `axios`、`pinia`、`typescript`、`less-loader`、`postcss-calc` 等），对 Node >= 20 友好
+    - node-high-version：依赖更为新（如 `axios`、`pinia`、`typescript`、`less-loader`、`postcss-calc` 等），对 Node >= 18 友好
 
 ## 常见问题
 
 - 报错 `require is not defined in ES module scope`
-  - 确认使用的是 `node-high-version` 分支，并在根 `package.json` 中包含 `"type": "module"`
-  - 确认相关配置文件使用 `.cjs` 后缀（`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`）
+    - 确认使用的是 `node-high-version` 分支，并在根 `package.json` 中包含 `"type": "module"`
+    - 确认相关配置文件使用 `.cjs` 后缀（`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`）
 
 - 本地 Node 版本与分支不匹配
-  - 使用 `fnm use <version>` 或 `nvm use <version>` 切换到对应版本
+    - 使用 `fnm use <version>` 或 `nvm use <version>` 切换到对应版本
 
 - 常用命令
-  - `pnpm i && pnpm dev && pnpm build && pnpm lint`
+    - `pnpm i && pnpm dev && pnpm build && pnpm lint`
 
 ## 许可证
 
