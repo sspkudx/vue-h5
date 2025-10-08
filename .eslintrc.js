@@ -4,7 +4,7 @@ module.exports = {
         browser: true,
         node: true,
         'shared-node-browser': true,
-        es2024: true,
+        es2025: true,
         // This key must be true, or when using defineProps
         // without import at <script setup></script>,
         // the code will be taken as a mistake
