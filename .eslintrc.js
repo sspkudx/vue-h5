@@ -1,10 +1,11 @@
+const getThisYear = () => new Date().getFullYear();
+
 module.exports = {
     root: true,
     env: {
         browser: true,
         node: true,
         'shared-node-browser': true,
-        es2025: true,
         // This key must be true, or when using defineProps
         // without import at <script setup></script>,
         // the code will be taken as a mistake
@@ -19,7 +20,7 @@ module.exports = {
     ],
     parser: 'vue-eslint-parser',
     parserOptions: {
-        ecmaVersion: 2024,
+        ecmaVersion: getThisYear() - 1,
         sourceType: 'module',
         parser: '@typescript-eslint/parser',
         ecmaFeatures: {
