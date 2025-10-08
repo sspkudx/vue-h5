@@ -11,7 +11,7 @@ module.exports = defineConfig(() => {
         transpileDependencies: isProduction,
         lintOnSave: 'error',
         devServer: {
-            port: 1234,
+            port: 2000,
             client: {
                 overlay: {
                     warnings: false,
@@ -49,7 +49,9 @@ module.exports = defineConfig(() => {
             loaderOptions: {
                 css: {
                     modules: {
-                        auto: resourcePath => resourcePath.includes('.module.'),
+                        auto(resourcePath) {
+                            return resourcePath.includes('.module.');
+                        },
                     },
                 },
             },

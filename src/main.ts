@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import App from './App.vue';
+import App from './App';
 import { plugins } from './plugins';
 import '@/assets/global-conf.less';
 
