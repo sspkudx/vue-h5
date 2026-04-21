@@ -1,0 +1,14 @@
+{
+    "name": "example-app",
+    "version": "1.0.0",
+    "main": "main.ts",
+    "scripts": {
+        "dev": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "lint": "vue-cli-service lint --fix"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "description": ""
+}

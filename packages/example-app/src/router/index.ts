@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 /** router used by the app */
-export const router = createRouter({
+const router = createRouter({
     history: createWebHashHistory(),
     routes: [
         {
@@ -18,8 +18,10 @@ export const router = createRouter({
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component() {
-                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView.vue');
+                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/index');
             },
         },
     ],
 });
+
+export default router;
