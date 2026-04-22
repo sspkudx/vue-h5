@@ -12,9 +12,9 @@
         "axios": "^0.29.0",
         "core-js": "^3.45.1",
         "lodash-es": "^4.17.21",
-        "pinia": "^2.3.1",
+        "pinia": "^3.0.4",
         "ress": "^5.0.2",
-        "vue": "^3.5.22",
+        "vue": "^3.5.33",
         "vue-router": "^4.5.1"
     },
     "devDependencies": {
