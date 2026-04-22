@@ -2,8 +2,9 @@
 
 ## 分支与 Node 版本
 
-- main 分支：适配低版本 Node（14 / 16）
-- node-high-version 分支：适配高版本 Node（>= 18）
+-   main ：适配低版本 Node（14 / 16）
+-   node-high-version ：适配高版本 Node（>= 18）
+-   monorepo-v14：低版本 Node monorepo 方案
 
 请根据你当前的 Node 版本选择对应分支使用本模板。
 
@@ -17,13 +18,16 @@
 # 使用 pnpm（推荐）
 pnpm dlx degit sspkudx/vue-h5#main               your-app-low    # Node 14/16
 pnpm dlx degit sspkudx/vue-h5#node-high-version  your-app-high   # Node >= 18
+pnpm dlx degit sspkudx/vue-h5#monorepo-v14       your-app-mono   # Node >= 14/16 monorepo
 
 # 或使用 npx / yarn
 npx  degit sspkudx/vue-h5#main               your-app-low
 npx  degit sspkudx/vue-h5#node-high-version  your-app-high
+npx  degit sspkudx/vue-h5#monorepo-v14       your-app-mono
 
 yarn dlx degit sspkudx/vue-h5#main               your-app-low
 yarn dlx degit sspkudx/vue-h5#node-high-version  your-app-high
+yarn dlx degit sspkudx/vue-h5#monorepo-v14       your-app-mono
 ```
 
 ### 2) 切换 Node 版本（可选但推荐）
@@ -51,31 +55,36 @@ pnpm lint   # 代码检查与自动修复
 
 ## 分支差异说明（重要）
 
-- Node 与模块系统
-    - main：面向 Node 14/16 的默认设置
-    - node-high-version：`package.json` 中启用 `"type": "module"`（ESM），与 Node >= 18 更兼容
+-   Node 与模块系统
 
-- 配置文件格式（node-high-version）
-    - 采用 CJS 扩展名以适配 ESM 环境：`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`
-    - 避免 `require is not defined in ES module scope` 等报错
+    -   main / monorepo-v14：面向 Node 14/16 的默认设置
+    -   node-high-version：`package.json` 中启用 `"type": "module"`（ESM），与 Node >= 18 更兼容
 
-- Lint 配置
-    - node-high-version：使用 ESLint 9 flat config（`eslint.config.js`），支持 `.vue` / `.ts`
+-   配置文件格式（node-high-version）
 
-- 依赖版本
-    - node-high-version：依赖更为新（如 `axios`、`pinia`、`typescript`、`less-loader`、`postcss-calc` 等），对 Node >= 18 友好
+    -   采用 CJS 扩展名以适配 ESM 环境：`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`
+    -   避免 `require is not defined in ES module scope` 等报错
+
+-   Lint 配置
+
+    -   node-high-version：使用 ESLint 9 flat config（`eslint.config.js`），支持 `.vue` / `.ts`
+
+-   依赖版本
+    -   node-high-version：依赖更为新（如 `axios`、`pinia`、`typescript`、`less-loader`、`postcss-calc` 等），对 Node >= 18 友好
 
 ## 常见问题
 
-- 报错 `require is not defined in ES module scope`
-    - 确认使用的是 `node-high-version` 分支，并在根 `package.json` 中包含 `"type": "module"`
-    - 确认相关配置文件使用 `.cjs` 后缀（`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`）
+-   报错 `require is not defined in ES module scope`
 
-- 本地 Node 版本与分支不匹配
-    - 使用 `fnm use <version>` 或 `nvm use <version>` 切换到对应版本
+    -   确认使用的是 `node-high-version` 分支，并在根 `package.json` 中包含 `"type": "module"`
+    -   确认相关配置文件使用 `.cjs` 后缀（`vue.config.cjs`、`babel.config.cjs`、`.postcssrc.cjs`）
 
-- 常用命令
-    - `pnpm i && pnpm dev && pnpm build && pnpm lint`
+-   本地 Node 版本与分支不匹配
+
+    -   使用 `fnm use <version>` 或 `nvm use <version>` 切换到对应版本
+
+-   常用命令
+    -   `pnpm i && pnpm dev && pnpm build && pnpm lint`
 
 ## 许可证
 
