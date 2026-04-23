@@ -1,7 +1,7 @@
 module.exports = {
     plugins: [
         require('postcss-px-to-viewport')({
-            viewportWidth: 375,
+            viewportWidth: 390,
             unitToConvert: 'mpx',
             minPixelValue: 0,
             unitPrecision: 3,
