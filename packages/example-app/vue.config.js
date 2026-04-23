@@ -1,11 +1,6 @@
 const { defineConfig } = require('@vue/cli-service');
 const path = require('path');
 
-/** is production environment */
-const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
-/** New Version babel loader */
-const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
-
 /** Navigate to root path */
 const toRoot = (rootPath = '') => {
     return path.resolve(__dirname, `../../${rootPath}`);
@@ -13,13 +8,23 @@ const toRoot = (rootPath = '') => {
 
 /** Get a new configuration of HtmlWebpackPlugin */
 const getHtmlPluginConfig = (defaultConfig = {}) => {
+    const { templateParameters: oldTemplateParams = {} } = defaultConfig || {};
     return {
         ...defaultConfig,
+        templateParameters: {
+            ...oldTemplateParams,
+            lang: 'zh-Hans',
+        },
         template: path.resolve(__dirname, 'index.htm'),
         favicon: path.resolve(__dirname, 'favicon.ico'),
         title: 'example app',
     };
 };
+
+/** is production environment */
+const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
+/** New Version babel loader */
+const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
 
 module.exports = defineConfig(() => {
     return {
