@@ -90,6 +90,13 @@ module.exports = defineConfig(() => {
                         auto(resourcePath) {
                             return resourcePath.includes('.module.');
                         },
+                        exportLocalsConvention(name) {
+                            // home-view__text--red → homeView__text_red
+                            const camel = name
+                                .replace(/--/g, '_') // 先把 -- 换成 _
+                                .replace(/-([a-z])/g, (_, char) => char.toUpperCase()); // 驼峰化 -
+                            return [name, camel];
+                        },
                     },
                 },
             },
