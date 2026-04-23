@@ -1,15 +1,25 @@
 const { defineConfig } = require('@vue/cli-service');
 const path = require('path');
 
-/** 导航到根目录的工具函数 */
+/** is production environment */
+const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
+/** New Version babel loader */
+const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
+
+/** Navigate to root path */
 const toRoot = (rootPath = '') => {
     return path.resolve(__dirname, `../../${rootPath}`);
 };
-/** is production environment */
-const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
 
-/** 新版本babel-loader */
-const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
+/** Get a new configuration of HtmlWebpackPlugin */
+const getHtmlPluginConfig = (defaultConfig = {}) => {
+    return {
+        ...defaultConfig,
+        template: path.resolve(__dirname, 'index.htm'),
+        favicon: path.resolve(__dirname, 'favicon.ico'),
+        title: 'example app',
+    };
+};
 
 module.exports = defineConfig(() => {
     return {
@@ -60,6 +70,12 @@ module.exports = defineConfig(() => {
                 .end()
                 .resolve.extensions.merge(['.ts', '.tsx', '.js', '.jsx', '.vue', '.json'])
                 .end()
+                .end()
+                .plugin('html')
+                .tap(args => {
+                    const [defaultConf, ...rest] = args;
+                    return [getHtmlPluginConfig(defaultConf), ...rest];
+                })
                 .end();
         },
         css: {
