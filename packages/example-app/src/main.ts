@@ -1,12 +1,15 @@
-import { createApp } from 'vue';
+import { createApp, type App as VueApp } from 'vue';
 import pluginsList from './plugins';
 import App from './App';
 
-function main() {
-    const mainApp = pluginsList.reduce((_app, plugin) => {
-        return _app.use(plugin);
+const getAppInstance = () => {
+    const instance = pluginsList.reduce((current, plugin) => {
+        return current.use(plugin);
     }, createApp(App));
+    return instance;
+};
 
+const mountApp = <A extends VueApp>(appInstance: A) => {
     let mountElement = document.getElementById('app');
     if (!mountElement) {
         mountElement = document.createElement('div');
@@ -17,7 +20,11 @@ function main() {
             document.body.appendChild(mountElement);
         }
     }
-    return mainApp.mount(mountElement);
-}
+    return appInstance.mount(mountElement);
+};
+
+const main = () => {
+    return mountApp(getAppInstance());
+};
 
 main();
