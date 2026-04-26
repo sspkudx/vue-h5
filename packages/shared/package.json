@@ -1,0 +1,12 @@
+{
+    "name": "@my-app/shared",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "rollup -c rollup.config.ts --configPlugin typescript"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT"
+}

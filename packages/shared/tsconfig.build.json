@@ -1,0 +1,18 @@
+{
+    "extends": "./tsconfig.json", // 继续继承仓库顶层约束
+    "compilerOptions": {
+        "declaration": true, // 关键：输出 .d.ts
+        "emitDeclarationOnly": true, // 只发类型，不生成 js
+        "outDir": "dist/temp-dts", // 临时目录，rollup 后再删
+        "skipLibCheck": true, // 避免三方包类型错误阻塞构建
+        "isolatedModules": false // 与 emitDeclarationOnly 共存
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/*.d.ts", "../../types/*.d.ts"],
+    "exclude": [
+        "node_modules",
+        "tests", // 测试文件不要
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "rollup.config.ts" // 构建脚本不要
+    ]
+}
