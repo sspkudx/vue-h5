@@ -30,6 +30,7 @@ importers:
       postcss-px-to-viewport: ^1.1.1
       prettier: ^2.8.8
       ress: ^5.0.2
+      rollup: ^3.29.4
       style-resources-loader: ^1.5.0
       typescript: ^4.9.5
       vue: ^3.5.33
@@ -64,6 +65,7 @@ importers:
       postcss-calc: 8.2.4
       postcss-px-to-viewport: 1.1.1
       prettier: 2.8.8
+      rollup: 3.30.0
       style-resources-loader: 1.5.0
       typescript: 4.9.5
 
@@ -6538,6 +6540,14 @@ packages:
     hasBin: true
     dependencies:
       glob: 7.2.3
+    dev: true
+
+  /rollup/3.30.0:
+    resolution: {integrity: sha512-kQvGasUgN+AlWGliFn2POSajRQEsULVYFGTvOZmK06d7vCD+YhZztt70kGk3qaeAXeWYL5eO7zx+rAubBc55eA==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.3
     dev: true
 
   /run-parallel/1.2.0:
