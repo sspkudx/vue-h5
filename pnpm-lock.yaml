@@ -115,7 +115,11 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
-  apps/example-app: {}
+  apps/example-app:
+    dependencies:
+      '@my-app/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
   packages/shared: {}
 

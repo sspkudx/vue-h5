@@ -15,9 +15,10 @@
         "sourceMap": true,
         "baseUrl": ".",
         "types": ["webpack-env"],
-        "paths": {
-            "@/*": ["src/*"]
-        },
+    "paths": {
+        "@/*": ["src/*"],
+        "@my-app/shared": ["../../packages/shared/dist/index"]
+    },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "types/*.d.ts", "../../types/*.d.ts"],

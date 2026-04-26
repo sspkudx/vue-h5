@@ -6,6 +6,15 @@ const toRoot = (rootPath = '') => {
     return path.resolve(__dirname, `../../${rootPath}`);
 };
 
+const requiredPackages = Object.freeze(
+    ['shared'].map(packageName => {
+        return {
+            alias: `@my-app/${packageName}`,
+            packagePath: toRoot(`packages/${packageName}/src`),
+        };
+    })
+);
+
 /** Get a new configuration of HtmlWebpackPlugin */
 const getHtmlPluginConfig = (defaultConfig = {}) => {
     const { templateParameters: oldTemplateParams = {} } = defaultConfig || {};
@@ -27,6 +36,7 @@ const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
 const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
 
 module.exports = defineConfig(() => {
+    const isDev = process.env?.NODE_ENV === 'development';
     return {
         transpileDependencies: isProduction,
         lintOnSave: 'error',
@@ -81,7 +91,12 @@ module.exports = defineConfig(() => {
                     const [defaultConf, ...rest] = args;
                     return [getHtmlPluginConfig(defaultConf), ...rest];
                 })
-                .end();
+                .end() // isDev时 热更新 packages 下的依赖
+                .when(isDev, conf => {
+                    requiredPackages.forEach(item => {
+                        conf.resolve.alias.set(item.alias, item.packagePath);
+                    });
+                });
         },
         css: {
             loaderOptions: {
