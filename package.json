@@ -5,6 +5,7 @@
     "scripts": {
         "dev:example": "pnpm -F example-app dev",
         "build:example": "pnpm -F example-app build",
+        "build:shared": "pnpm -F @my-app/shared build",
         "lint:example": "pnpm -F example-app lint"
     },
     "dependencies": {
