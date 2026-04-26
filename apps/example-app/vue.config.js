@@ -10,10 +10,20 @@ const requiredPackages = Object.freeze(
     ['shared'].map(packageName => {
         return {
             alias: `@my-app/${packageName}`,
-            packagePath: toRoot(`packages/${packageName}/src`),
+            srcPath: toRoot(`packages/${packageName}/src`),
+            distPath: toRoot(`packages/${packageName}/dist`),
         };
     })
 );
+
+const setAllRequiredPackages = (config, isDev = false) => {
+    return requiredPackages.reduce((conf, item) => {
+        // 开发环境指向源码目录（支持热更新）
+        // 生产环境指向构建后的dist目录
+        const targetPath = isDev ? item.srcPath : item.distPath;
+        return conf.resolve.alias.set(item.alias, targetPath).end().end();
+    }, config);
+};
 
 /** Get a new configuration of HtmlWebpackPlugin */
 const getHtmlPluginConfig = (defaultConfig = {}) => {
@@ -36,7 +46,8 @@ const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
 const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
 
 module.exports = defineConfig(() => {
-    const isDev = process.env?.NODE_ENV === 'development';
+    const isDev = process.env.NODE_ENV === 'development';
+
     return {
         transpileDependencies: isProduction,
         lintOnSave: 'error',
@@ -49,7 +60,7 @@ module.exports = defineConfig(() => {
             },
         },
         chainWebpack(config) {
-            config
+            setAllRequiredPackages(config, isDev)
                 .entry('app')
                 .clear()
                 .add(path.resolve(__dirname, 'src', 'main.ts'))
@@ -91,12 +102,7 @@ module.exports = defineConfig(() => {
                     const [defaultConf, ...rest] = args;
                     return [getHtmlPluginConfig(defaultConf), ...rest];
                 })
-                .end() // isDev时 热更新 packages 下的依赖
-                .when(isDev, conf => {
-                    requiredPackages.forEach(item => {
-                        conf.resolve.alias.set(item.alias, item.packagePath);
-                    });
-                });
+                .end();
         },
         css: {
             loaderOptions: {
