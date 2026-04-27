@@ -24,3 +24,6 @@ pnpm-debug.log*
 .catpaw
 .claude
 .cursor
+
+# Unit test
+coverage
