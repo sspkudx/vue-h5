@@ -1,10 +1,4 @@
-import { 
-    isNumber, 
-    isString, 
-    isObject, 
-    isEmpty,
-    formatNumber 
-} from '../index';
+import { isNumber, isString, isObject, isEmpty, formatNumber } from '../index';
 
 describe('isNumber', () => {
     test('should return true for valid numbers', () => {
@@ -93,6 +87,35 @@ describe('isEmpty', () => {
         expect(isEmpty(NaN)).toBe(false);
         expect(isEmpty(Infinity)).toBe(false);
     });
+
+    test('should handle nested empty structures', () => {
+        expect(isEmpty({ a: {} })).toBe(false);
+        expect(isEmpty({ a: [] })).toBe(false);
+        expect(isEmpty({ a: '' })).toBe(false);
+        expect(isEmpty({ a: null })).toBe(false);
+    });
+
+    test('should handle arrays with empty values', () => {
+        expect(isEmpty([null])).toBe(false);
+        expect(isEmpty([undefined])).toBe(false);
+        expect(isEmpty([''])).toBe(false);
+        expect(isEmpty([{}])).toBe(false);
+        expect(isEmpty([[]])).toBe(false);
+    });
+
+    test('should handle functions and symbols', () => {
+        expect(isEmpty(function () {})).toBe(false);
+        expect(isEmpty(() => {})).toBe(false);
+        expect(isEmpty(Symbol('test'))).toBe(false);
+        expect(isEmpty(Symbol())).toBe(false);
+    });
+
+    test('should handle Map and Set objects', () => {
+        expect(isEmpty(new Map())).toBe(false); // Map 不是 plain object
+        expect(isEmpty(new Set())).toBe(false); // Set 不是 plain object
+        expect(isEmpty(new Map([['key', 'value']]))).toBe(false);
+        expect(isEmpty(new Set([1, 2, 3]))).toBe(false);
+    });
 });
 
 describe('formatNumber', () => {
@@ -123,4 +146,42 @@ describe('formatNumber', () => {
         expect(formatNumber(123.445, 2)).toBe('123.45');
         expect(formatNumber(123.455, 2)).toBe('123.46');
     });
+
+    test('should handle large and small numbers', () => {
+        expect(formatNumber(123456789.123456, 2)).toBe('123456789.12');
+        expect(formatNumber(0.000001, 6)).toBe('0.000001');
+        expect(formatNumber(0.0000001, 6)).toBe('0.000000');
+        expect(formatNumber(-123456789.123456, 2)).toBe('-123456789.12');
+    });
+
+    test('should handle decimal precision limits', () => {
+        expect(formatNumber(123.456, 0)).toBe('123');
+        expect(formatNumber(123.456, 10)).toBe('123.4560000000');
+        expect(formatNumber(123.456, -1)).toBe('123'); // 负数精度应该被视为0
+        // 由于浮点数精度问题，实际结果可能会有所不同
+    // 123.456 在二进制浮点数中无法精确表示
+    const result = formatNumber(123.456, 20);
+    // 123.456 格式化为 20 位小数后，应该是 123.456 加上 20 位小数
+    expect(result.startsWith('123.456')).toBe(true);
+    expect(result.length).toBeGreaterThanOrEqual(23); // 至少 123.456 + 20位小数 = 23位
+    expect(result.includes('.')).toBe(true); // 包含小数点
+    });
+
+  test('should handle extreme values', () => {
+    expect(formatNumber(Infinity)).toBe('Infinity');
+    expect(formatNumber(-Infinity)).toBe('-Infinity');
+    expect(formatNumber(Number.MAX_SAFE_INTEGER, 0)).toBe('9007199254740991');
+    expect(formatNumber(Number.MIN_SAFE_INTEGER, 0)).toBe('-9007199254740991');
+  });
+
+  test('should handle edge cases with rounding', () => {
+    // 注意：由于浮点数精度问题，1.005 * 100 = 100.49999999999999，四舍五入为 100
+    // 所以 1.005 格式化为 2 位小数是 '1.00' 而不是 '1.01'
+    expect(formatNumber(0.005, 2)).toBe('0.01');
+    expect(formatNumber(0.004, 2)).toBe('0.00');
+    expect(formatNumber(1.005, 2)).toBe('1.00'); // 浮点数精度问题
+    expect(formatNumber(1.004, 2)).toBe('1.00');
+    expect(formatNumber(0.9995, 3)).toBe('1.000');
+    expect(formatNumber(0.9994, 3)).toBe('0.999');
+  });
 });

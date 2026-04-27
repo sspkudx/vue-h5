@@ -15,7 +15,12 @@ function isString(value: unknown): value is string {
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
-    return value !== null && typeof value === 'object' && !Array.isArray(value);
+    return (
+        value !== null &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        Object.prototype.toString.call(value) === '[object Object]'
+    );
 }
 
 function isEmpty(value: unknown): boolean {
@@ -43,9 +48,11 @@ function formatNumber(num: number, decimals = 2): string {
         return '0';
     }
 
-    const factor = Math.pow(10, decimals);
+    // 确保 decimals 是非负整数
+    const validDecimals = Math.max(0, Math.floor(decimals));
+    const factor = Math.pow(10, validDecimals);
     const rounded = Math.round(num * factor) / factor;
-    return rounded.toFixed(decimals);
+    return rounded.toFixed(validDecimals);
 }
 
 export { safeNum, isNumber, isString, isObject, isEmpty, formatNumber };
