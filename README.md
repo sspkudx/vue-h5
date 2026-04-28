@@ -2,6 +2,12 @@
 
 一个基于 Vue 3 + TypeScript + PNPM Workspaces 的现代化 H5 项目模板，支持 Monorepo 架构，内置智能技能（Skills）辅助开发。
 
+## ⚙️ 环境要求
+
+-   **Node.js**: 最低支持 Node 14（如 package.json 中 engines 字段指定），推荐使用最新的 Node LTS 版本
+-   **包管理器**: 推荐使用 PNPM（支持 Workspaces）
+-   **操作系统**: macOS, Linux, Windows (WSL2 推荐)
+
 ## 📦 项目架构
 
 ```
@@ -154,7 +160,11 @@ pnpm build
     - 路由和状态管理配置
     - 示例组件和页面
 
-**使用方式**：在 CatPaw AI 中直接请求："创建新的 Vue 应用" 或 "在 apps 目录下添加新应用"
+**使用方式**：在 AI 编辑器中直接请求时，需要提供应用名称和可选端口号：
+
+-   "创建新的 Vue 应用，应用名称为 `my-app`"
+-   "创建新的 Vue 应用，名称为 `admin-panel`，端口号为 8080"
+-   "在 apps 目录下添加新应用，名称为 `user-portal`"
 
 ### 创建新依赖包
 
@@ -172,7 +182,12 @@ pnpm build
     - 生成测试框架配置
     - 创建详细的 README 文档
 
-**使用方式**：在 CatPaw AI 中直接请求："创建新的依赖包" 或 "在 packages 目录下添加新包"
+**使用方式**：在 AI 编辑器中直接请求时，需要提供包名称、类型和可选描述：
+
+-   "创建新的依赖包，名称为 `utils`，类型为工具库"
+-   "创建新的组件库，名称为 `ui-components`"
+-   "在 packages 目录下添加新包，名称为 `auth-helpers`，类型为工具函数集，描述为 '用户认证相关工具函数'"
+-   "创建插件库，名称为 `analytics-plugin`"
 
 ## 📁 项目结构详解
 
