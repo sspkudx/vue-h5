@@ -3,9 +3,11 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev:example": "pnpm -F example-app dev",
+        "dev:example": "./scripts/build-packages.sh --skip-clean && pnpm -F example-app dev",
         "build:example": "pnpm -F example-app build",
         "build:shared": "pnpm -F @my-app/shared build",
+        "build:packages": "./scripts/build-packages.sh",
+        "build": "sh ./scripts/build.sh",
         "lint:example": "pnpm -F example-app lint",
         "test": "jest",
         "test:watch": "jest --watch",

@@ -509,7 +509,7 @@ if (!rootPackageJson.scripts) {
 
 // 添加新应用的脚本
 const appName = 'your-app-name'; // 替换为实际应用名称
-rootPackageJson.scripts[`dev:${appName}`] = `pnpm -F ${appName} dev`;
+rootPackageJson.scripts[`dev:${appName}`] = `./scripts/build-packages.sh --skip-clean && pnpm -F ${appName} dev`;
 rootPackageJson.scripts[`build:${appName}`] = `pnpm -F ${appName} build`;
 rootPackageJson.scripts[`lint:${appName}`] = `pnpm -F ${appName} lint`;
 
@@ -521,11 +521,11 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 ```json
 "scripts": {
-    "dev:example": "pnpm -F example-app dev",
+    "dev:example": "./scripts/build-packages.sh --skip-clean && pnpm -F example-app dev",
     "build:example": "pnpm -F example-app build",
     "build:shared": "pnpm -F @my-app/shared build",
     "lint:example": "pnpm -F example-app lint",
-    "dev:{app-name}": "pnpm -F {app-name} dev",
+    "dev:{app-name}": "./scripts/build-packages.sh --skip-clean && pnpm -F {app-name} dev",
     "build:{app-name}": "pnpm -F {app-name} build",
     "lint:{app-name}": "pnpm -F {app-name} lint"
 }
@@ -556,7 +556,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 4. 设置 package.json 的 name 为"my-app"
 5. 设置 vue.config.js 的端口为 3000，标题为"my-app"
 6. **更新根目录 package.json 的 scripts**，添加：
-    - `"dev:my-app": "pnpm -F my-app dev"`
+    - `"dev:my-app": "./scripts/build-packages.sh --skip-clean && pnpm -F my-app dev"`
     - `"build:my-app": "pnpm -F my-app build"`
     - `"lint:my-app": "pnpm -F my-app lint"`
 
@@ -573,7 +573,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 5. 设置 package.json 的 name 为"admin-panel"
 6. 设置 vue.config.js 的端口为 8080，标题为"admin-panel"
 7. **更新根目录 package.json 的 scripts**，添加：
-    - `"dev:admin-panel": "pnpm -F admin-panel dev"`
+    - `"dev:admin-panel": "./scripts/build-packages.sh --skip-clean && pnpm -F admin-panel dev"`
     - `"build:admin-panel": "pnpm -F admin-panel build"`
     - `"lint:admin-panel": "pnpm -F admin-panel lint"`
 
