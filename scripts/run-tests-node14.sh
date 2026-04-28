@@ -12,7 +12,7 @@ CURRENT_NODE_VERSION=$(node --version)
 echo "当前 Node 版本: $CURRENT_NODE_VERSION"
 
 # 检查是否是 Node 14
-if [[ "$CURRENT_NODE_VERSION" != v14* ]]; then
+if ! echo "$CURRENT_NODE_VERSION" | grep -q "^v14"; then
     echo "⚠️  当前不是 Node 14 环境"
     echo "请先运行: ./scripts/switch-to-node14.sh"
     exit 1

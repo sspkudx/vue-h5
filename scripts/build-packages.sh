@@ -63,7 +63,7 @@ EOF
 
 # 解析命令行参数
 parse_args() {
-    while [[ $# -gt 0 ]]; do
+    while [ $# -gt 0 ]; do
         case $1 in
             -h|--help)
                 show_help
@@ -159,7 +159,9 @@ build_parallel_packages() {
     print_info "并行构建中 (最多 $MAX_PARALLEL 个进程)..."
     
     for item in "${items[@]}"; do
-        IFS='|' read -r dir name <<< "$item"
+        # 使用更兼容的方法解析分隔符
+        local dir="${item%%|*}"
+        local name="${item#*|}"
         
         while [ $running -ge $MAX_PARALLEL ]; do
             # 等待任何子进程完成
@@ -209,6 +211,10 @@ build_all_packages() {
     
     # 查找packages目录下的所有包
     local packages=()
+    # 使用临时文件替代进程替换，以提高兼容性
+    local temp_file=$(mktemp)
+    find packages -name "package.json" -type f 2>/dev/null | grep -v node_modules > "$temp_file"
+    
     while IFS= read -r pkg_json; do
         local pkg_dir=$(dirname "$pkg_json")
         local pkg_name=$(basename "$pkg_dir")
@@ -219,7 +225,10 @@ build_all_packages() {
         else
             print_warning "包 $pkg_name 没有build脚本，跳过"
         fi
-    done < <(find packages -name "package.json" -type f 2>/dev/null | grep -v node_modules)
+    done < "$temp_file"
+    
+    # 清理临时文件
+    rm -f "$temp_file"
     
     if [ ${#packages[@]} -eq 0 ]; then
         print_warning "packages目录下没有需要构建的包"
@@ -237,7 +246,9 @@ build_all_packages() {
     else
         local build_count=0
         for item in "${packages[@]}"; do
-            IFS='|' read -r dir name <<< "$item"
+            # 使用更兼容的方法解析分隔符
+            local dir="${item%%|*}"
+            local name="${item#*|}"
             
             if build_single_package "$dir" "$name"; then
                 build_count=$((build_count + 1))

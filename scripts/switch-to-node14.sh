@@ -32,7 +32,7 @@ fnm use 14
 CURRENT_NODE_VERSION=$(node --version)
 echo "✅ 当前 Node 版本: $CURRENT_NODE_VERSION"
 
-if [[ "$CURRENT_NODE_VERSION" != v14* ]]; then
+if ! echo "$CURRENT_NODE_VERSION" | grep -q "^v14"; then
     echo "⚠️  警告: 当前 Node 版本不是 v14.x.x"
     echo "请确保已正确配置 fnm 环境变量"
     echo "将以下内容添加到 ~/.zshrc 或 ~/.bashrc:"

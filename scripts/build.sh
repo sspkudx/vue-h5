@@ -187,7 +187,11 @@ build_parallel() {
     print_info "并行构建中 (最多 $MAX_PARALLEL 个进程)..."
     
     for item in "${items[@]}"; do
-        IFS='|' read -r dir name type <<< "$item"
+        # 使用更兼容的方法解析分隔符
+        local dir="${item%%|*}"
+        local rest="${item#*|}"
+        local name="${rest%%|*}"
+        local type="${rest#*|}"
         
         while [ $running -ge $MAX_PARALLEL ]; do
             # 等待任何子进程完成
@@ -263,6 +267,10 @@ build_apps() {
     
     # 查找apps目录下的所有应用
     local apps=()
+    # 使用临时文件替代进程替换，以提高兼容性
+    local temp_file=$(mktemp)
+    find apps -name "package.json" -type f 2>/dev/null | grep -v node_modules > "$temp_file"
+    
     while IFS= read -r app_json; do
         local app_dir=$(dirname "$app_json")
         local app_name=$(basename "$app_dir")
@@ -273,7 +281,10 @@ build_apps() {
         else
             print_warning "应用 $app_name 没有build脚本，跳过"
         fi
-    done < <(find apps -name "package.json" -type f 2>/dev/null | grep -v node_modules)
+    done < "$temp_file"
+    
+    # 清理临时文件
+    rm -f "$temp_file"
     
     if [ ${#apps[@]} -eq 0 ]; then
         print_warning "apps目录下没有需要构建的应用"
@@ -291,7 +302,11 @@ build_apps() {
     else
         local build_count=0
         for item in "${apps[@]}"; do
-            IFS='|' read -r dir name type <<< "$item"
+            # 使用更兼容的方法解析分隔符
+            local dir="${item%%|*}"
+            local rest="${item#*|}"
+            local name="${rest%%|*}"
+            local type="${rest#*|}"
             
             if build_single "$dir" "$name" "$type"; then
                 build_count=$((build_count + 1))

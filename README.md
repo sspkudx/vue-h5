@@ -4,9 +4,34 @@
 
 ## ⚙️ 环境要求
 
--   **Node.js**: 最低支持 Node 14（如 package.json 中 engines 字段指定），推荐使用最新的 Node LTS 版本
+-   **Node.js**: 最低支持 Node.js 14.18.0（如 package.json 中 engines 字段指定），推荐使用最新的 Node LTS 版本
+-   **Node 版本管理** (推荐):
+    -   **fnm**: 快速轻量的 Node 版本管理工具
+    -   **nvm**: 广泛使用的 Node 版本管理工具
 -   **包管理器**: 推荐使用 PNPM（支持 Workspaces）
 -   **操作系统**: macOS, Linux, Windows (WSL2 推荐)
+
+### 🎯 为什么选择 Node.js 14.18.0 作为最低版本？
+
+项目设定 Node.js 14.18.0 为最低兼容版本，主要基于以下考虑：
+
+1. **广泛的兼容性**: Node.js 14 LTS 是长期支持版本，在企业环境中广泛应用
+2. **依赖兼容性**: 项目关键依赖（如 Rollup 3.x、Jest 29.x、ESLint 8.x 等）都需要 Node.js 14.15.0+ 或 14.17.0+
+3. **rollup 3.x 要求**: Rollup 3.x 构建工具明确要求 Node.js 14.18.0+
+4. **Vue CLI 5.x 要求**: Vue CLI 5.x 需要 Node.js 12.0.0+ 或 ≥14.0.0
+5. **平衡稳定性和现代化**: Node.js 14 提供了足够的现代 JavaScript 特性，同时保持了良好的向后兼容性
+
+### 📦 包管理器安装与配置
+
+**推荐使用 PNPM**，因为它对 Monorepo 项目有更好的支持：
+
+```bash
+# 安装 PNPM
+npm install -g pnpm
+
+# 或使用其他方法
+# curl -fsSL https://get.pnpm.io/install.sh | sh -
+```
 
 ## 📦 项目架构
 
@@ -45,19 +70,45 @@ yarn dlx degit sspkudx/vue-h5#main               your-app-name
 yarn dlx degit sspkudx/vue-h5#node-high-version  your-app-name
 ```
 
-### 2. 切换 Node 版本（推荐）
+### 2. 安装和切换 Node 版本
 
-建议使用 fnm 或 nvm 管理 Node 版本：
+**使用 fnm (推荐)** - 更快速轻量：
 
 ```bash
-# fnm（推荐）
-fnm use 14   # 对应 main 分支
-fnm use 18   # 对应 node-high-version 分支
+# 安装 fnm (macOS/Linux)
+curl -fsSL https://fnm.vercel.app/install | bash
 
-# nvm
-nvm use 14   # 对应 main 分支
-nvm use 18   # 对应 node-high-version 分支
+# 或使用 Homebrew
+brew install fnm
+
+# 安装 Node.js 14.18.0+ (LTS 版本)
+fnm install 14.21.3
+fnm use 14.21.3
+fnm default 14.21.3
+
+# 验证版本
+node --version  # 应该显示 v14.21.3
 ```
+
+**使用 nvm** - 更广泛使用：
+
+```bash
+# 安装 nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# 安装 Node.js 14.18.0+
+nvm install 14.21.3
+nvm use 14.21.3
+nvm alias default 14.21.3
+
+# 验证版本
+node --version  # 应该显示 v14.21.3
+```
+
+**为什么使用 Node.js 14.21.3?**
+- 这是 Node.js 14 LTS 的最终版本
+- 包含所有安全更新和 bug 修复
+- 完全兼容项目所有依赖的引擎要求
 
 ### 3. 安装依赖
 
@@ -234,10 +285,15 @@ packages/shared/
 
 ## 🔧 分支说明
 
-| 分支                | Node 版本  | 特点                   |
-| ------------------- | ---------- | ---------------------- |
-| `main`              | Node 14/16 | 传统配置，兼容性最好   |
-| `node-high-version` | Node ≥ 18  | ESM 配置，现代特性支持 |
+| 分支                | Node 版本  | 特点                   | 兼容性要求                     |
+| ------------------- | ---------- | ---------------------- | ----------------------------- |
+| `main`              | Node 14.18+ | 传统配置，兼容性最好   | 支持 Node.js 14.18.0+ (LTS)   |
+| `node-high-version` | Node ≥ 18  | ESM 配置，现代特性支持 | 支持 Node.js 18+ (包含 ESM 特性) |
+
+**关于 Node.js 版本选择的说明**:
+- **main 分支**: 针对企业环境，兼容 Node.js 14.18.0+，确保广泛的运行环境兼容性
+- **node-high-version 分支**: 针对现代开发环境，使用 Node.js 18+ 的 ESM 特性
+- **推荐使用 main 分支**: 除非明确需要使用 ESM 特性
 
 ### 主要差异
 
@@ -267,19 +323,21 @@ packages/shared/
     - `babel.config.cjs`
     - `.postcssrc.cjs`
 
-### 2. 本地 Node 版本与分支不匹配
+### 2. 本地 Node 版本与项目要求不匹配
 
 **解决方案**：
 
 ```bash
 # 使用 fnm
-fnm use 14   # 对应 main 分支
-fnm use 18   # 对应 node-high-version 分支
+fnm use 14.21.3   # 使用推荐的 Node.js 14.21.3
+fnm default 14.21.3  # 设为默认版本
 
 # 使用 nvm
-nvm use 14   # 对应 main 分支
-nvm use 18   # 对应 node-high-version 分支
+nvm use 14.21.3    # 使用推荐的 Node.js 14.21.3
+nvm alias default 14.21.3  # 设为默认版本
 ```
+
+**重要**: 项目要求 Node.js 14.18.0+，推荐使用 Node.js 14.21.3（14 LTS 的最终版本）以确保所有依赖兼容。
 
 ### 3. 依赖安装失败
 
