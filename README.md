@@ -2,9 +2,8 @@
 
 ## 分支与 Node 版本
 
--   main ：适配低版本 Node（14 / 16）
+-   main：Node monorepo 方案（>= 14）
 -   node-high-version ：适配高版本 Node（>= 18）
--   monorepo-v14：低版本 Node monorepo 方案
 
 请根据你当前的 Node 版本选择对应分支使用本模板。
 
@@ -18,16 +17,13 @@
 # 使用 pnpm（推荐）
 pnpm dlx degit sspkudx/vue-h5#main               your-app-low    # Node 14/16
 pnpm dlx degit sspkudx/vue-h5#node-high-version  your-app-high   # Node >= 18
-pnpm dlx degit sspkudx/vue-h5#monorepo-v14       your-app-mono   # Node >= 14/16 monorepo
 
 # 或使用 npx / yarn
 npx  degit sspkudx/vue-h5#main               your-app-low
 npx  degit sspkudx/vue-h5#node-high-version  your-app-high
-npx  degit sspkudx/vue-h5#monorepo-v14       your-app-mono
 
 yarn dlx degit sspkudx/vue-h5#main               your-app-low
 yarn dlx degit sspkudx/vue-h5#node-high-version  your-app-high
-yarn dlx degit sspkudx/vue-h5#monorepo-v14       your-app-mono
 ```
 
 ### 2) 切换 Node 版本（可选但推荐）
@@ -57,7 +53,7 @@ pnpm lint   # 代码检查与自动修复
 
 -   Node 与模块系统
 
-    -   main / monorepo-v14：面向 Node 14/16 的默认设置
+    -   main：面向 Node 14/16 的默认设置
     -   node-high-version：`package.json` 中启用 `"type": "module"`（ESM），与 Node >= 18 更兼容
 
 -   配置文件格式（node-high-version）
