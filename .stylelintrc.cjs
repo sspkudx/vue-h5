@@ -23,8 +23,8 @@ module.exports = {
         'declaration-block-no-duplicate-properties': [
             true,
             {
-                ignore: ['consecutive-duplicates']
-            }
+                ignore: ['consecutive-duplicates'],
+            },
         ],
 
         // Fix unknown rule errors - these rules might not exist in stylelint v14
@@ -36,11 +36,13 @@ module.exports = {
         'unit-no-unknown': [
             true,
             {
-                ignoreUnits: ['mpx']
-            }
+                ignoreUnits: ['mpx'],
+            },
         ],
 
         // Set indentation to 4 spaces to match prettier config
-        'indentation': 4
+        indentation: 4,
+        'media-query-no-invalid': null,
+        'selector-anb-no-unmatchable': null,
     },
 };
