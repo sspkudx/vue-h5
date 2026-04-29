@@ -18,5 +18,25 @@ module.exports = {
 
         // Allow both single and double quotes for flexibility
         'string-quotes': null,
+
+        // Fix invalid option error
+        'declaration-block-no-duplicate-properties': [
+            true,
+            {
+                ignore: ['consecutive-duplicates']
+            }
+        ],
+
+        // Fix unknown rule errors - these rules might not exist in stylelint v14
+        'media-query-no-invalid': null,
+        'selector-anb-no-unmatchable': null,
+
+        // Allow mpx unit for postcss-px-to-viewport conversion
+        'unit-no-unknown': [
+            true,
+            {
+                ignoreUnits: ['mpx']
+            }
+        ]
     },
 };
