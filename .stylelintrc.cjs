@@ -2,7 +2,7 @@
 // Compatible with Node >= 14.18
 
 module.exports = {
-    extends: ['stylelint-config-standard', 'stylelint-config-recommended-vue'],
+    extends: ['stylelint-config-standard', 'stylelint-config-recommended-less', 'stylelint-config-recommended-vue'],
     plugins: ['stylelint-less'],
     rules: {
         // Disable rules that conflict with Vue
