@@ -12,9 +12,7 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
-        "test:shared": "pnpm -F @my-app/shared test",
-        "test:node14": "./scripts/run-tests-node14.sh",
-        "test:compatibility": "node ./scripts/check-node14-compatibility.js"
+        "test:shared": "pnpm -F @my-app/shared test"
     },
     "dependencies": {
         "@vue/babel-plugin-jsx": "^1.5.0",
