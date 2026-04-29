@@ -28,8 +28,9 @@ module.exports = {
         ],
 
         // Fix unknown rule errors - these rules might not exist in stylelint v14
-        'media-query-no-invalid': null,
-        'selector-anb-no-unmatchable': null,
+        // Using false instead of null to completely disable them
+        'media-query-no-invalid': false,
+        'selector-anb-no-unmatchable': false,
 
         // Allow mpx unit for postcss-px-to-viewport conversion
         'unit-no-unknown': [
@@ -37,6 +38,9 @@ module.exports = {
             {
                 ignoreUnits: ['mpx']
             }
-        ]
+        ],
+
+        // Set indentation to 4 spaces to match prettier config
+        'indentation': 4
     },
 };
