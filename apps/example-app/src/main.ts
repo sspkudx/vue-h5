@@ -1,6 +1,7 @@
 import { createApp, type App as VueApp } from 'vue';
 import pluginsList from './plugins';
 import App from './App';
+import 'ress/dist/ress.min.css';
 
 const getAppInstance = () => {
     const instance = pluginsList.reduce((current, plugin) => {
