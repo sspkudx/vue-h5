@@ -1,148 +1,193 @@
-# vue-h5 - Vue 3 Monorepo 项目模板
+# vue-h5 - Vue 3 Monorepo 项目模板 🚀
 
-一个基于 Vue 3 + TypeScript + PNPM Workspaces 的现代化 H5 项目模板，支持 Monorepo 架构，内置智能技能（Skills）辅助开发。
+一个基于 Vue 3 + TypeScript + PNPM Workspaces 的现代化 H5 项目模板，支持 Monorepo 架构，内置 AI 智能开发技能。
 
-## ⚙️ 环境要求
+> ⚡ **开箱即用** | 🏗️ **Monorepo 架构** | 🤖 **AI 辅助开发** | 📦 **PNPM Workspaces**
 
--   **Node.js**: 最低支持 Node.js 14.18.0（如 package.json 中 engines 字段指定），推荐使用最新的 Node LTS 版本
--   **Node 版本管理** (推荐):
-    -   **fnm**: 快速轻量的 Node 版本管理工具
-    -   **nvm**: 广泛使用的 Node 版本管理工具
--   **包管理器**: 推荐使用 PNPM（支持 Workspaces）
--   **操作系统**: macOS, Linux, Windows (WSL2 推荐)
+## ✨ 特性亮点
 
-### 🎯 为什么选择 Node.js 14.18.0 作为最低版本？
+-   **现代化技术栈**: Vue 3 + TypeScript + Vite + PNPM
+-   **Monorepo 架构**: 支持多应用、多包统一管理
+-   **AI 智能开发**: 内置 Skills 快速创建应用和包
+-   **双分支支持**: 兼容 Node.js 14+ 和 18+ 环境
+-   **完整工具链**: ESLint, Prettier, Jest, Rollup 等
 
-项目设定 Node.js 14.18.0 为最低兼容版本，主要基于以下考虑：
+## ⚡ 快速开始（5 分钟上手）
 
-1. **广泛的兼容性**: Node.js 14 LTS 是长期支持版本，在企业环境中广泛应用
-2. **依赖兼容性**: 项目关键依赖（如 Rollup 3.x、Jest 29.x、ESLint 8.x 等）都需要 Node.js 14.15.0+ 或 14.17.0+
-3. **rollup 3.x 要求**: Rollup 3.x 构建工具明确要求 Node.js 14.18.0+
-4. **Vue CLI 5.x 要求**: Vue CLI 5.x 需要 Node.js 12.0.0+ 或 ≥14.0.0
-5. **平衡稳定性和现代化**: Node.js 14 提供了足够的现代 JavaScript 特性，同时保持了良好的向后兼容性
+### 1. 获取项目模板
 
-### 📦 包管理器安装与配置
+根据你的 Node.js 版本选择合适的模板分支：
 
-**推荐使用 PNPM**，因为它对 Monorepo 项目有更好的支持：
+```bash
+# Node.js 14/16 环境（兼容性最好）
+npx degit sspkudx/vue-h5#main my-vue-project
+
+# Node.js ≥ 18 环境（支持 ESM）
+npx degit sspkudx/vue-h5#node-high-version my-vue-project
+```
+
+### 2. 安装依赖
+
+```bash
+cd my-vue-project
+pnpm i  # 推荐使用 PNPM
+```
+
+### 3. 启动开发服务器
+
+```bash
+pnpm dev:example
+```
+
+打开浏览器访问 http://localhost:2000，查看示例应用！
+
+## 📚 详细指南
+
+### 📦 环境要求
+
+| 工具         | 要求                | 说明                         |
+| ------------ | ------------------- | ---------------------------- |
+| **Node.js**  | 14.18.0+            | 推荐使用 LTS 版本            |
+| **包管理器** | PNPM 7+             | 推荐 PNPM（支持 Workspaces） |
+| **操作系统** | macOS/Linux/Windows | Windows 推荐使用 WSL2        |
+
+#### 为什么选择 Node.js 14.18.0+？
+
+-   ✅ **企业级兼容性**: Node.js 14 LTS 广泛使用
+-   ✅ **依赖兼容**: Rollup 3.x、Jest 29.x 等关键依赖要求
+-   ✅ **长期支持**: 包含安全更新和 bug 修复
+
+#### 快速安装 PNPM
 
 ```bash
 # 安装 PNPM
 npm install -g pnpm
-
-# 或使用其他方法
-# curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
-## 📦 项目架构
+### 🔄 使用 degit 复用项目模板
+
+#### 什么是 degit？
+
+**degit**（de-git）是 Rich Harris（Svelte、Rollup 创作者）开发的工具，专为项目模板设计：
+
+| 功能             | **degit**                | **git clone**           |
+| ---------------- | ------------------------ | ----------------------- |
+| **Git 历史**     | ❌ 不包含历史，下载更快  | ✅ 包含完整历史         |
+| **初始化新项目** | ✅ 直接可用，无需删 .git | ❌ 需要删 .git 再初始化 |
+| **空间占用**     | ⚡ 较小                  | 📦 较大                 |
+| **速度**         | 🚀 快（只下载最新内容）  | 🐌 慢（下载所有历史）   |
+| **用途**         | **项目模板创建**         | **协作开发/历史追踪**   |
+
+#### 多种使用方式
+
+**方法 1：使用 npx（推荐）**
+
+```bash
+# Node.js 14/16
+npx degit sspkudx/vue-h5#main my-project
+
+# Node.js ≥ 18
+npx degit sspkudx/vue-h5#node-high-version my-project
+```
+
+**方法 2：使用 pnpm dlx**
+
+```bash
+pnpm dlx degit sspkudx/vue-h5#main my-project
+```
+
+**方法 3：使用 yarn dlx**
+
+```bash
+yarn dlx degit sspkudx/vue-h5#main my-project
+```
+
+#### 高级用法
+
+```bash
+# 使用特定版本
+npx degit sspkudx/vue-h5#v1.0.0 my-project
+
+# 使用特定提交
+npx degit sspkudx/vue-h5#abcdef1 my-project
+
+# 从本地模板创建
+npx degit ./path/to/vue-h5#main my-project
+
+# 强制覆盖现有目录
+npx degit sspkudx/vue-h5#main my-project --force
+```
+
+#### 使用后的初始化步骤
+
+1. **进入项目目录** `cd my-project`
+2. **安装依赖** `pnpm i`
+3. **初始化 Git（可选）**：
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit from vue-h5 template"
+    ```
+4. **更新配置**：
+    - 修改根目录 `package.json` 中的 `name` 字段
+    - 根据需要调整子包配置
+    - 更新 `README.md`
+5. **启动开发服务器** `pnpm dev:example`
+
+### 🏗️ 项目架构
 
 ```
 vue-h5/
 ├── apps/                    # 应用目录
-│   ├── example-app/         # 示例应用
-│   └── [your-app]/         # 您的应用（通过技能创建）
+│   ├── example-app/         # 示例应用（开发起点）
+│   └── [your-app]/         # 你的应用（通过 AI 技能创建）
 ├── packages/                # 共享包目录
 │   └── shared/             # 共享工具包示例
 ├── skills/                  # AI 辅助开发技能
 │   ├── create-vue-app/     # 创建 Vue 应用技能
 │   └── create-a-package/   # 创建依赖包技能
 ├── scripts/                 # 构建脚本
-├── types/                   # 类型定义
+├── types/                   # TypeScript 类型定义
 └── public/                  # 静态资源
 ```
 
-## 🚀 快速开始
+### 🤖 AI 智能开发技能
 
-### 1. 使用 degit 克隆模板
+本项目内置了标准的 AI Skills 格式，可以在支持技能功能的 AI 编辑器（如 Cursor、Windsurf、Trae、CatPaw 等）中使用：
 
-根据您的 Node.js 版本选择合适的模板分支：
-
-```bash
-# 使用 pnpm（推荐）
-pnpm dlx degit sspkudx/vue-h5#main               your-app-name    # Node 14/16
-pnpm dlx degit sspkudx/vue-h5#node-high-version  your-app-name    # Node >= 18
-
-# 或使用 npx
-npx degit sspkudx/vue-h5#main               your-app-name
-npx degit sspkudx/vue-h5#node-high-version  your-app-name
-
-# 或使用 yarn
-yarn dlx degit sspkudx/vue-h5#main               your-app-name
-yarn dlx degit sspkudx/vue-h5#node-high-version  your-app-name
-```
-
-### 2. 安装和切换 Node 版本
-
-**使用 fnm (推荐)** - 更快速轻量：
+#### 创建新 Vue 应用
 
 ```bash
-# 安装 fnm (macOS/Linux)
-curl -fsSL https://fnm.vercel.app/install | bash
-
-# 或使用 Homebrew
-brew install fnm
-
-# 安装 Node.js 14.18.0+ (LTS 版本)
-fnm install 14.21.3
-fnm use 14.21.3
-fnm default 14.21.3
-
-# 验证版本
-node --version  # 应该显示 v14.21.3
+# 在 AI 编辑器中直接请求：
+"创建新的 Vue 应用，名称为 my-app"
+"创建新应用，名称为 admin-panel，端口号为 8080"
+"在 apps 目录下添加新应用 user-portal"
 ```
 
-**使用 nvm** - 更广泛使用：
+**技能位置**: `./skills/create-vue-app/SKILL.md`
+
+-   ✅ 自动生成完整的 Vue 3 + TypeScript 应用结构
+-   ✅ 支持自定义应用名称和端口号
+-   ✅ 包含路由、状态管理、示例组件
+
+#### 创建新依赖包
 
 ```bash
-# 安装 nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-
-# 安装 Node.js 14.18.0+
-nvm install 14.21.3
-nvm use 14.21.3
-nvm alias default 14.21.3
-
-# 验证版本
-node --version  # 应该显示 v14.21.3
+# 在 AI 编辑器中直接请求：
+"创建新的依赖包，名称为 utils，类型为工具库"
+"创建新的组件库，名称为 ui-components"
+"在 packages 目录下添加新包 auth-helpers，类型为工具函数集，描述为 '用户认证相关工具函数'"
 ```
 
-**为什么使用 Node.js 14.21.3?**
-- 这是 Node.js 14 LTS 的最终版本
-- 包含所有安全更新和 bug 修复
-- 完全兼容项目所有依赖的引擎要求
+**技能位置**: `./skills/create-a-package/SKILL.md`
 
-### 3. 安装依赖
+-   ✅ 支持四种包类型：工具库、组件库、工具函数集、插件库
+-   ✅ 自动配置 TypeScript + Rollup 开发环境
+-   ✅ 生成测试框架配置和详细文档
 
-```bash
-# 进入项目目录
-cd your-app-name
+### 🔧 Monorepo 开发指南
 
-# 安装依赖
-pnpm i
-
-# 或使用 npm
-npm install
-
-# 或使用 yarn
-yarn install
-```
-
-### 4. 启动开发服务器
-
-```bash
-# 启动示例应用
-pnpm dev:example
-
-# 构建示例应用
-pnpm build:example
-```
-
-开发服务器启动后，访问 http://localhost:2000 查看示例应用。
-
-## 🏗️ Monorepo 架构开发指南
-
-本项目采用 PNPM Workspaces 实现 Monorepo 架构，支持在单个仓库中管理多个应用和共享包。
-
-### 工作区配置
+#### 工作区配置
 
 项目根目录的 `pnpm-workspace.yaml` 定义了工作区：
 
@@ -152,97 +197,146 @@ packages:
     - 'packages/*' # 所有共享包
 ```
 
-### 应用开发
+#### 常用命令
 
-应用位于 `apps/` 目录下，每个应用都是一个独立的 Vue 3 项目：
-
--   **创建新应用**：使用 `create-vue-app` 技能
--   **应用间依赖**：可以通过工作区引用共享包
--   **独立开发**：每个应用有自己的依赖和配置
-
-### 共享包开发
-
-共享包位于 `packages/` 目录下：
-
--   **创建新包**：使用 `create-a-package` 技能
--   **类型支持**：支持 TypeScript 和完整类型导出
--   **构建工具**：使用 Rollup 进行打包
-
-### 常用命令
+**包管理**
 
 ```bash
-# 安装所有工作区依赖
+# 安装所有依赖
 pnpm i
 
-# 在特定应用上运行命令
-pnpm -F example-app dev       # 启动 example-app 开发服务器
-pnpm -F example-app build     # 构建 example-app
-pnpm -F example-app lint      # 检查 example-app 代码
+# 为所有包添加依赖
+pnpm -r add lodash
 
-# 在特定包上运行命令
-pnpm -F @my-app/shared build  # 构建 shared 包
-pnpm -F @my-app/shared test   # 运行 shared 包测试
+# 为特定包添加依赖
+pnpm -F @my-app/shared add lodash
 
-# 全局构建所有包
+# 移除依赖
+pnpm -F example-app remove lodash
+```
+
+**开发构建**
+
+```bash
+# 启动示例应用开发服务器
+pnpm dev:example
+
+# 代码检查与修复
+pnpm lint:example
+
+# 运行测试
+pnpm test
+pnpm test:shared
+
+# 构建所有包
 pnpm build:packages
 
-# 全局构建所有应用
+# 构建示例应用
+pnpm build:example
+
+# 完整构建
 pnpm build
 ```
 
-## 🤖 使用 Skills 智能开发
+**应用/包特定命令**
 
-本项目包含了标准的 AI Skills 文件格式，提供了智能的开发辅助功能，帮助开发者快速创建和管理项目结构。
+```bash
+# 在特定应用上运行命令
+pnpm -F example-app dev       # 启动开发服务器
+pnpm -F example-app build     # 构建应用
+pnpm -F example-app lint      # 代码检查
 
-这些 Skills 遵循通用的 AI Agent 技能格式，可以集成到支持技能功能的 AI 编辑器中，例如 Cursor、Windsurf、Trae、CatPaw 等，实现智能化的项目创建和管理。
+# 在特定包上运行命令
+pnpm -F @my-app/shared build  # 构建包
+pnpm -F @my-app/shared test   # 运行测试
+```
 
-### 创建新 Vue 应用
+### 🌿 分支说明
 
-使用 `create-vue-app` 技能在 `apps/` 目录下快速创建新的 Vue H5 应用：
+| 分支                | Node 版本   | 特点                      | 适用场景                        |
+| ------------------- | ----------- | ------------------------- | ------------------------------- |
+| `main`              | Node 14.18+ | CommonJS 配置，兼容性最好 | 企业环境，需要广泛的兼容性      |
+| `node-high-version` | Node ≥ 18   | ESM 配置，现代特性支持    | 现代开发环境，需要使用 ESM 特性 |
 
-1. **技能位置**: `./skills/create-vue-app/SKILL.md`
-2. **功能**: 自动生成完整的 Vue 3 + TypeScript 应用结构
-3. **支持配置**:
-    - 应用名称（符合 npm 包名规范）
-    - 端口号（默认 3000）
-4. **生成内容**:
-    - 完整的目录结构
-    - Vue 3 + TypeScript 配置
-    - 路由和状态管理配置
-    - 示例组件和页面
+#### 主要差异
 
-**使用方式**：在 AI 编辑器中直接请求时，需要提供应用名称和可选端口号：
+1. **模块系统**:
+    - `main`: CommonJS 配置
+    - `node-high-version`: ESM 配置 (`"type": "module"`)
+2. **配置文件扩展名**:
+    - `main`: `.js` 扩展名
+    - `node-high-version`: `.cjs` 扩展名（避免 ESM 作用域错误）
+3. **依赖版本**: `node-high-version` 分支使用更新版本的依赖
 
--   "创建新的 Vue 应用，应用名称为 `my-app`"
--   "创建新的 Vue 应用，名称为 `admin-panel`，端口号为 8080"
--   "在 apps 目录下添加新应用，名称为 `user-portal`"
+**推荐使用 `main` 分支**，除非明确需要使用 ESM 特性。
 
-### 创建新依赖包
+### 🚨 常见问题
 
-使用 `create-a-package` 技能在 `packages/` 目录下创建新的共享包：
+#### 1. `require is not defined in ES module scope` 错误
 
-1. **技能位置**: `./skills/create-a-package/SKILL.md`
-2. **支持的包类型**:
-    - 工具库 (Utility Library)
-    - 组件库 (Component Library)
-    - 工具函数集 (Helper Functions)
-    - 插件库 (Plugin Library)
-3. **功能**:
-    - 自动配置 TypeScript 开发环境
-    - 配置 Rollup 构建工具
-    - 生成测试框架配置
-    - 创建详细的 README 文档
+**原因**: 在 `node-high-version` 分支中使用了错误的配置文件扩展名。
 
-**使用方式**：在 AI 编辑器中直接请求时，需要提供包名称、类型和可选描述：
+**解决方案**：
 
--   "创建新的依赖包，名称为 `utils`，类型为工具库"
--   "创建新的组件库，名称为 `ui-components`"
--   "在 packages 目录下添加新包，名称为 `auth-helpers`，类型为工具函数集，描述为 '用户认证相关工具函数'"
--   "创建插件库，名称为 `analytics-plugin`"
+1. 确认使用 `node-high-version` 分支
+2. 检查根目录 `package.json` 是否包含 `"type": "module"`
+3. 确保配置文件使用 `.cjs` 后缀：
+    - `vue.config.cjs`
+    - `babel.config.cjs`
+    - `.postcssrc.cjs`
 
-## 📁 项目结构详解
+#### 2. 本地 Node 版本与项目要求不匹配
 
-### Apps 目录 (`apps/`)
+```bash
+# 使用 fnm（推荐）
+fnm install 14.21.3
+fnm use 14.21.3
+fnm default 14.21.3
+
+# 使用 nvm
+nvm install 14.21.3
+nvm use 14.21.3
+nvm alias default 14.21.3
+
+# 验证版本
+node --version  # 应该显示 v14.21.3
+```
+
+#### 3. 依赖安装失败
+
+```bash
+# 清理 node_modules 并重新安装
+rm -rf node_modules
+rm -rf apps/*/node_modules
+rm -rf packages/*/node_modules
+pnpm i
+```
+
+#### 4. 工作区包引用问题
+
+```bash
+# 确保所有包都已构建
+pnpm build:packages
+
+# 重新链接依赖
+pnpm i --force
+```
+
+### 📋 命令速查表
+
+| 命令                    | 功能                   | 说明                            |
+| ----------------------- | ---------------------- | ------------------------------- |
+| `pnpm dev:example`      | 启动示例应用开发服务器 | 访问 http://localhost:2000      |
+| `pnpm build:example`    | 构建示例应用           | 生产环境构建                    |
+| `pnpm lint:example`     | 代码检查与修复         | ESLint + Prettier               |
+| `pnpm test`             | 运行所有测试           | 单元测试                        |
+| `pnpm build:packages`   | 构建所有共享包         | 用于包开发                      |
+| `pnpm build`            | 完整构建               | 构建所有应用和包                |
+| `pnpm -F [包名] [命令]` | 在特定包上运行命令     | 例如：`pnpm -F example-app dev` |
+
+### 📁 项目结构详解
+
+#### Apps 目录 (`apps/`)
 
 存放独立的 Vue 3 应用，每个应用包含：
 
@@ -260,7 +354,7 @@ apps/example-app/
 └── vue.config.js       # Vue CLI 配置
 ```
 
-### Packages 目录 (`packages/`)
+#### Packages 目录 (`packages/`)
 
 存放共享的依赖包，支持跨应用复用：
 
@@ -276,140 +370,11 @@ packages/shared/
 └── tsconfig*.json     # TypeScript 配置
 ```
 
-### Skills 目录 (`skills/`)
-
-包含 AI 辅助开发技能：
-
--   `create-vue-app/`: 创建 Vue 应用的技能
--   `create-a-package/`: 创建依赖包的技能
-
-## 🔧 分支说明
-
-| 分支                | Node 版本  | 特点                   | 兼容性要求                     |
-| ------------------- | ---------- | ---------------------- | ----------------------------- |
-| `main`              | Node 14.18+ | 传统配置，兼容性最好   | 支持 Node.js 14.18.0+ (LTS)   |
-| `node-high-version` | Node ≥ 18  | ESM 配置，现代特性支持 | 支持 Node.js 18+ (包含 ESM 特性) |
-
-**关于 Node.js 版本选择的说明**:
-- **main 分支**: 针对企业环境，兼容 Node.js 14.18.0+，确保广泛的运行环境兼容性
-- **node-high-version 分支**: 针对现代开发环境，使用 Node.js 18+ 的 ESM 特性
-- **推荐使用 main 分支**: 除非明确需要使用 ESM 特性
-
-### 主要差异
-
-1. **模块系统**:
-
-    - `main`: CommonJS 配置
-    - `node-high-version`: ESM 配置 (`"type": "module"`)
-
-2. **配置文件**:
-
-    - `main`: `.js` 扩展名
-    - `node-high-version`: `.cjs` 扩展名 (避免 ESM 作用域错误)
-
-3. **依赖版本**:
-    - `node-high-version`: 更新版本的依赖
-
-## 🚨 常见问题
-
-### 1. `require is not defined in ES module scope` 错误
-
-**解决方案**：
-
-1. 确认您使用的是 `node-high-version` 分支
-2. 检查根目录 `package.json` 是否包含 `"type": "module"`
-3. 确认配置文件使用 `.cjs` 后缀：
-    - `vue.config.cjs`
-    - `babel.config.cjs`
-    - `.postcssrc.cjs`
-
-### 2. 本地 Node 版本与项目要求不匹配
-
-**解决方案**：
-
-```bash
-# 使用 fnm
-fnm use 14.21.3   # 使用推荐的 Node.js 14.21.3
-fnm default 14.21.3  # 设为默认版本
-
-# 使用 nvm
-nvm use 14.21.3    # 使用推荐的 Node.js 14.21.3
-nvm alias default 14.21.3  # 设为默认版本
-```
-
-**重要**: 项目要求 Node.js 14.18.0+，推荐使用 Node.js 14.21.3（14 LTS 的最终版本）以确保所有依赖兼容。
-
-### 3. 依赖安装失败
-
-**解决方案**：
-
-```bash
-# 清理 node_modules 并重新安装
-rm -rf node_modules
-rm -rf apps/*/node_modules
-rm -rf packages/*/node_modules
-pnpm i
-```
-
-### 4. 工作区包引用问题
-
-**解决方案**：
-
-```bash
-# 确保所有包都已构建
-pnpm build:packages
-
-# 重新链接依赖
-pnpm i --force
-```
-
-## 📋 常用命令速查
-
-### 开发相关
-
-```bash
-# 启动开发服务器
-pnpm dev:example
-
-# 代码检查与修复
-pnpm lint:example
-
-# 运行测试
-pnpm test
-pnpm test:shared
-```
-
-### 构建相关
-
-```bash
-# 构建所有包
-pnpm build:packages
-
-# 构建示例应用
-pnpm build:example
-
-# 完整构建
-pnpm build
-```
-
-### 包管理
-
-```bash
-# 为特定包添加依赖
-pnpm -F @my-app/shared add lodash
-
-# 为所有包添加依赖
-pnpm -r add lodash
-
-# 移除依赖
-pnpm -F example-app remove lodash
-```
-
-## 📄 许可证
+### 📄 许可证
 
 本项目模板遵循仓库内的 `LICENSE`，欢迎在不同分支下按运行时需求进行二次开发。
 
-## 🤝 贡献指南
+### 🤝 贡献指南
 
 1. Fork 本仓库
 2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
@@ -417,12 +382,39 @@ pnpm -F example-app remove lodash
 4. 推送到分支 (`git push origin feature/amazing-feature`)
 5. 打开 Pull Request
 
-## 📞 支持
+### 📞 支持
 
--   查看 `example-app` 获取示例代码
--   使用 Skills 快速创建应用和包
--   参考现有配置进行自定义
+-   📖 **查看示例**: 查看 `example-app` 目录获取示例代码
+-   🤖 **使用技能**: 使用内置的 AI Skills 快速创建应用和包
+-   ⚙️ **参考配置**: 参考现有配置进行自定义开发
+-   🐛 **报告问题**: 在 GitHub Issues 中报告问题
 
 ---
 
-**开始您的 Vue H5 项目开发之旅！** 🎉
+## 🎯 快速选择你的起点
+
+**如果你是新手**：
+
+1. 使用 `npx degit sspkudx/vue-h5#main my-project` 创建项目
+2. 运行 `cd my-project && pnpm i` 安装依赖
+3. 运行 `pnpm dev:example` 启动开发服务器
+4. 查看 `example-app` 中的示例代码开始学习
+
+**如果你想快速开始新项目**：
+
+1. 使用 `npx degit sspkudx/vue-h5#main my-app`
+2. 使用 AI 技能创建你的应用：`"创建新的 Vue 应用，名称为 my-app"`
+3. 根据需要创建共享包：`"创建新的依赖包，名称为 utils，类型为工具库"`
+4. 开始开发！
+
+**如果你需要 ESM 特性**：
+
+1. 使用 `npx degit sspkudx/vue-h5#node-high-version my-project`
+2. 确保 Node.js 版本 ≥ 18
+3. 享受 ESM 的现代特性！
+
+---
+
+**开始您的 Vue H5 项目开发之旅！** 🚀🎉
+
+> 💡 **提示**: 遇到问题时，请先查看 [🚨 常见问题](#常见问题) 部分，大多数问题都有解决方案。
