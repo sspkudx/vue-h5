@@ -1,9 +1,16 @@
 # Ignore build output
 dist/
 node_modules/
+coverage/
 *.min.css
 *.min.less
+*.min.js
 
 # Ignore build artifacts
 apps/*/dist/
 packages/*/dist/
+
+# Ignore cache and temp files
+.cache/
+.temp/
+*.log
