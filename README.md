@@ -9,21 +9,15 @@
 -   **现代化技术栈**: Vue 3 + TypeScript + Vite + PNPM
 -   **Monorepo 架构**: 支持多应用、多包统一管理
 -   **AI 智能开发**: 内置 Skills 快速创建应用和包
--   **双分支支持**: 兼容 Node.js 14+ 和 18+ 环境
 -   **完整工具链**: ESLint, Prettier, Jest, Rollup 等
 
 ## ⚡ 快速开始（5 分钟上手）
 
 ### 1. 获取项目模板
 
-根据你的 Node.js 版本选择合适的模板分支：
-
 ```bash
-# Node.js 14/16 环境（兼容性最好）
+# 获取项目模板
 npx degit sspkudx/vue-h5#main my-vue-project
-
-# Node.js ≥ 18 环境（支持 ESM）
-npx degit sspkudx/vue-h5#node-high-version my-vue-project
 ```
 
 ### 2. 安装依赖
@@ -51,12 +45,6 @@ pnpm dev:example
 | **包管理器** | PNPM 7+             | 推荐 PNPM（支持 Workspaces） |
 | **操作系统** | macOS/Linux/Windows | Windows 推荐使用 WSL2        |
 
-#### 为什么选择 Node.js 14.18.0+？
-
--   ✅ **企业级兼容性**: Node.js 14 LTS 广泛使用
--   ✅ **依赖兼容**: Rollup 3.x、Jest 29.x 等关键依赖要求
--   ✅ **长期支持**: 包含安全更新和 bug 修复
-
 #### 快速安装 PNPM
 
 ```bash
@@ -83,11 +71,8 @@ npm install -g pnpm
 **方法 1：使用 npx（推荐）**
 
 ```bash
-# Node.js 14/16
+# 使用 npx（推荐）
 npx degit sspkudx/vue-h5#main my-project
-
-# Node.js ≥ 18
-npx degit sspkudx/vue-h5#node-high-version my-project
 ```
 
 **方法 2：使用 pnpm dlx**
@@ -251,41 +236,10 @@ pnpm -F @my-app/shared build  # 构建包
 pnpm -F @my-app/shared test   # 运行测试
 ```
 
-### 🌿 分支说明
-
-| 分支                | Node 版本   | 特点                      | 适用场景                        |
-| ------------------- | ----------- | ------------------------- | ------------------------------- |
-| `main`              | Node 14.18+ | CommonJS 配置，兼容性最好 | 企业环境，需要广泛的兼容性      |
-| `node-high-version` | Node ≥ 18   | ESM 配置，现代特性支持    | 现代开发环境，需要使用 ESM 特性 |
-
-#### 主要差异
-
-1. **模块系统**:
-    - `main`: CommonJS 配置
-    - `node-high-version`: ESM 配置 (`"type": "module"`)
-2. **配置文件扩展名**:
-    - `main`: `.js` 扩展名
-    - `node-high-version`: `.cjs` 扩展名（避免 ESM 作用域错误）
-3. **依赖版本**: `node-high-version` 分支使用更新版本的依赖
-
-**推荐使用 `main` 分支**，除非明确需要使用 ESM 特性。
 
 ### 🚨 常见问题
 
-#### 1. `require is not defined in ES module scope` 错误
-
-**原因**: 在 `node-high-version` 分支中使用了错误的配置文件扩展名。
-
-**解决方案**：
-
-1. 确认使用 `node-high-version` 分支
-2. 检查根目录 `package.json` 是否包含 `"type": "module"`
-3. 确保配置文件使用 `.cjs` 后缀：
-    - `vue.config.cjs`
-    - `babel.config.cjs`
-    - `.postcssrc.cjs`
-
-#### 2. 本地 Node 版本与项目要求不匹配
+#### 1. 本地 Node 版本与项目要求不匹配
 
 ```bash
 # 使用 fnm（推荐）
@@ -302,7 +256,7 @@ nvm alias default 14.21.3
 node --version  # 应该显示 v14.21.3
 ```
 
-#### 3. 依赖安装失败
+#### 2. 依赖安装失败
 
 ```bash
 # 清理 node_modules 并重新安装
@@ -312,7 +266,7 @@ rm -rf packages/*/node_modules
 pnpm i
 ```
 
-#### 4. 工作区包引用问题
+#### 3. 工作区包引用问题
 
 ```bash
 # 确保所有包都已构建
@@ -372,7 +326,7 @@ packages/shared/
 
 ### 📄 许可证
 
-本项目模板遵循仓库内的 `LICENSE`，欢迎在不同分支下按运行时需求进行二次开发。
+本项目模板遵循仓库内的 `LICENSE` 协议。
 
 ### 🤝 贡献指南
 
@@ -407,13 +361,6 @@ packages/shared/
 3. 根据需要创建共享包：`"创建新的依赖包，名称为 utils，类型为工具库"`
 4. 开始开发！
 
-**如果你需要 ESM 特性**：
-
-1. 使用 `npx degit sspkudx/vue-h5#node-high-version my-project`
-2. 确保 Node.js 版本 ≥ 18
-3. 享受 ESM 的现代特性！
-
----
 
 **开始您的 Vue H5 项目开发之旅！** 🚀🎉
 
