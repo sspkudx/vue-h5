@@ -1,6 +1,6 @@
 import { createApp, type App as VueApp } from 'vue';
 import pluginsList from './plugins';
-import App from './App';
+import App from './App.vue';
 import 'ress/dist/ress.min.css';
 
 const getAppInstance = () => {
