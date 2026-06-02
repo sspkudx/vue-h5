@@ -111,6 +111,8 @@ module.exports = defineConfig(() => {
                         auto(resourcePath) {
                             return resourcePath.includes('.module.');
                         },
+                        // css-module hash
+                        localIdentName: '[local]__[hash:base64]',
                         exportLocalsConvention(name) {
                             // home-view__text--red → homeView__text_red
                             const camel = name
