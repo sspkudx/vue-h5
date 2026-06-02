@@ -123,7 +123,7 @@ pnpm lint:my-app
 ```
 apps/{app-name}/
 ├── src/
-│   ├── App.tsx           # 应用入口组件
+│   ├── App.vue          # 应用入口组件
 │   ├── main.ts          # 应用入口文件
 │   ├── plugins/         # Vue 插件（Pinia、Router 等）
 │   │   └── index.ts

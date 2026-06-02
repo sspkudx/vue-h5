@@ -45,7 +45,7 @@ description: 在vue-h5项目的apps目录下创建新的Vue应用，直接生成
 ```
 apps/{app-name}/
 ├── src/
-│   ├── App.tsx
+│   ├── App.vue
 │   ├── main.ts
 │   ├── plugins/
 │   │   └── index.ts
@@ -159,14 +159,14 @@ module.exports = defineConfig(() => {
     return {
         transpileDependencies: isProduction,
         lintOnSave: 'error',
-        devServer: {
-            port: { port },
-            client: {
-                overlay: {
-                    warnings: false,
+            devServer: {
+                port: {port},
+                client: {
+                    overlay: {
+                        warnings: false,
+                    },
                 },
             },
-        },
         chainWebpack(config) {
             setAllRequiredPackages(config, isDev)
                 .entry('app')
@@ -279,17 +279,12 @@ module.exports = defineConfig(() => {
 
 创建以下核心源码文件：
 
-#### App.tsx
+#### App.vue
 
-```tsx
-import type { FunctionalComponent as FC } from 'vue';
-import { RouterView } from 'vue-router';
-
-const App: FC = () => {
-    return <RouterView />;
-};
-
-export default App;
+```vue
+<template>
+    <router-view />
+</template>
 ```
 
 #### main.ts
@@ -297,7 +292,7 @@ export default App;
 ```typescript
 import { createApp, type App as VueApp } from 'vue';
 import pluginsList from './plugins';
-import App from './App';
+import App from './App.vue';
 import 'ress/dist/ress.min.css';
 
 const getAppInstance = () => {
@@ -426,14 +421,15 @@ export default HomeView;
 
 ```tsx
 import { defineComponent } from 'vue';
+import styles from './style.module.less';
 
 const AboutView = defineComponent({
     setup() {
         const render = () => {
             return (
-                <div>
+                <div class={styles['about-view']}>
                     <h1>About Page</h1>
-                    <p>This is the about page for {app - name} application.</p>
+                    <p>This is the about page for {app-name} application.</p>
                 </div>
             );
         };
