@@ -735,7 +735,7 @@ const chineseDate = formatDate(today, 'YYYY年MM月DD日'); // '2024年01月01�
 </template>
 
 <script setup lang="ts">
-import { ExampleComponent } from '@my-app/{package-name}';
+    import { ExampleComponent } from '@my-app/{package-name}';
 </script>
 ```
 
