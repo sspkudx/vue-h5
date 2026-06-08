@@ -3,6 +3,7 @@ import { safeNum } from '@my-app/shared';
 import styles from './style.module.less';
 
 const HomeView = defineComponent({
+    name: 'HomeView',
     setup() {
         const render = () => {
             // 测试导入的shared包

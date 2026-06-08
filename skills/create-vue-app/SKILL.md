@@ -376,6 +376,7 @@ import { safeNum } from '@my-app/shared';
 import styles from './style.module.less';
 
 const HomeView = defineComponent({
+    name: 'HomeView',
     setup() {
         const render = () => {
             // 测试导入的shared包
@@ -426,14 +427,10 @@ import { defineComponent } from 'vue';
 import styles from './style.module.less';
 
 const AboutView = defineComponent({
+    name: 'AboutView',
     setup() {
         const render = () => {
-            return (
-                <div class={styles['about-view']}>
-                    <h1>About Page</h1>
-                    <p>This is the about page for {app - name} application.</p>
-                </div>
-            );
+            return <div class={styles['about-view']}>hello world</div>;
         };
         return render;
     },
