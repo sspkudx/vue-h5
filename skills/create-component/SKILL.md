@@ -82,8 +82,8 @@ description: 在vue-h5项目中创建Vue组件，支持三种组件形式：.vue
 
 ```
 组件目录/
-├── ComponentName.vue
-└── ComponentName.module.less (如需要样式文件)
+├── 组件名.vue
+└── 组件名.module.less (如需要样式文件)
 ```
 
 #### defineComponent 组件 (.tsx)
@@ -761,24 +761,24 @@ export default Button;
 
 ```typescript
 // 组件Props类型定义
-export interface ComponentNameProps {
+export interface 组件名Props {
     // Props定义
     onClick?: (e: Event) => void;
     // 其他事件回调定义
 }
 
 // 组件内部状态类型（仅用于组件内部管理）
-export interface ComponentNameState {
+export interface 组件名State {
     // 内部状态定义
 }
 
 // 组件配置选项（如需暴露给外部使用）
-export interface ComponentNameOptions {
+export interface 组件名Options {
     // 配置选项定义
 }
 
 // 组件数据模型（用于复杂数据结构）
-export interface ComponentNameModel {
+export interface 组件名Model {
     // 数据模型定义
 }
 ```
@@ -889,8 +889,8 @@ src/views/Dashboard/
 ### 1. 命名规范
 
 -   **组件名**: PascalCase（如：UserCard, Modal, Button）
--   **文件命名**: ComponentName.vue 或 index.tsx
--   **样式文件**: ComponentName.module.less
+-   **文件命名**: 组件名.vue 或 index.tsx
+-   **样式文件**: 组件名.module.less
 -   **类型文件**: types.ts
 
 ### 2. 组件结构
@@ -983,7 +983,7 @@ src/views/Dashboard/
 
 | 变量名              | 说明               | 示例                       |
 | ------------------- | ------------------ | -------------------------- |
-| `ComponentName`      | 用户输入的组件名称 | `UserCard`                 |
+| `组件名`            | 用户输入的组件名称 | `UserCard`                 |
 | `组件目录`          | 组件所在目录       | `src/components/UserCard/` |
 | `style.module.less` | 样式文件名         | `UserCard.module.less`     |
 | `types.ts`          | 类型定义文件名     | `types.ts`                 |

@@ -1,27 +1,48 @@
 # Create Component 技能使用示例
 
-## 示例1：创建Vue单文件组件
+## 示例1：创建 Vue 单文件组件（包含插槽支持）
 
-**用户请求**: "创建名为UserCard的Vue组件，使用.vue格式"
+**用户请求**：\"创建名为 UserCard 的 Vue 单文件组件，支持多种插槽\"
 
 **创建流程**：
-1. 验证组件名称"UserCard"符合PascalCase命名规范
-2. 识别组件类型为Vue单文件组件
+1. 验证组件名称 \"UserCard\" 符合 PascalCase 命名规范
+2. 识别组件类型为 Vue 单文件组件（.vue 格式）
 3. 确定组件存储路径为当前目录（或用户指定的路径）
-4. 生成以下标准化文件：
+4. 生成标准化文件结构，包含完整的插槽支持
 
-**UserCard.vue**:
+**UserCard.vue**：
 ```vue
 <template>
     <div class="user-card">
-        <img :src="avatar" class="user-card__avatar" alt="Avatar" />
+        <!-- 头像插槽：支持自定义头像 -->
+        <slot name="avatar" :src="avatar">
+            <img :src="avatar" class="user-card__avatar" alt="Avatar" />
+        </slot>
+        
         <div class="user-card__content">
-            <h3 class="user-card__name">{{ name }}</h3>
-            <p class="user-card__email">{{ email }}</p>
+            <!-- 头部信息插槽：支持自定义标题区域 -->
+            <slot name="header" :name="name" :email="email">
+                <h3 class="user-card__name">{{ name }}</h3>
+                <p class="user-card__email">{{ email }}</p>
+            </slot>
+            
+            <!-- 默认插槽：主内容区域 -->
+            <slot />
+            
+            <!-- 状态显示插槽：支持自定义状态显示 -->
+            <slot name="status" :isActive="isActive" :statusText="statusText">
+                <span :class="[styles.userCard__status, styles[`userCard__status--${statusText.toLowerCase()}`]]">
+                    {{ statusText }}
+                </span>
+            </slot>
         </div>
-        <button @click="handleClick" class="user-card__button">
-            View Profile
-        </button>
+        
+        <!-- 操作按钮插槽：支持自定义操作区域 -->
+        <slot name="actions" :id="id" :onClick="handleClick">
+            <button @click="handleClick" class="user-card__button">
+                View Profile
+            </button>
+        </slot>
     </div>
 </template>
 
@@ -120,28 +141,28 @@ const toggleExpand = () => {
 </style>
 ```
 
-**生成的文件结构**:
+**生成的文件结构**：
 ```
 src/components/UserCard/
-├── UserCard.vue
-└── UserCard.module.less
+├── UserCard.vue          # 组件主文件，支持多种插槽
+├── UserCard.module.less  # 样式文件，包含插槽相关样式
+└── index.ts              # 组件导出文件（可选）
 ```
 
 ---
 
-## 示例2：创建defineComponent组件
+## 示例2：创建 defineComponent 组件（包含插槽支持）
 
-**用户请求**: "创建名为Modal的tsx组件，使用defineComponent，需要泛型支持"
+**用户请求**：\"创建名为 Modal 的 tsx 组件，使用 defineComponent 并支持泛型和插槽\"
 
 **创建流程**：
-1. 验证组件名称"Modal"符合PascalCase命名规范
-2. 识别组件类型为defineComponent
-3. 创建标准的组件文件结构：index.tsx、types.ts和style.module.less
+1. 验证组件名称 \"Modal\" 符合 PascalCase 命名规范
+2. 识别组件类型为 defineComponent（.tsx 格式）
+3. 创建标准组件文件结构：index.tsx、types.ts 和 style.module.less，包含完整插槽支持
 
 **index.tsx**:
 ```tsx
 import { defineComponent, ref, computed, type PropType } from 'vue';
-import type { SetupContext } from 'vue';
 import styles from './style.module.less';
 
 interface ModalProps {
@@ -171,7 +192,7 @@ const Modal = defineComponent({
             default: undefined,
         },
     },
-    setup(props) {
+    setup(props, { slots }) {
         const isAnimating = ref(false);
 
         const handleClose = () => {
@@ -201,7 +222,20 @@ const Modal = defineComponent({
                             </button>
                         </div>
                         <div class={styles.modal__body}>
-                            <slot />
+                            {/* 默认插槽 - 主要内容 */}
+                            {slots.default?.()}
+                            
+                            {/* 具名插槽示例：自定义内容区域 */}
+                            {slots.content && (
+                                <div class={styles.modal__content}>
+                                    {slots.content()}
+                                </div>
+                            )}
+                            
+                            {/* 作用域插槽示例：带数据的底部区域 */}
+                            {slots.footer && slots.footer({
+                                isAnimating: isAnimating.value
+                            })}
                         </div>
                         <div class={styles.modal__footer}>
                             <button onClick={handleClose} class={styles.modal__cancel}>
@@ -228,6 +262,13 @@ export interface ModalProps {
     visible: boolean;
     onClose?: () => void;
     onConfirm?: () => void;
+}
+
+// 插槽类型定义（可选）
+export interface ModalSlots {
+    default?: () => JSX.Element[];
+    content?: () => JSX.Element[];
+    footer?: (props: { isAnimating: boolean }) => JSX.Element;
 }
 
 export interface ModalState {
@@ -338,24 +379,24 @@ export interface ModalState {
 }
 ```
 
-**生成的文件结构**:
+**生成的文件结构**：
 ```
 src/components/Modal/
-├── index.tsx
-├── types.ts
-└── style.module.less
+├── index.tsx         # 主组件文件，包含完整的插槽支持
+├── types.ts          # 类型定义，包含 Slots 类型接口
+└── style.module.less # 样式文件，包含插槽相关的样式类
 ```
 
 ---
 
-## 示例3：创建FunctionalComponent组件
+## 示例3：创建 FunctionalComponent 组件（包含插槽支持）
 
-**用户请求**: "创建名为Button的函数式组件，使用FC类型"
+**用户请求**：\"创建名为 Button 的函数式组件，使用 FC 类型并支持插槽\"
 
 **创建流程**：
-1. 验证组件名称"Button"符合PascalCase命名规范
-2. 识别组件类型为functional（函数式组件）
-3. 创建标准的组件文件结构：index.tsx和style.module.less
+1. 验证组件名称 \"Button\" 符合 PascalCase 命名规范
+2. 识别组件类型为 functional（函数式组件，.tsx 格式）
+3. 创建标准组件文件结构：index.tsx 和 style.module.less，包含插槽支持
 
 **index.tsx**:
 ```tsx
@@ -371,7 +412,7 @@ interface ButtonProps {
     children?: string;
 }
 
-const Button: FC<ButtonProps> = (props) => {
+const Button: FC<ButtonProps> = (props, { slots }) => {
     const {
         type = 'primary',
         size = 'medium',
@@ -399,11 +440,24 @@ const Button: FC<ButtonProps> = (props) => {
 
     return (
         <button class={buttonClasses} onClick={handleClick} disabled={disabled || loading}>
-            {loading ? (
+            {/* 默认插槽 - 显示文本内容 */}
+            {slots.default ? (
+                slots.default()
+            ) : loading ? (
                 <span class={styles.button__loader}></span>
             ) : (
                 <span class={styles.button__text}>{children}</span>
             )}
+            
+            {/* 具名插槽示例：图标 */}
+            {slots.icon && (
+                <span class={styles.button__icon}>
+                    {slots.icon()}
+                </span>
+            )}
+            
+            {/* 作用域插槽示例：加载状态 */}
+            {slots.loading && loading && slots.loading({ isLoading: loading })}
         </button>
     );
 };
@@ -550,24 +604,24 @@ export default Button;
 }
 ```
 
-**生成的文件结构**:
+**生成的文件结构**：
 ```
 src/components/Button/
-├── index.tsx
-└── style.module.less
+├── index.tsx         # 主组件文件，支持多种插槽类型
+└── style.module.less # 样式文件，包含插槽相关的样式类
 ```
 
 ---
 
-## 示例4：创建页面组件
+## 示例4：创建页面组件（包含布局插槽）
 
-**用户请求**: "在views目录下创建名为Dashboard的页面组件，使用vue格式"
+**用户请求**：\"在 views 目录下创建名为 Dashboard 的页面组件，使用 vue 格式并支持布局插槽\"
 
 **创建流程**：
-1. 验证组件名称"Dashboard"符合PascalCase命名规范
-2. 识别组件类型为Vue单文件组件
-3. 确定组件存储路径为src/views/Dashboard/
-4. 创建页面级组件的完整文件结构
+1. 验证组件名称 \"Dashboard\" 符合 PascalCase 命名规范
+2. 识别组件类型为 Vue 单文件组件（.vue 格式）
+3. 确定组件存储路径为 src/views/Dashboard/
+4. 创建页面级组件的完整文件结构，包含丰富的插槽布局
 
 **Dashboard.vue**:
 ```vue
@@ -765,11 +819,12 @@ onMounted(() => {
 </style>
 ```
 
-**生成的文件结构**:
+**生成的文件结构**：
 ```
 src/views/Dashboard/
-├── Dashboard.vue
-└── Dashboard.module.less
+├── Dashboard.vue          # 页面组件主文件，包含布局插槽
+├── Dashboard.module.less  # 页面样式文件
+└── index.ts               # 页面导出文件（可选）
 ```
 
 ---
