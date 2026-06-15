@@ -108,12 +108,21 @@ apps/{app-name}/
 const { defineConfig } = require('@vue/cli-service');
 const path = require('path');
 
-/** Navigate to root path */
+/**
+ * 导航到根目录路径
+ * @param {string} [rootPath=''] - 相对根目录的子路径，默认为空字符串
+ * @returns {string} 解析后的绝对路径
+ * @description 根据当前文件所在目录构建指向项目根目录的相对路径
+ */
 const toRoot = (rootPath = '') => {
     return path.resolve(__dirname, `../../${rootPath}`);
 };
 
-/** 此处注册所有在monorepo项目中安装的packages下的依赖 */
+/**
+ * 必需的包配置数组
+ * @type {Array<{alias: string, srcPath: string, distPath: string}>}
+ * @description 定义项目中必需的包及其路径映射
+ */
 const requiredPackages = Object.freeze(
     ['shared'].map(packageName => {
         return {
@@ -124,6 +133,12 @@ const requiredPackages = Object.freeze(
     })
 );
 
+/**
+ * 设置所有必需的包别名路径
+ * @param {import('webpack-chain').Config} config - webpack-chain 配置对象
+ * @param {boolean} [isDev=false] - 是否为开发环境，默认为 false
+ * @returns {import('webpack-chain').Config} 更新后的 webpack-chain 配置对象
+ */
 const setAllRequiredPackages = (config, isDev = false) => {
     return requiredPackages.reduce((conf, item) => {
         // 开发环境指向源码目录（支持热更新）
@@ -133,7 +148,11 @@ const setAllRequiredPackages = (config, isDev = false) => {
     }, config);
 };
 
-/** Get a new configuration of HtmlWebpackPlugin */
+/**
+ * 获取 HtmlWebpackPlugin 的新配置
+ * @param {Object} [defaultConfig={}] - 默认配置对象
+ * @returns {Object} 更新后的 HtmlWebpackPlugin 配置
+ */
 const getHtmlPluginConfig = (defaultConfig = {}) => {
     const { templateParameters: oldTemplateParams = {} } = defaultConfig || {};
     return {
@@ -148,9 +167,17 @@ const getHtmlPluginConfig = (defaultConfig = {}) => {
     };
 };
 
-/** is production environment */
+/**
+ * 判断是否为生产环境
+ * @type {boolean}
+ * @description 根据 NODE_ENV 环境变量判断是否为生产环境
+ */
 const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
-/** New Version babel loader */
+/**
+ * 新版本的 babel-loader 路径
+ * @type {string}
+ * @description 指向根目录下的 babel-loader 路径
+ */
 const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
 
 module.exports = defineConfig(() => {
