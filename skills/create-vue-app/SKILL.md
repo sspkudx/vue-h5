@@ -7,7 +7,7 @@ description: 在vue-h5项目的apps目录下创建新的Vue应用，直接生成
 
 ## 概述
 
-此技能用于在 vue-h5 项目的`apps`目录下创建新的 Vue 应用。直接生成完整的应用源码和配置文件，不依赖任何现有模板，并支持自定义应用名称和端口。
+此技能用于在 vue-h5 项目的`apps`目录下创建新的 Vue 应用。直接生成完整的应用源码和配置文件，不依赖任何现有模板，并支持自定义应用名称和端口。应用模板支持两种页面创建方式：TypeScript JSX (tsx) 和 Vue 单文件组件 (.vue)，开发者可以根据个人偏好选择。
 
 ## 使用场景
 
@@ -56,7 +56,7 @@ apps/{app-name}/
 │       │   ├── index.tsx
 │       │   └── style.module.less
 │       └── AboutView/
-│           ├── index.tsx
+│           ├── AboutView.vue
 │           └── style.module.less
 ├── index.htm
 ├── favicon.ico
@@ -386,7 +386,7 @@ const router = createRouter({
             path: '/about',
             name: 'about',
             component() {
-                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/index');
+                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/AboutView.vue');
             },
         },
     ],
@@ -447,31 +447,62 @@ export default HomeView;
 }
 ```
 
-#### views/AboutView/index.tsx
+#### views/AboutView/AboutView.vue
 
-```tsx
-import { defineComponent } from 'vue';
+```vue
+<script lang="ts" setup>
+import { ref } from 'vue';
 import styles from './style.module.less';
 
-const AboutView = defineComponent({
-    name: 'AboutView',
-    setup() {
-        const render = () => {
-            return <div class={styles['about-view']}>hello world</div>;
-        };
-        return render;
-    },
-});
+const count = ref(0);
 
-export default AboutView;
+const increment = () => {
+    count.value++;
+};
+</script>
+
+<template>
+    <div :class="styles['about-view']">
+        <h1>About Page</h1>
+        <p>Counter: {{ count }}</p>
+        <button @click="increment">Increment</button>
+        <p>hello world</p>
+    </div>
+</template>
 ```
 
 #### views/AboutView/style.module.less
 
 ```less
-h1 {
+.about-view {
+    padding: 20px;
     color: #333;
-    font-size: 24px;
+
+    h1 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    p {
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #42b983;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 10px 0;
+
+        &:hover {
+            background-color: #42a078;
+        }
+    }
 }
 ```
 
@@ -633,4 +664,50 @@ pnpm run build:{app-name}
 
 # 代码检查
 pnpm run lint:{app-name}
+```
+
+## 支持的页面创建方式
+
+本模板支持两种页面创建方式，开发者可以根据个人偏好选择：
+
+### 1. TypeScript JSX (tsx) 方式
+
+**特点**：
+- 使用 TypeScript 和 JSX 语法
+- 适合习惯 React 风格的开发者
+- 通过 `defineComponent` 定义组件
+- 目录结构：`views/HomeView/index.tsx`
+
+**适用场景**：
+- 复杂的逻辑渲染
+- 需要 TypeScript 类型推导的复杂组件
+- 团队有 React 背景
+
+### 2. Vue 单文件组件 (.vue) 方式
+
+**特点**：
+- 使用 Vue 3 `<script setup>` 语法
+- 传统 Vue 开发体验
+- 模板更加直观易读
+- 目录结构：`views/AboutView/AboutView.vue`
+
+**适用场景**：
+- 快速原型开发
+- 复杂的应用界面
+- 团队有 Vue 背景
+- 需要模板指令和过渡动画
+
+### 创建新页面
+
+创建新页面时，可以使用推荐的子技能 `create-a-vue-page`，该技能支持选择创建方式：
+
+```bash
+# 创建 tsx 页面
+"创建名为 UserProfile 的页面，使用 tsx 方式"
+
+# 创建 Vue 单文件组件页面  
+"创建名为 Settings 的页面，使用 vue 方式"
+
+# 在指定应用中创建
+"在 my-app 应用中创建名为 Dashboard 的页面"
 ```
