@@ -56,8 +56,7 @@ apps/{app-name}/
 │       │   ├── index.tsx
 │       │   └── style.module.less
 │       └── AboutView/
-│           ├── AboutView.vue
-│           └── style.module.less
+│           └── AboutView.vue
 ├── index.htm
 ├── favicon.ico
 ├── README.md
@@ -452,7 +451,6 @@ export default HomeView;
 ```vue
 <script lang="ts" setup>
 import { ref } from 'vue';
-import styles from './style.module.less';
 
 const count = ref(0);
 
@@ -462,18 +460,15 @@ const increment = () => {
 </script>
 
 <template>
-    <div :class="styles['about-view']">
+    <div class="about-view">
         <h1>About Page</h1>
         <p>Counter: {{ count }}</p>
         <button @click="increment">Increment</button>
         <p>hello world</p>
     </div>
 </template>
-```
 
-#### views/AboutView/style.module.less
-
-```less
+<style lang="less" scoped>
 .about-view {
     padding: 20px;
     color: #333;
@@ -504,7 +499,9 @@ const increment = () => {
         }
     }
 }
+</style>
 ```
+
 
 ### 8. 创建 HTML 文件
 
