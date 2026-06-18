@@ -21,6 +21,13 @@ const router = createRouter({
                 return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/index');
             },
         },
+        {
+            path: '/playground',
+            name: 'PlaygroundPage',
+            component() {
+                return import(/* webpackChunkName: "HomeView" */ '../views/PlaygroundPage/PlaygroundPage.vue');
+            },
+        },
     ],
 });
 

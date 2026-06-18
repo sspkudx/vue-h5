@@ -21,10 +21,7 @@
             "dom.iterable",
             "scripthost"
         ],
-        "baseUrl": "./",
-        "paths": {
-            "tiny-emitter": ["types/rewrite-tiny-emitter.d.ts"]
-        }
+        "baseUrl": "./"
     },
     "include": [
         "src/**/*.ts",

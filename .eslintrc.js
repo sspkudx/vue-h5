@@ -96,6 +96,11 @@ module.exports = {
             parserOptions: {
                 parser: '@typescript-eslint/parser',
             },
+            rules: {
+                // 只关闭通用的indent规则，让Prettier的vueIndentScriptAndStyle: false生效
+                // Vue特定的缩进规则保持启用，用于检查template部分
+                indent: 'off',
+            },
         },
     ],
 };

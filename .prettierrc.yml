@@ -7,4 +7,4 @@ bracketSameLine: false
 arrowParens: 'avoid'
 singleAttributePerLine: false
 proseWrap: never
-vueIndentScriptAndStyle: true
+vueIndentScriptAndStyle: false
