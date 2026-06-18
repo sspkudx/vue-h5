@@ -55,7 +55,7 @@ description: 在 Vue H5 应用的 views 目录下创建页面组件，支持 Typ
 目录结构为：
 
 ```
-views/{PageName}View/
+views/{PageName}/
 ├── index.tsx
 └── style.module.less
 ```
@@ -65,8 +65,8 @@ views/{PageName}View/
 目录结构为：
 
 ```
-views/{PageName}View/
-└── {PageName}View.vue
+views/{PageName}/
+└── {PageName}.vue
 ```
 
 ### 4. 更新路由配置
@@ -81,14 +81,14 @@ views/{PageName}View/
 
 ### tsx 页面模板
 
-#### views/{PageName}View/index.tsx
+#### views/{PageName}/index.tsx
 
 ```tsx
 import { defineComponent } from 'vue';
 import styles from './style.module.less';
 
-const {PageName}View = defineComponent({
-    name: '{PageName}View',
+const { PageName } = defineComponent({
+    name: '{PageName}',
     setup() {
         const render = () => {
             return (
@@ -102,18 +102,18 @@ const {PageName}View = defineComponent({
     },
 });
 
-export default {PageName}View;
+export default { PageName };
 ```
 
 ### Vue 页面模板
 
-#### views/{PageName}View/{PageName}View.vue
+#### views/{PageName}/{PageName}.vue
 
 ```vue
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-const title = ref('{PageName} Page');
+const title = ref('{PageName}');
 const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 </script>
 
@@ -155,9 +155,9 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 ```typescript
 {
     path: '/{page-name}',
-    name: '{PageName}View',
+    name: '{PageName}',
     component() {
-        return import(/* webpackChunkName: "{PageName}View" */ '../views/{PageName}View/index');
+        return import(/* webpackChunkName: "{PageName}" */ '../views/{PageName}/index');
     },
 },
 ```
@@ -169,9 +169,9 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 ```typescript
 {
     path: '/{page-name}',
-    name: '{PageName}View',
+    name: '{PageName}',
     component() {
-        return import(/* webpackChunkName: "{PageName}View" */ '../views/{PageName}View/{PageName}View.vue');
+        return import(/* webpackChunkName: "{PageName}" */ '../views/{PageName}/{PageName}.vue');
     },
 },
 ```
@@ -186,15 +186,15 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 
 1. 验证"UserProfile"符合命名规范
 2. 验证 example-app 应用存在
-3. 创建目录结构 `apps/example-app/src/views/UserProfileView/`
-4. 创建 `UserProfileView.vue` 文件（包含脚本、模板和样式）
+3. 创建目录结构 `apps/example-app/src/views/UserProfile/`
+4. 创建 `UserProfile.vue` 文件（包含脚本、模板和样式）
 5. 更新 `src/router/index.ts`，添加路由配置：
     ```typescript
     {
         path: '/user-profile',
-        name: 'UserProfileView',
+        name: 'UserProfile',
         component() {
-            return import(/* webpackChunkName: "UserProfileView" */ '../views/UserProfileView/UserProfileView.vue');
+            return import(/* webpackChunkName: "UserProfile" */ '../views/UserProfile/UserProfile.vue');
         },
     }
     ```
@@ -207,16 +207,16 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 
 1. 验证"Settings"符合命名规范
 2. 验证 my-app 应用存在
-3. 创建目录结构 `apps/my-app/src/views/SettingsView/`
+3. 创建目录结构 `apps/my-app/src/views/Settings/`
 4. 创建 `index.tsx` 文件
 5. 创建 `style.module.less` 文件
 6. 更新 `src/router/index.ts`，添加路由配置：
     ```typescript
     {
         path: '/settings',
-        name: 'SettingsView',
+        name: 'Settings',
         component() {
-            return import(/* webpackChunkName: "SettingsView" */ '../views/SettingsView/index');
+            return import(/* webpackChunkName: "Settings" */ '../views/Settings/index');
         },
     }
     ```
@@ -228,7 +228,7 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 **处理步骤**:
 
 1. 验证"Dashboard"符合命名规范
-2. 创建目录结构 `apps/example-app/src/views/DashboardView/`
+2. 创建目录结构 `apps/example-app/src/views/Dashboard/`
 3. 创建基础 Vue 单文件组件
 4. 更新路由配置
 
@@ -237,16 +237,16 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 ### 页面名称转换
 
 -   **输入**: UserProfile
--   **组件目录**: UserProfileView
--   **Vue 文件名**: UserProfileView.vue
--   **路由名称**: UserProfileView
+-   **组件目录**: UserProfile
+-   **Vue 文件名**: UserProfile.vue
+-   **路由名称**: UserProfile
 -   **路由路径**: user-profile
 
 ### 路由名称转换
 
 -   UserProfile → user-profile
--   DashboardView → dashboard-view
--   SettingsPage → settings-page
+-   Dashboard → dashboard
+-   Settings → settings
 
 ## 注意事项
 
@@ -269,8 +269,31 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 
 1. **新页面推荐**: 建议使用 vue 类型，因为它更现代且易于维护
 2. **状态管理**: 如果页面需要状态管理，可以在组件中添加 Pinia store
-3. **样式规范**: 使用 CSS Modules 避免样式冲突
+3. **样式规范**: tsx 页面使用 CSS Modules 避免样式冲突，vue 页面使用 scoped 样式
 4. **命名一致**: 保持页面名称、路由名称的一致性
-5. **测试路由**: 创 �� 后建议测试路由是否正常工作
+5. **测试路由**: 创建后建议测试路由是否正常工作
 
 **重要**: 创建页面后，可以直接通过 `pnpm run dev:app-name` 启动应用，然后访问新页面来验证功能。
+
+## 关联技能
+
+本技能专注于快速创建 Vue 页面组件并自动配置路由。如果你需要创建更复杂的组件或需要更多选项（如组件类型选择、样式类型配置等），可以考虑使用 `create-component` 技能。
+
+### 技能对比
+
+| 特性 | create-a-vue-page | create-component |
+|------|-------------------|------------------|
+| **主要用途** | 创建页面组件，自动配置路由 | 创建通用 Vue 组件 |
+| **组件类型** | tsx 或 vue 格式 | vue, defineComponent, functional |
+| **创建位置** | 固定在应用的 views 目录下 | 可在任意目录（components, views 等） |
+| **路由配置** | 自动配置路由 | 不自动配置路由 |
+| **样式选项** | CSS Modules (tsx) 或 scoped (vue) | 支持 CSS Modules、CSS、SCSS 等多种样式类型 |
+| **组件复杂度** | 适合标准页面组件 | 适合复杂业务组件、UI 组件、页面组件 |
+| **页面组件支持** | 专门为页面设计，自动命名规范 | 支持在 views 目录下创建页面组件，但需手动配置路由 |
+
+### 选择建议
+
+- **使用 `create-a-vue-page`**: 当需要快速创建标准页面组件并自动配置路由时
+- **使用 `create-component`**: 当需要创建可复用组件、复杂业务组件，或需要更多自定义选项时
+
+**注意**: 两种技能都可以在 views 目录下创建页面组件，但 `create-a-vue-page` 会自动更新路由配置，而 `create-component` 需要手动配置路由。
