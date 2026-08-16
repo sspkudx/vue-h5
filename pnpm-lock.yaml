@@ -4,6 +4,24 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    axios:
+      specifier: ^1.19.0
+      version: 1.19.0
+    pinia:
+      specifier: ^4.0.3
+      version: 4.0.3
+    ress:
+      specifier: ^6.0.0
+      version: 6.0.0
+    vue:
+      specifier: ^3.5.41
+      version: 3.5.41
+    vue-router:
+      specifier: ^5.2.0
+      version: 5.2.0
+
 importers:
 
   .:
@@ -120,19 +138,19 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
       axios:
-        specifier: ^1.19.0
+        specifier: 'catalog:'
         version: 1.19.0
       pinia:
-        specifier: ^4.0.3
+        specifier: 'catalog:'
         version: 4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.41(typescript@6.0.3))
       ress:
-        specifier: ^6.0.0
+        specifier: 'catalog:'
         version: 6.0.0
       vue:
-        specifier: ^3.5.41
+        specifier: 'catalog:'
         version: 3.5.41(typescript@6.0.3)
       vue-router:
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(@vue/compiler-sfc@3.5.41)(pinia@4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.41(typescript@6.0.3)))(rolldown@1.2.4)(rollup@4.62.4)(vite@8.2.1(@types/node@26.2.0)(jiti@2.6.1)(less@4.9.0)(terser@5.50.0)(yaml@2.9.0))(vue@3.5.41(typescript@6.0.3))(webpack@5.109.2(postcss@8.5.26))
 
   packages/shared: {}

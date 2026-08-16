@@ -1,3 +1,11 @@
 packages:
     - 'apps/*'
     - 'packages/*'
+
+catalogs:
+    default:
+        axios: ^1.19.0
+        pinia: ^4.0.3
+        ress: ^6.0.0
+        vue: ^3.5.41
+        vue-router: ^5.2.0
