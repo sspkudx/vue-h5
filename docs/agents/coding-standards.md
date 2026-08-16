@@ -480,9 +480,21 @@ describe('Button', () => {
 
 ## Git 提交规范
 
+提交信息必须严格遵循**约定式提交（Conventional Commits）v1.0.0** 规范：
+<https://www.conventionalcommits.org/zh-hans/v1.0.0/>
+
+> 由 `.husky/commit-msg` 钩子（commitlint）**强制校验**，不合规的提交信息会被拦截（两个分支均已启用）。
+
 ### 1. 提交信息格式
 
-使用 Conventional Commits 规范：
+```
+<type>[optional scope]: <description>
+
+[optional body]
+[optional footer(s)]
+```
+
+类型（type）必须使用以下枚举之一：
 
 ```
 feat: 添加新功能
@@ -492,44 +504,54 @@ style: 代码格式调整
 refactor: 代码重构
 test: 测试相关
 chore: 构建过程或辅助工具变动
+perf: 性能优化
+build: 构建系统或外部依赖变动
+ci: CI 配置与脚本变动
+revert: 回滚提交
 ```
 
 ### 2. 提交示例
 
 ```bash
 # 添加新功能
-git commit -m "feat: add user authentication"
+git commit -m "feat: 添加用户登录功能"
+
+# 带范围
+git commit -m "feat(auth): 接入 OAuth2 登录"
+
+# 破坏性变更（type 后加 !）
+git commit -m "feat!: 移除 v1 接口"
 
 # 修复 bug
-git commit -m "fix: resolve login page layout issue"
+git commit -m "fix: 修复登录页布局问题"
 
 # 文档更新
-git commit -m "docs: update API documentation"
+git commit -m "docs: 更新 API 文档"
 
 # 代码重构
-git commit -m "refactor: improve error handling"
+git commit -m "refactor: 优化错误处理逻辑"
 
 # 测试相关
-git commit -m "test: add unit tests for utils"
+git commit -m "test: 为 utils 补充单元测试"
 
 # 构建配置
-git commit -m "chore: update vite configuration"
+git commit -m "chore: 更新 vite 配置"
 ```
 
 ### 3. 提交信息规范
 
-- **类型**：必填，使用上述类型之一
+- **类型**：必填，使用上述枚举之一
 - **范围**：可选，说明影响范围
-- **描述**：必填，简明扼要
-- **正文**：可选，详细说明
-- **脚注**：可选，引用 issue
+- **描述**：必填，简明扼要，无句末句号
+- **正文**：可选，说明"为什么"（现在时）
+- **脚注**：可选，引用 issue；破坏性变更需 `BREAKING CHANGE: ...`
 
 ```
-feat(auth): add OAuth2 support
+feat(auth): 支持 OAuth2
 
-- Implement Google OAuth2 authentication
-- Add social login buttons
-- Update user model for OAuth2 data
+- 实现 Google OAuth2 认证
+- 新增社交登录按钮
+- 为 OAuth2 数据更新用户模型
 
 Closes #123
 ```

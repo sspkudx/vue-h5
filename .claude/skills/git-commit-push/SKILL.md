@@ -22,13 +22,27 @@ description: 根据本项目规范自动提交代码和推送更改。支持常�
 
 ## Git 提交规范
 
-根据本项目的 AGENTS.md 文档，提交信息应遵循以下格式：
+提交信息必须严格遵循 **约定式提交（Conventional Commits）v1.0.0** 规范：
+https://www.conventionalcommits.org/zh-hans/v1.0.0/
+
+> 该规范由 `.husky/commit-msg` 钩子中的 commitlint 强制校验（两个分支均已启用），
+> 不符合规范的提交会被直接拦截，禁止绕过。
+
+### 提交信息结构
 
 ```
-<type>: <description>
+<type>[optional scope]: <description>
 
-<optional body>
+[optional body]
+
+[optional footer(s)]
 ```
+
+- **type**（必填）：描述提交类型，必须是下列枚举之一
+- **scope**（可选）：说明影响范围，如 `feat(auth): ...`
+- **description**（必填）：简短描述，无句末句号
+- **body**（可选）：详细说明"为什么"（现在时，动词开头）
+- **footer**（可选）：引用 issue / `BREAKING CHANGE: ...`
 
 ### 提交类型 (commit types)
 
@@ -39,6 +53,32 @@ description: 根据本项目规范自动提交代码和推送更改。支持常�
 5. **refactor**: 代码重构（既不是修复 bug 也不是添加新功能）
 6. **test**: 测试相关
 7. **chore**: 构建过程或辅助工具变动
+8. **perf**: 性能优化
+9. **build**: 构建系统或外部依赖变动
+10. **ci**: CI 配置与脚本变动
+11. **revert**: 回滚提交
+
+### 破坏性变更（BREAKING CHANGE）
+
+- 优先在 type/scope 后加 `!`：`feat!`: 移除旧接口
+- 或在 footer 中写明：`BREAKING CHANGE: 移除 xxx 配置项`
+
+### 提交示例
+
+```
+feat: 添加用户登录功能
+
+- 接入 OAuth2 认证
+- 新增登录页
+
+Closes #123
+```
+
+```
+fix(core): 修复定时器内存泄漏
+
+BREAKING CHANGE: 移除 options.polling 配置项
+```
 
 ## 工作流程
 
