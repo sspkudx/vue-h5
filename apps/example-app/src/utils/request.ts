@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 
-/** 全局 API 基础路径，来自 .env.* 的 VUE_APP_API_URL */
-const API_BASE_URL = process.env.VUE_APP_API_URL || '/api';
+/** 全局 API 基础路径，来自 .env.* 的 VITE_APP_API_URL */
+const API_BASE_URL = import.meta.env.VITE_APP_API_URL || '/api';
 
 /** 统一错误抛出的出口，后续可在此接入 toast/上报 */
 const handleError = (message: string): never => {

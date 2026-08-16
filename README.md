@@ -6,7 +6,7 @@
 
 ## ✨ 特性亮点
 
-- **现代化技术栈**: Vue 3 + TypeScript + Vue CLI（webpack 5）+ PNPM
+- **现代化技术栈**: Vue 3 + TypeScript + Vite + PNPM
 - **Monorepo 架构**: 支持多应用、多包统一管理
 - **AI 智能开发**: 内置 Skills 快速创建应用和包
 - **完整工具链**: ESLint, Stylelint, Prettier, Jest, Rollup, Husky + commitlint, GitHub Actions CI
@@ -296,10 +296,10 @@ apps/example-app/
 │   ├── plugins/         # Vue 插件
 │   ├── router/          # 路由配置
 │   └── views/           # 页面组件
-├── public/              # 静态资源
+├── index.html          # Vite 入口模板
 ├── package.json         # 应用配置
 ├── tsconfig.json       # TypeScript 配置
-└── vue.config.js       # Vue CLI 配置
+└── vite.config.ts      # Vite 构建配置
 ```
 
 #### Packages 目录 (`packages/`)
@@ -314,7 +314,7 @@ packages/shared/
 │   └── utils/          # 工具函数
 ├── dist/               # 构建输出
 ├── package.json        # 包配置
-├── rollup.config.ts    # Rollup 配置
+├── vite.config.ts      # Vite lib 模式构建配置
 └── tsconfig*.json     # TypeScript 配置
 ```
 

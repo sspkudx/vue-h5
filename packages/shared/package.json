@@ -16,7 +16,7 @@
     ],
     "sideEffects": false,
     "scripts": {
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
+        "build": "vite build && tsc -p tsconfig.build.json",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"

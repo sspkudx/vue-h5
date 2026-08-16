@@ -7,6 +7,7 @@
 ### 1. 依赖安装失败
 
 #### 症状
+
 - `pnpm install` 命令失败
 - 依赖包下载超时
 - 版本冲突错误
@@ -37,6 +38,7 @@ pnpm i --offline
 ```
 
 #### 预防措施
+
 - 定期更新依赖版本
 - 使用锁定文件（pnpm-lock.yaml）
 - 配置镜像源加速下载
@@ -44,6 +46,7 @@ pnpm i --offline
 ### 2. 包引用问题
 
 #### 症状
+
 - `Cannot find module '@my-app/shared'`
 - 类型引用错误
 - 构建时找不到包
@@ -58,12 +61,11 @@ pnpm build:packages
 pnpm i --force
 
 # 3. 检查包路径映射
-# 在应用的 vue.config.js 中检查：
-# configureWebpack: {
-#   resolve: {
-#     alias: {
-#       '@my-app/shared': path.resolve(__dirname, '../../packages/shared')
-#     }
+# 在应用的 vite.config.ts 中检查：
+# resolve: {
+#   alias: {
+#     '@': resolve(appRoot, 'src'),
+#     '@my-app/shared': toRoot('packages/shared/src')
 #   }
 # }
 
@@ -77,6 +79,7 @@ ls -la packages/shared/dist/
 ```
 
 #### 预防措施
+
 - 在修改包代码后重新构建
 - 使用 workspace:* 引用本地包
 - 保持包版本一致
@@ -84,6 +87,7 @@ ls -la packages/shared/dist/
 ### 3. 类型错误
 
 #### 症状
+
 - TypeScript 编译错误
 - 类型不匹配
 - 找不到类型定义
@@ -91,8 +95,8 @@ ls -la packages/shared/dist/
 #### 解决方案
 
 ```bash
-# 1. 检查 TypeScript 配置
-pnpm -F {app-name} tsc --noEmit
+# 1. 检查 TypeScript 配置（构建内置 vue-tsc，也可单独运行）
+pnpm -F {app-name} typecheck
 
 # 2. 清理 TypeScript 缓存
 rm -rf node_modules/.cache
@@ -111,6 +115,7 @@ pnpm build
 ```
 
 #### 预防措施
+
 - 启用严格类型检查
 - 为所有公共 API 提供类型定义
 - 定期更新 TypeScript 版本
@@ -118,6 +123,7 @@ pnpm build
 ### 4. 开发服务器启动失败
 
 #### 症状
+
 - 端口被占用
 - 内存不足
 - 依赖缺失
@@ -125,6 +131,7 @@ pnpm build
 #### 解决方案
 
 ##### 端口被占用
+
 ```bash
 # 1. 查找占用端口的进程
 lsof -i :3000
@@ -133,13 +140,14 @@ lsof -i :3000
 kill -9 <PID>
 
 # 3. 或者修改端口号
-# 在 vue.config.js 中修改：
-# devServer: {
+# 在 vite.config.ts 中修改：
+# server: {
 #   port: 3001
 # }
 ```
 
 ##### 内存不足
+
 ```bash
 # 增加 Node.js 内存限制
 NODE_OPTIONS=--max-old-space-size=4096 pnpm dev:{app-name}
@@ -149,6 +157,7 @@ export NODE_OPTIONS=--max-old-space-size=4096
 ```
 
 ##### 依赖缺失
+
 ```bash
 # 1. 检查依赖是否安装
 ls -la node_modules/vue
@@ -164,6 +173,7 @@ cat apps/{app-name}/package.json | grep dependencies
 ### 5. 构建失败
 
 #### 症状
+
 - Webpack 构建错误
 - 内存溢出
 - 语法错误
@@ -181,27 +191,29 @@ rm -rf packages/{package-name}/dist
 # 3. 增加构建内存限制
 NODE_OPTIONS=--max-old-space-size=8192 pnpm build:{app-name}
 
-# 4. 检查 Webpack 配置
-vue inspect > webpack.config.js
+# 4. 检查 Vite 构建日志（debug 模式输出完整配置与依赖图）
+pnpm -F {app-name} exec vite build --debug
 
 # 5. 分析构建产物大小
-pnpm build:{app-name} --report
+pnpm -F {app-name} exec vite build --sourcemap && npx source-map-explorer dist/assets/*.js
 ```
 
 #### 常见构建错误
 
 ##### 内存溢出
+
 ```bash
 # 解决方案：增加内存限制
 NODE_OPTIONS=--max-old-space-size=8192 pnpm build:{app-name}
 
 # 或者在 package.json 中配置
 "scripts": {
-  "build": "NODE_OPTIONS=--max-old-space-size=8192 vue-cli-service build"
+  "build": "NODE_OPTIONS=--max-old-space-size=8192 vite build"
 }
 ```
 
 ##### 语法错误
+
 ```bash
 # 1. 检查 TypeScript 错误
 pnpm -F {app-name} tsc --noEmit
@@ -214,6 +226,7 @@ pnpm format:check
 ```
 
 ##### 依赖冲突
+
 ```bash
 # 检查依赖版本
 pnpm list | grep -E "(duplicate|multiple)"
@@ -228,6 +241,7 @@ pnpm add package-name@version
 ### 6. 热重载失效
 
 #### 症状
+
 - 文件修改后页面不更新
 - 控制台没有重新编译信息
 - 需要手动刷新页面
@@ -236,12 +250,11 @@ pnpm add package-name@version
 
 ```bash
 # 1. 检查文件变化监听
-# 在 vue.config.js 中检查：
-# devServer: {
-#   hot: true,
-#   hotOnly: true,
-#   liveReload: false,
-#   watchFiles: ['src/**/*']
+# Vite HMR 默认开启，检查 vite.config.ts：
+# server: {
+#   watch: {
+#     ignored: [...]   # 确认没有误忽略 src 目录
+#   }
 # }
 
 # 2. 检查文件系统事件限制（Mac/Linux）
@@ -254,8 +267,8 @@ sudo sysctl -p
 pnpm dev:{app-name}
 
 # 4. 清理缓存
-rm -rf node_modules/.cache/vue
-rm -rf apps/{app-name}/node_modules/.cache
+rm -rf node_modules/.vite
+rm -rf apps/{app-name}/node_modules/.vite
 
 # 5. 检查防火墙设置
 # 确保端口没有被防火墙阻止
@@ -264,6 +277,7 @@ rm -rf apps/{app-name}/node_modules/.cache
 ### 7. 样式加载问题
 
 #### 症状
+
 - 样式不生效
 - CSS Modules 类名错误
 - Less 编译错误
@@ -272,11 +286,11 @@ rm -rf apps/{app-name}/node_modules/.cache
 
 ```bash
 # 1. 检查 Less 配置
-# 在 vue.config.js 中检查：
+# 在 vite.config.ts 中检查：
 # css: {
-#   loaderOptions: {
+#   preprocessorOptions: {
 #     less: {
-#       additionalData: `@import "@/assets/styles/variables.less";`
+#       additionalData: '@import "@/assets/styles/variables.less";'
 #     }
 #   }
 # }
@@ -284,7 +298,8 @@ rm -rf apps/{app-name}/node_modules/.cache
 # 2. 检查 CSS Modules 配置
 # css: {
 #   modules: {
-#     localIdentName: '[local]__[hash:base64:5]'
+#     generateScopedName: '[local]__[hash:base64]',
+#     localsConvention: 'camelCase'
 #   }
 # }
 
@@ -292,18 +307,18 @@ rm -rf apps/{app-name}/node_modules/.cache
 # 确保样式文件路径正确
 import styles from './style.module.less';
 
-# 4. 检查 Webpack 配置
-vue inspect --rule css
-vue inspect --rule less
+# 4. 检查样式处理链路
+pnpm -F {app-name} exec vite build --debug 2>&1 | grep -i less
 
 # 5. 清理缓存并重新构建
-rm -rf node_modules/.cache
+rm -rf node_modules/.vite
 pnpm build:{app-name}
 ```
 
 ### 8. 路由问题
 
 #### 症状
+
 - 路由跳转失败
 - 404 页面
 - 路由守卫不生效
@@ -315,9 +330,9 @@ pnpm build:{app-name}
 # 在 src/router/index.ts 中检查路由定义
 
 # 2. 检查 History 模式配置
-# 如果是 History 模式，需要服务器配置
-# 在 vue.config.js 中：
-# devServer: {
+# Vite dev server 默认支持 history 回退；生产部署需在网关/Nginx 配置 fallback 到 index.html
+# 在 vite.config.ts 中：
+# server: {
 #   historyApiFallback: true
 # }
 
@@ -379,26 +394,20 @@ NODE_OPTIONS=--inspect=9229 pnpm dev:{app-name}
 pnpm build:{app-name} --verbose
 
 # 启用源映射调试
-# 在 vue.config.js 中：
-# configureWebpack: {
-#   devtool: 'source-map'
+# 在 vite.config.ts 中：
+# build: {
+#   sourcemap: true
 # }
 ```
 
-### 4. 检查 Webpack 配置
+### 4. 检查 Vite 构建配置
 
 ```bash
-# 查看最终的 Webpack 配置
-vue inspect > webpack.config.js
+# 以 debug 模式运行构建，输出最终配置、插件与依赖图
+pnpm -F {app-name} exec vite build --debug
 
-# 查看特定配置
-vue inspect --rule css
-vue inspect --plugin html
-vue inspect --rules
-vue inspect --plugins
-
-# 导出完整配置
-vue inspect --mode production > webpack.prod.config.js
+# 查看 Vite 帮助
+pnpm -F {app-name} exec vite --help
 ```
 
 ### 5. 性能分析
@@ -442,12 +451,12 @@ heapdump.writeSnapshot('/tmp/' + Date.now() + '.heapsnapshot');
 
 ```bash
 # 启用网络请求日志
-# 在 vue.config.js 中：
-# devServer: {
+# 在 vite.config.ts 中：
+# server: {
 #   proxy: {
 #     '/api': {
 #       target: 'http://localhost:3000',
-#       logLevel: 'debug'
+#       changeOrigin: true
 #     }
 #   }
 # }
@@ -464,99 +473,81 @@ heapdump.writeSnapshot('/tmp/' + Date.now() + '.heapsnapshot');
 ### 1. 构建优化
 
 #### 代码分割
+
 ```javascript
 // 使用动态导入分割代码块
 const HomeView = () => import('./views/HomeView.vue');
 const AboutView = () => import('./views/AboutView.vue');
 
 // 按需加载组件
-const HeavyComponent = defineAsyncComponent(() =>
-  import('./components/HeavyComponent.vue')
-);
+const HeavyComponent = defineAsyncComponent(() => import('./components/HeavyComponent.vue'));
 ```
 
 #### Tree Shaking
+
 ```json
 // package.json
 {
-  "sideEffects": false,
-  "module": "dist/index.esm.js",
-  "exports": {
-    ".": {
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs.js"
+    "sideEffects": false,
+    "module": "dist/index.esm.js",
+    "exports": {
+        ".": {
+            "import": "./dist/index.esm.js",
+            "require": "./dist/index.cjs.js"
+        }
     }
-  }
 }
 ```
 
 #### 缓存策略
-```javascript
-// vue.config.js
-module.exports = {
-  configureWebpack: {
-    cache: {
-      type: 'filesystem',
-      buildDependencies: {
-        config: [__filename]
-      }
-    }
-  }
-};
+
+```typescript
+// vite.config.ts
+// Vite 构建缓存默认开启（node_modules/.vite）；依赖预构建缓存可在需要时清除
 ```
 
 ### 2. 开发体验优化
 
 #### 热重载配置
-```javascript
-// vue.config.js
-module.exports = {
-  devServer: {
-    hot: true,
-    hotOnly: true,
-    liveReload: false,
-    client: {
-      overlay: {
-        errors: true,
-        warnings: false
-      }
+
+```typescript
+// vite.config.ts
+// HMR 默认开启，无需配置；可设置 server.hmr.overlay 控制错误覆盖层
+server: {
+    hmr: {
+        overlay: true;
     }
-  }
-};
+}
 ```
 
 #### 错误覆盖
-```javascript
-// vue.config.js
-module.exports = {
-  devServer: {
-    client: {
-      overlay: {
-        errors: true,
-        warnings: true,
-        runtimeErrors: true
-      }
+
+```typescript
+// vite.config.ts
+server: {
+  hmr: {
+    overlay: {
+      errors: true,
+      warnings: true
     }
   }
-};
+}
 ```
 
 #### 类型检查
-```javascript
-// vue.config.js
-module.exports = {
-  chainWebpack: (config) => {
-    config.plugin('fork-ts-checker').tap((args) => {
-      args[0].memoryLimit = 4096;
-      return args;
-    });
-  }
-};
+
+```bash
+# 构建已内置类型检查（vue-tsc --noEmit），独立运行：
+pnpm -F {app-name} typecheck
+
+# 内存限制
+NODE_OPTIONS=--max-old-space-size=4096 pnpm -F {app-name} typecheck
 ```
 
 ### 3. 包体积优化
 
 #### 按需加载
+
 ```typescript
 // 使用 lodash-es 替代 lodash
 import { debounce } from 'lodash-es';
@@ -569,110 +560,97 @@ import dayjs from 'dayjs';
 ```
 
 #### 压缩优化
-```javascript
-// vue.config.js
-module.exports = {
-  configureWebpack: {
-    optimization: {
-      minimize: true,
-      minimizer: [
-        new TerserPlugin({
-          terserOptions: {
-            compress: {
-              drop_console: process.env.NODE_ENV === 'production'
-            }
-          }
-        })
-      ]
+
+```typescript
+// vite.config.ts
+// 默认使用压缩器（esbuild/oxc），无需配置
+build: {
+  minify: true,
+  terserOptions: {
+    compress: {
+      drop_console: true
     }
   }
-};
+}
 ```
 
 #### 图片优化
-```javascript
-// 使用 image-webpack-loader
-module.exports = {
-  chainWebpack: (config) => {
-    config.module
-      .rule('images')
-      .test(/\.(png|jpe?g|gif|webp)(\?.*)?$/)
-      .use('image-webpack-loader')
-      .loader('image-webpack-loader')
-      .options({
-        mozjpeg: { progressive: true, quality: 65 },
-        optipng: { enabled: false },
-        pngquant: { quality: [0.65, 0.9], speed: 4 },
-        gifsicle: { interlaced: false }
-      });
-  }
-};
+
+```typescript
+// Vite 默认将小图内联为 base64（assetsInlineLimit，默认 4KB），大图输出到 dist/assets
+// 如需压缩，可引入 vite-plugin-imagemin 等插件
 ```
 
 ## 环境配置
 
 ### 开发环境
+
 ```bash
 # .env.development
-VUE_APP_API_URL=http://localhost:3000/api
-VUE_APP_DEBUG=true
-VUE_APP_VERSION=development
+VITE_APP_API_URL=http://localhost:3000/api
+VITE_APP_DEBUG=true
+VITE_APP_VERSION=development
 ```
 
 ### 测试环境
+
 ```bash
 # .env.test
-VUE_APP_API_URL=https://test-api.example.com/api
-VUE_APP_DEBUG=false
-VUE_APP_VERSION=test
+VITE_APP_API_URL=https://test-api.example.com/api
+VITE_APP_DEBUG=false
+VITE_APP_VERSION=test
 ```
 
 ### 生产环境
+
 ```bash
 # .env.production
-VUE_APP_API_URL=https://api.example.com/api
-VUE_APP_DEBUG=false
-VUE_APP_VERSION=1.0.0
+VITE_APP_API_URL=https://api.example.com/api
+VITE_APP_DEBUG=false
+VITE_APP_VERSION=1.0.0
 ```
 
 ### 环境变量使用
+
 ```typescript
 // 在代码中使用环境变量
-const apiUrl = import.meta.env.VUE_APP_API_URL;
-const isDebug = import.meta.env.VUE_APP_DEBUG === 'true';
-const version = import.meta.env.VUE_APP_VERSION;
+const apiUrl = import.meta.env.VITE_APP_API_URL;
+const isDebug = import.meta.env.VITE_APP_DEBUG === 'true';
+const version = import.meta.env.VITE_APP_VERSION;
 ```
 
 ## 监控和日志
 
 ### 错误监控
+
 ```typescript
 // 全局错误处理
 app.config.errorHandler = (err, instance, info) => {
-  console.error('Vue error:', err, info);
-  // 发送到错误监控服务
-  sendErrorToMonitoring(err);
+    console.error('Vue error:', err, info);
+    // 发送到错误监控服务
+    sendErrorToMonitoring(err);
 };
 
 // 未处理的 Promise 错误
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  // 发送到错误监控服务
-  sendErrorToMonitoring(event.reason);
+window.addEventListener('unhandledrejection', event => {
+    console.error('Unhandled promise rejection:', event.reason);
+    // 发送到错误监控服务
+    sendErrorToMonitoring(event.reason);
 });
 ```
 
 ### 性能监控
+
 ```typescript
 // 使用 Performance API
 const measurePerformance = () => {
-  const navigationTiming = performance.getEntriesByType('navigation')[0];
-  console.log('页面加载时间:', navigationTiming.loadEventEnd - navigationTiming.startTime);
-  
-  const resources = performance.getEntriesByType('resource');
-  resources.forEach((resource) => {
-    console.log(`${resource.name}: ${resource.duration}ms`);
-  });
+    const navigationTiming = performance.getEntriesByType('navigation')[0];
+    console.log('页面加载时间:', navigationTiming.loadEventEnd - navigationTiming.startTime);
+
+    const resources = performance.getEntriesByType('resource');
+    resources.forEach(resource => {
+        console.log(`${resource.name}: ${resource.duration}ms`);
+    });
 };
 
 // 在页面加载完成后测量
@@ -680,20 +658,21 @@ window.addEventListener('load', measurePerformance);
 ```
 
 ### 日志配置
+
 ```typescript
 // 开发环境详细日志，生产环境简化日志
 const logger = {
-  info: (...args: any[]) => {
-    if (import.meta.env.VUE_APP_DEBUG === 'true') {
-      console.log('[INFO]', ...args);
-    }
-  },
-  error: (...args: any[]) => {
-    console.error('[ERROR]', ...args);
-  },
-  warn: (...args: any[]) => {
-    console.warn('[WARN]', ...args);
-  }
+    info: (...args: any[]) => {
+        if (import.meta.env.VITE_APP_DEBUG === 'true') {
+            console.log('[INFO]', ...args);
+        }
+    },
+    error: (...args: any[]) => {
+        console.error('[ERROR]', ...args);
+    },
+    warn: (...args: any[]) => {
+        console.warn('[WARN]', ...args);
+    },
 };
 
 export default logger;
@@ -702,6 +681,7 @@ export default logger;
 ## 紧急恢复
 
 ### 构建失败恢复
+
 ```bash
 # 1. 回退到上一个可构建的版本
 git checkout <last-working-commit>
@@ -722,6 +702,7 @@ pnpm build
 ```
 
 ### 依赖冲突解决
+
 ```bash
 # 1. 检查冲突的依赖
 pnpm list | grep -E "(duplicate|multiple|conflict)"
@@ -740,6 +721,7 @@ pnpm i --force
 ```
 
 ### 数据库/状态恢复
+
 ```bash
 # 1. 清理本地存储
 localStorage.clear()
@@ -754,7 +736,7 @@ indexedDB.databases().then((dbs) => {
 
 # 3. 重置应用状态
 # 在应用启动时重置状态
-if (import.meta.env.VUE_APP_RESET_STATE === 'true') {
+if (import.meta.env.VITE_APP_RESET_STATE === 'true') {
   store.reset();
 }
 ```
@@ -762,11 +744,13 @@ if (import.meta.env.VUE_APP_RESET_STATE === 'true') {
 ## 寻求帮助
 
 ### 1. 检查文档
+
 - 查看 [项目概览](./overview.md)
 - 查看 [技能使用规范](./usage-guidelines.md)
 - 查看 [代码规范与最佳实践](./coding-standards.md)
 
 ### 2. 搜索问题
+
 ```bash
 # 搜索项目中的错误信息
 grep -r "错误信息" src/
@@ -776,19 +760,21 @@ find . -name "*.log" -type f | xargs grep -l "错误信息"
 ```
 
 ### 3. 创建 Issue
+
 如果问题无法解决，请创建 Issue：
 
 1. **描述问题**：详细描述问题和复现步骤
 2. **提供环境信息**：
-   ```bash
-   node -v
-   pnpm -v
-   uname -a
-   ```
+    ```bash
+    node -v
+    pnpm -v
+    uname -a
+    ```
 3. **提供错误信息**：完整的错误堆栈
 4. **提供相关代码**：相关的代码片段和配置
 
 ### 4. 社区支持
+
 - 查看项目 GitHub Issues
 - 搜索类似问题的解决方案
 - 在技术社区提问
@@ -796,6 +782,7 @@ find . -name "*.log" -type f | xargs grep -l "错误信息"
 ## 预防措施
 
 ### 1. 定期维护
+
 ```bash
 # 每周执行
 pnpm update
@@ -809,9 +796,10 @@ rm -rf node_modules/.cache
 ```
 
 ### 2. 备份重要数据
+
 ```bash
 # 备份配置文件
-cp vue.config.js vue.config.js.backup
+cp vite.config.ts vite.config.ts.backup
 cp package.json package.json.backup
 
 # 备份重要代码
@@ -820,6 +808,7 @@ git commit -m "备份: 当前工作状态"
 ```
 
 ### 3. 版本控制
+
 ```bash
 # 使用语义化版本
 npm version patch  # 修复 bug
@@ -832,6 +821,7 @@ git push origin release/v1.0.0
 ```
 
 ### 4. 监控和告警
+
 ```bash
 # 设置构建监控
 # 在 CI/CD 中配置构建失败通知

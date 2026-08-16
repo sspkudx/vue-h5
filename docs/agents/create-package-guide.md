@@ -46,7 +46,7 @@ packages/{package-name}/
 ├── jest.config.js       # Jest 测试配置
 ├── tsconfig.json        # TypeScript 配置文件
 ├── tsconfig.build.json  # TypeScript 构建配置
-└── rollup.config.ts     # Rollup 构建配置
+└── vite.config.ts      # Vite 构建配置
 ```
 
 ## 核心配置文件
@@ -69,8 +69,8 @@ packages/{package-name}/
     "scripts": {
         "clean": "rimraf dist",
         "prebuild": "pnpm run clean",
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
-        "dev": "rollup -c rollup.config.ts --configPlugin typescript --watch",
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "dev": "vite build --watch",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage"
@@ -83,7 +83,7 @@ packages/{package-name}/
         "@types/jest": "^29.5.0",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "rollup": "^4.62.4",
+        "vite": "^8.2.1",
         "ts-jest": "^29.4.12",
         "typescript": "^5.9.3"
     },
@@ -111,8 +111,8 @@ packages/{package-name}/
     "scripts": {
         "clean": "rimraf dist",
         "prebuild": "pnpm run clean",
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
-        "dev": "rollup -c rollup.config.ts --configPlugin typescript --watch",
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "dev": "vite build --watch",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage"
@@ -129,7 +129,7 @@ packages/{package-name}/
         "@vue/test-utils": "^2.4.0",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "rollup": "^4.62.4",
+        "vite": "^8.2.1",
         "ts-jest": "^29.4.12",
         "typescript": "^5.9.3"
     },
@@ -139,11 +139,11 @@ packages/{package-name}/
 }
 ```
 
-### rollup.config.ts
+### vite.config.ts
 
-- **ES 模块构建**: 支持 ES6+ 模块语法
-- **类型声明生成**: 自动生成 `.d.ts` 类型文件
-- **外部依赖处理**: 排除 peerDependencies
+- **ES 模块构建**: Vite lib 模式输出 ESM（`dist/index.js`）
+- **类型声明生成**: 由构建脚本中的 `tsc -p tsconfig.build.json` 生成 `dist/index.d.ts`
+- **外部依赖处理**: 通过 `build.rollupOptions.external` 排除 peerDependencies
 - **Source map 支持**: 生成 source map 便于调试
 
 ### tsconfig.json
@@ -260,7 +260,7 @@ import { logPlugin } from '@my-app/vue-plugins';
 
 ### 3. 确保路径映射正确
 
-应用的 `vue.config.js` 和 `tsconfig.json` 会自动配置包别名映射，无需手动配置。
+应用的 `vite.config.ts` 和 `tsconfig.json` 会自动配置包别名映射，无需手动配置。
 
 ## 示例
 
@@ -286,7 +286,7 @@ packages/utils/
 ├── jest.config.js        # Jest 配置
 ├── tsconfig.json         # TypeScript 配置
 ├── tsconfig.build.json   # TypeScript 构建配置
-└── rollup.config.ts      # Rollup 构建配置
+└── vite.config.ts      # Vite 构建配置
 ```
 
 ### 示例 2：创建组件库 `ui-components`
@@ -442,7 +442,7 @@ describe('formatDate', () => {
 
 ## 构建配置
 
-### Rollup 配置
+### Vite 配置
 
 - **多格式输出**: 支持 ES 模块和 CommonJS
 - **类型声明**: 自动生成类型定义文件

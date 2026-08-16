@@ -51,7 +51,7 @@
 ### 4. 创建文件
 
 - 生成完整的目录结构
-- 创建配置文件（package.json, tsconfig.json, vue.config.js 等）
+- 创建配置文件（package.json, tsconfig.json, vite.config.ts 等）
 - 生成示例代码和组件
 - 配置构建工具和开发工具
 

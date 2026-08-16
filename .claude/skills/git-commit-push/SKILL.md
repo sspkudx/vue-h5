@@ -122,7 +122,7 @@ chore: 更新依赖版本
 - 更新 vue 从 3.5.34 到 3.5.35
 - 更新 vue-router 从 5.0.6 到 5.1.0
 - 更新 less 从 4.4.2 到 4.6.4
-- 更新 rollup 从 3.29.4 到 3.30.0
+- 更新 vite 从 7.1.0 到 8.2.1
 ```
 
 **husky/lint-staged 相关提交示例**：
@@ -543,7 +543,7 @@ git diff package.json
 git add package.json pnpm-lock.yaml
 
 # 提交代码
-git commit -m "chore: 更新依赖版本" -m "- 更新 vue 从 3.5.34 到 3.5.35" -m "- 更新 vue-router 从 5.0.6 到 5.1.0" -m "- 更新 less 从 4.4.2 到 4.6.4" -m "- 更新 rollup 从 3.29.4 到 3.30.0"
+git commit -m "chore: 更新依赖版本" -m "- 更新 vue 从 3.5.34 到 3.5.35" -m "- 更新 vue-router 从 5.0.6 到 5.1.0" -m "- 更新 less 从 4.4.2 到 4.6.4" -m "- 更新 vite 从 7.1.0 到 8.2.1"
 
 # 推送到远程
 git push origin main

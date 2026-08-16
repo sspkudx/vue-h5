@@ -254,7 +254,7 @@ pnpm build:packages
 cd packages/{package-name}
 pnpm build
 
-# 类型声明随构建自动生成（Rollup + rollup-plugin-dts 聚合为单个 d.ts）
+# 类型声明由构建脚本中的 tsc -p tsconfig.build.json 自动生成（dist/index.d.ts）
 ```
 
 ### 5.3 完整构建
@@ -323,41 +323,35 @@ packages/{package-name}/dist/  # 包构建产物
 项目支持以下环境变量：
 
 ```bash
-# .env 文件示例
-VUE_APP_API_URL=https://api.example.com
-VUE_APP_DEBUG=true
-VUE_APP_VERSION=1.0.0
+# .env 文件示例（Vite 约定：仅 VITE_ 前缀变量注入客户端，通过 import.meta.env 读取）
+VITE_APP_API_URL=https://api.example.com
+VITE_APP_DEBUG=true
+VITE_APP_VERSION=1.0.0
 ```
 
 ### 7.2 开发代理
 
-在 `vue.config.js` 中配置开发代理：
+在 `vite.config.ts` 中配置开发代理（目标地址来自 `.env.development` 的 `VITE_APP_API_TARGET`）：
 
-```javascript
-module.exports = {
-    devServer: {
-        proxy: {
-            '/api': {
-                target: 'http://localhost:3000',
-                changeOrigin: true,
-            },
+```typescript
+server: {
+    proxy: {
+        '/api': {
+            target: 'http://localhost:3000',
+            changeOrigin: true,
         },
     },
-};
+}
 ```
 
 ### 7.3 热重载配置
 
-```javascript
-// vue.config.js
-module.exports = {
-    devServer: {
-        hot: true,
-        hotOnly: true,
-        liveReload: false,
-        client: {
-            overlay: {
-                errors: true,
+```typescript
+// vite.config.ts（HMR 默认开启）
+server: {
+    hmr: {
+        overlay: {
+            errors: true,
                 warnings: false,
             },
         },
@@ -459,8 +453,8 @@ NODE_OPTIONS=--inspect=9229 pnpm dev:{app-name}
 # 构建时显示详细日志
 pnpm build:{app-name} --verbose
 
-# 生成 Webpack 配置
-vue inspect > webpack.config.js
+# debug 模式运行构建，输出完整配置与依赖图
+pnpm -F {app-name} exec vite build --debug
 ```
 
 ### 10.3 性能分析

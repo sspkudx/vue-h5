@@ -57,12 +57,12 @@ apps/{app-name}/
 │       │   └── style.module.less
 │       └── AboutView/
 │           └── AboutView.vue
-├── index.htm
+├── index.html
 ├── favicon.ico
 ├── README.md
 ├── package.json
 ├── tsconfig.json
-└── vue.config.js
+└── vite.config.ts
 ```
 
 ### 4. 配置 package.json
@@ -79,14 +79,14 @@ apps/{app-name}/
     "name": "{app-name}",
     "version": "1.0.0",
     "scripts": {
-        "dev": "vue-cli-service serve",
-        "build": "vue-cli-service build",
-        "lint": "vue-cli-service lint --fix"
+        "dev": "vite",
+        "build": "vue-tsc --noEmit && vite build",
+        "typecheck": "vue-tsc --noEmit",
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,vue}\" --fix"
     },
     "dependencies": {
         "@my-app/shared": "workspace:*",
         "axios": "^1.19.0",
-        "core-js": "^3.50.0",
         "pinia": "^4.0.3",
         "ress": "^6.0.0",
         "vue": "^3.5.41",
@@ -99,168 +99,74 @@ apps/{app-name}/
 }
 ```
 
-### 5. 配置 vue.config.js
+### 5. 配置 vite.config.ts
 
-创建`vue.config.js`文件，需要替换以下占位符：
+创建`vite.config.ts`文件，需要替换以下占位符：
 
 - `{port}`: 使用用户提供的端口号
-- `{app-name}`: 标题配置，使用应用名称
 
-**文件内容**：
+**文件内容**（与 example-app 保持一致）：
 
-```javascript
-const { defineConfig } = require('@vue/cli-service');
-const path = require('path');
+```typescript
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { defineConfig, loadEnv } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import legacy from '@vitejs/plugin-legacy';
+
+/** 应用根目录（vite.config 以 ESM 执行，无 __dirname） */
+const appRoot = fileURLToPath(new URL('.', import.meta.url));
 
 /**
- * 导航到根目录路径
+ * 导航到仓库根目录路径
  * @param {string} [rootPath=''] - 相对根目录的子路径，默认为空字符串
  * @returns {string} 解析后的绝对路径
- * @description 根据当前文件所在目录构建指向项目根目录的相对路径
  */
 const toRoot = (rootPath = '') => {
-    return path.resolve(__dirname, `../../${rootPath}`);
+    return resolve(appRoot, `../../${rootPath}`);
 };
 
-/**
- * 必需的包配置数组
- * @type {Array<{alias: string, srcPath: string, distPath: string}>}
- * @description 定义项目中必需的包及其路径映射
- */
-const requiredPackages = Object.freeze(
-    ['shared'].map(packageName => {
-        return {
-            alias: `@my-app/${packageName}`,
-            srcPath: toRoot(`packages/${packageName}/src`),
-            distPath: toRoot(`packages/${packageName}/dist`),
-        };
-    })
-);
+export default defineConfig(({ mode }) => {
+    // loadEnv 第三个参数传 '' 以读取全部前缀的变量（含 VITE_APP_API_TARGET）
+    const env = loadEnv(mode, appRoot, '');
+    const isDev = mode === 'development';
 
-/**
- * 设置所有必需的包别名路径
- * @param {import('webpack-chain').Config} config - webpack-chain 配置对象
- * @param {boolean} [isDev=false] - 是否为开发环境，默认为 false
- * @returns {import('webpack-chain').Config} 更新后的 webpack-chain 配置对象
- */
-const setAllRequiredPackages = (config, isDev = false) => {
-    return requiredPackages.reduce((conf, item) => {
-        // 开发环境指向源码目录（支持热更新）
-        // 生产环境指向构建后的dist目录
-        const targetPath = isDev ? item.srcPath : item.distPath;
-        return conf.resolve.alias.set(item.alias, targetPath).end().end();
-    }, config);
-};
-
-/**
- * 获取 HtmlWebpackPlugin 的新配置
- * @param {Object} [defaultConfig={}] - 默认配置对象
- * @returns {Object} 更新后的 HtmlWebpackPlugin 配置
- */
-const getHtmlPluginConfig = (defaultConfig = {}) => {
-    const { templateParameters: oldTemplateParams = {} } = defaultConfig || {};
     return {
-        ...defaultConfig,
-        templateParameters: {
-            ...oldTemplateParams,
-            lang: 'zh-Hans',
+        plugins: [
+            vue(),
+            vueJsx(),
+            // 兼容性基线由根目录 .browserslistrc（chrome 49）驱动：
+            // 自动生成 legacy 产物（ES5 + core-js polyfill + SystemJS 加载）与 modern 产物
+            legacy(),
+        ],
+        resolve: {
+            alias: {
+                '@': resolve(appRoot, 'src'),
+                // 开发环境指向源码目录（支持热更新）
+                // 生产环境指向构建后的 dist 目录
+                '@my-app/shared': isDev ? toRoot('packages/shared/src') : toRoot('packages/shared/dist'),
+            },
         },
-        template: path.resolve(__dirname, 'index.htm'),
-        favicon: path.resolve(__dirname, 'favicon.ico'),
-        title: '{app-name}',
-    };
-};
-
-/**
- * 判断是否为生产环境
- * @type {boolean}
- * @description 根据 NODE_ENV 环境变量判断是否为生产环境
- */
-const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
-/**
- * 新版本的 babel-loader 路径
- * @type {string}
- * @description 指向根目录下的 babel-loader 路径
- */
-const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
-
-module.exports = defineConfig(() => {
-    const isDev = process.env.NODE_ENV === 'development';
-
-    return {
-        transpileDependencies: isProduction,
-        lintOnSave: 'error',
-        devServer: {
+        server: {
             port: { port },
-            client: {
-                overlay: {
-                    warnings: false,
+            proxy: {
+                '/api': {
+                    // 开发环境 API 代理目标，可通过 .env.development 的 VITE_APP_API_TARGET 覆盖
+                    target: env.VITE_APP_API_TARGET || 'http://localhost:3000',
+                    changeOrigin: true,
                 },
             },
         },
-        chainWebpack(config) {
-            setAllRequiredPackages(config, isDev)
-                .entry('app')
-                .clear()
-                .add(path.resolve(__dirname, 'src', 'main.ts'))
-                .end()
-                // 配置 .ts & .tsx 文件使用 babel-loader
-                .module.rule('ts')
-                .test(/\.m?tsx?$/)
-                .use('babel-loader')
-                .loader(newBabelLoader)
-                .options({
-                    // 关键：显式指向根目录 babel 配置
-                    configFile: toRoot('babel.config.js'),
-                })
-                .end()
-                .use('ts-loader')
-                .loader('ts-loader')
-                .options({
-                    appendTsSuffixTo: [/\.vue$/],
-                })
-                .end()
-                .end()
-                .end()
-                .module.rule('js')
-                .test(/\.m?jsx?$/)
-                .use('babel-loader')
-                .loader(newBabelLoader)
-                .options({
-                    // 关键：显式指向根目录 babel 配置
-                    configFile: toRoot('babel.config.js'),
-                })
-                .end()
-                .end()
-                .end()
-                .resolve.extensions.merge(['.ts', '.tsx', '.js', '.jsx', '.vue', '.json'])
-                .end()
-                .end()
-                .plugin('html')
-                .tap(args => {
-                    const [defaultConf, ...rest] = args;
-                    return [getHtmlPluginConfig(defaultConf), ...rest];
-                })
-                .end();
-        },
         css: {
-            loaderOptions: {
-                css: {
-                    modules: {
-                        auto(resourcePath) {
-                            return resourcePath.includes('.module.');
-                        },
-                        // css-module hash
-                        localIdentName: '[local]__[hash:base64]',
-                        exportLocalsConvention(name) {
-                            // home-view__text--red → homeView__text_red
-                            const camel = name
-                                .replace(/--/g, '_') // 先把 -- 换成 _
-                                .replace(/-([a-z])/g, (_, char) => char.toUpperCase()); // 驼峰化 -
-                            return [name, camel];
-                        },
-                    },
-                },
+            preprocessorOptions: {
+                less: {},
+            },
+            modules: {
+                // 同时导出原类名与驼峰类名（about-view → aboutView），对齐 vue-cli 的 exportLocalsConvention
+                localsConvention: 'camelCase',
+                // 对齐 css-loader 的 localIdentName
+                generateScopedName: '[local]__[hash:base64]',
             },
         },
     };
@@ -288,7 +194,7 @@ module.exports = defineConfig(() => {
         "useDefineForClassFields": true,
         "sourceMap": true,
         "baseUrl": ".",
-        "types": ["webpack-env"],
+        "types": ["vite/client"],
         "paths": {
             "@/*": ["src/*"],
             "@my-app/shared": ["../../packages/shared/dist/index"]
@@ -383,14 +289,14 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component() {
-                return import(/* webpackChunkName: "HomeView" */ '../views/HomeView/index');
+                return import('../views/HomeView/index');
             },
         },
         {
             path: '/about',
             name: 'about',
             component() {
-                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/AboutView.vue');
+                return import('../views/AboutView/AboutView.vue');
             },
         },
     ],
@@ -509,20 +415,21 @@ const increment = () => {
 
 ### 8. 创建 HTML 文件
 
-创建`index.htm`文件：
+创建`index.html`文件（Vite 入口，标题直接写在 HTML 中，需要替换 `{app-name}`）：
 
 ```html
 <!DOCTYPE html>
-<html lang="<%= lang %>">
+<html lang="zh-Hans">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <title><%= htmlWebpackPlugin.options.title %></title>
+        <title>{app-name}</title>
+        <link rel="icon" href="/favicon.ico" />
     </head>
     <body>
         <div id="app"></div>
-        <!-- built files will be auto injected -->
+        <script type="module" src="/src/main.ts"></script>
     </body>
 </html>
 ```
@@ -587,7 +494,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 1. 目录结构是否正确
 2. 所有文件是否创建成功
 3. package.json 中的名称是否正确
-4. vue.config.js 中的端口配置是否正确
+4. vite.config.ts 中的端口配置是否正确
 5. tsconfig.json 中的路径映射是否正确
 6. **根目录 package.json 的 scripts 是否正确更新**：检查是否添加了 dev、build、lint 脚本
 
@@ -603,7 +510,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 2. 创建`apps/my-app/`目录及完整的应用结构
 3. 创建所有源文件和配置文件
 4. 设置 package.json 的 name 为"my-app"
-5. 设置 vue.config.js 的端口为 3000，标题为"my-app"
+5. 设置 vite.config.ts 的端口为 3000，index.html 的标题为"my-app"
 6. **更新根目录 package.json 的 scripts**，添加：
     - `"dev:my-app": "./scripts/build-packages.sh --skip-clean && pnpm -F my-app dev"`
     - `"build:my-app": "pnpm -F my-app build"`
@@ -620,7 +527,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 3. 创建`apps/admin-panel/`目录及完整的应用结构
 4. 创建所有源文件和配置文件
 5. 设置 package.json 的 name 为"admin-panel"
-6. 设置 vue.config.js 的端口为 8080，标题为"admin-panel"
+6. 设置 vite.config.ts 的端口为 8080，index.html 的标题为"admin-panel"
 7. **更新根目录 package.json 的 scripts**，添加：
     - `"dev:admin-panel": "./scripts/build-packages.sh --skip-clean && pnpm -F admin-panel dev"`
     - `"build:admin-panel": "pnpm -F admin-panel build"`
@@ -635,6 +542,8 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
 7. **格式一致性**: 确保新增的 scripts 格式与现有 scripts 保持一致（`pnpm -F {app-name} {command}`）
+8. **构建工具**: 应用使用 **Vite** 构建（`vite` 位于根 devDependencies，脚本直接用 `vite` / `vue-tsc` 即可），构建时自动做类型检查（`vue-tsc --noEmit`）
+9. **兼容性基线**: 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），由根目录 `.browserslistrc` + `@vitejs/plugin-legacy` 保证。新建应用**无需**单独配置 browserslist，`legacy()` 插件自动读取根目录 `.browserslistrc` 并生成 legacy 产物（ES5 + core-js polyfill + SystemJS，`nomodule` 加载），现代浏览器加载 `type="module"` 产物。不要降低根目录 `.browserslistrc` 的基线：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持）
 
 ## 错误处理
 

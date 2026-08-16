@@ -13,8 +13,8 @@
     // 验证结果
     expect(fs.existsSync('apps/e2e-test-app')).toBe(true);
 
-    const vueConfig = fs.readFileSync('apps/e2e-test-app/vue.config.js', 'utf-8');
-    expect(vueConfig).toContain('port: 9999');
+    const viteConfig = fs.readFileSync("apps/e2e-test-app/vite.config.ts", "utf-8");
+    expect(viteConfig).toContain("port: 9999");
 
     const packageJson = JSON.parse(fs.readFileSync('apps/e2e-test-app/package.json', 'utf-8'));
     expect(packageJson.name).toBe('e2e-test-app');

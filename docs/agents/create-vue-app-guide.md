@@ -28,11 +28,11 @@ apps/{app-name}/
 │       └── AboutView/
 │           ├── index.tsx
 │           └── style.module.less
-├── index.htm                # HTML 模板
+├── index.html               # HTML 入口模板
 ├── favicon.ico              # 网站图标
 ├── package.json             # 应用配置
 ├── tsconfig.json           # TypeScript 配置
-└── vue.config.js           # Vue CLI 配置
+└── vite.config.ts          # Vite 构建配置
 ```
 
 ## 核心配置文件
@@ -44,14 +44,14 @@ apps/{app-name}/
     "name": "{app-name}",
     "version": "1.0.0",
     "scripts": {
-        "dev": "vue-cli-service serve",
-        "build": "vue-cli-service build",
-        "lint": "vue-cli-service lint --fix"
+        "dev": "vite",
+        "build": "vue-tsc --noEmit && vite build",
+        "typecheck": "vue-tsc --noEmit",
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,vue}\" --fix"
     },
     "dependencies": {
         "@my-app/shared": "workspace:*",
         "axios": "^1.19.0",
-        "core-js": "^3.50.0",
         "pinia": "^4.0.3",
         "ress": "^6.0.0",
         "vue": "^3.5.41",
@@ -64,15 +64,16 @@ apps/{app-name}/
 }
 ```
 
-### vue.config.js
+### vite.config.ts
 
 关键配置：
 
-- **开发服务器端口自定义**：通过 `devServer.port` 配置
-- **支持 Less 模块化样式**：配置 CSS Modules
-- **CSS Modules 自动转换**：自动处理样式类名
-- **Babel 和 TypeScript 集成**：支持现代 JavaScript 语法
+- **开发服务器端口自定义**：通过 `server.port` 配置
+- **支持 Less 模块化样式**：CSS Modules 自动转换 + Less 预处理器
+- **Vue / JSX 支持**：`@vitejs/plugin-vue` + `@vitejs/plugin-vue-jsx`
+- **兼容性基线**：`@vitejs/plugin-legacy` 按根目录 `.browserslistrc`（Chrome 49）自动生成 legacy 产物
 - **与 monorepo 包的路径别名映射**：配置 `@my-app/shared` 别名
+- **开发代理**：`server.proxy` 转发 `/api` 到 `VITE_APP_API_TARGET`
 
 ### tsconfig.json
 
@@ -148,6 +149,13 @@ pnpm run lint:my-app
 
 ## 配置说明
 
+### 兼容性基线
+
+- 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView）
+- 由根目录 `.browserslistrc` 显式下限 + `@vitejs/plugin-legacy` 保证，新建应用无需单独配置
+- 构建产物区分双版本：`-legacy` 文件（ES5 + core-js polyfill + SystemJS，`nomodule` 加载，Chrome 49 执行）与 `type="module"` 产物（现代浏览器执行）
+- 下限不得低于 Chrome 49：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持，无法 polyfill）
+
 ### 端口配置
 
 默认情况下，应用会使用自动分配的端口。如果需要指定端口，可以在创建时指定：
@@ -156,15 +164,13 @@ pnpm run lint:my-app
 "创建名为 my-app 的 Vue 应用，端口号设为 3001"
 ```
 
-端口配置存储在 `vue.config.js` 文件中：
+端口配置存储在 `vite.config.ts` 文件中：
 
-```javascript
-module.exports = {
-    devServer: {
-        port: 3001, // 自定义端口
-        // ... 其他配置
-    },
-};
+```typescript
+server: {
+    port: 3001, // 自定义端口
+    // ... 其他配置
+},
 ```
 
 ### 应用名称规范
@@ -182,7 +188,7 @@ module.exports = {
 1. **项目共享包**：`@my-app/shared`
 2. **Vue 3 相关依赖**：`vue`, `vue-router`, `pinia`
 3. **开发工具**：`typescript`, `eslint`, `prettier`
-4. **构建工具**：`@vue/cli-service`, `webpack`
+4. **构建工具**：`vite`, `@vitejs/plugin-vue`, `@vitejs/plugin-vue-jsx`, `@vitejs/plugin-legacy`, `vue-tsc`（位于根 devDependencies）
 
 ## 示例
 
@@ -199,7 +205,7 @@ module.exports = {
 apps/user-portal/
 ├── src/
 ├── package.json        # name: "user-portal"
-└── vue.config.js      # devServer.port: 3001
+└── vite.config.ts     # server.port: 3001
 ```
 
 **根目录 scripts 更新**：
@@ -239,8 +245,8 @@ apps/user-portal/
 | `src/router/index.ts`  | 路由配置，定义应用路由        |
 | `src/views/HomeView/`  | 首页组件，包含示例代码        |
 | `src/views/AboutView/` | 关于页面组件，包含示例代码    |
-| `index.htm`            | HTML 模板文件                 |
-| `vue.config.js`        | Vue CLI 配置文件              |
+| `index.html`           | HTML 入口模板                 |
+| `vite.config.ts`       | Vite 构建配置（含代理/别名）  |
 | `tsconfig.json`        | TypeScript 配置文件           |
 | `package.json`         | 应用配置和依赖管理            |
 
@@ -285,10 +291,10 @@ apps/user-portal/
 #### 1. 端口被占用
 
 ```bash
-# 修改 vue.config.js 中的端口配置
-devServer: {
-  port: 3002,  # 改为其他端口
-}
+# 修改 vite.config.ts 中的端口配置
+server: {
+    port: 3002, # 改为其他端口
+},
 ```
 
 #### 2. 依赖安装失败
@@ -304,10 +310,10 @@ pnpm install
 
 ```bash
 # 检查 TypeScript 配置
-pnpm -F {app-name} tsc --noEmit
+pnpm -F {app-name} typecheck
 
-# 清理 TypeScript 缓存
-rm -rf node_modules/.cache
+# 清理 Vite 缓存
+rm -rf node_modules/.vite
 ```
 
 #### 4. 构建失败

@@ -13,7 +13,7 @@ description: 在本项目的packages目录下创建新的依赖包。根据用�
 
 - 自动创建符合项目规范的包目录结构
 - 支持四种包类型，自动配置对应的依赖
-- 提供完整的构建配置（Rollup + TypeScript）
+- 提供完整的构建配置（Vite lib 模式 + TypeScript）
 - 生成详细的 README 文档和 API 说明
 - 支持测试框架配置（可选）
 - 提供交互式创建流程和验证机制
@@ -102,7 +102,7 @@ packages/{package-name}/
 ├── jest.config.js       # Jest测试配置（如果添加测试）
 ├── tsconfig.json        # TypeScript配置文件
 ├── tsconfig.build.json  # TypeScript构建配置
-└── rollup.config.ts     # Rollup构建配置
+└── vite.config.ts      # Vite 构建配置
 ```
 
 ### 4. 根据包类型配置 package.json
@@ -125,7 +125,7 @@ packages/{package-name}/
         }
     },
     "scripts": {
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
+        "build": "vite build && tsc -p tsconfig.build.json",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -141,16 +141,13 @@ packages/{package-name}/
         "lodash-es": "^4.18.1"
     },
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^16.0.3",
-        "@rollup/plugin-typescript": "^12.3.0",
         "@types/jest": "^29.5.14",
         "@types/lodash-es": "^4.17.12",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "rollup": "^3.30.0",
-        "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.11",
-        "typescript": "^4.9.5"
+        "typescript": "^4.9.5",
+        "vite": "^8.2.1"
     },
     "peerDependencies": {},
     "engines": {
@@ -177,7 +174,7 @@ packages/{package-name}/
         }
     },
     "scripts": {
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
+        "build": "vite build && tsc -p tsconfig.build.json",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -186,14 +183,11 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^16.0.3",
-        "@rollup/plugin-typescript": "^12.3.0",
         "@types/jest": "^29.5.14",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "rollup": "^3.30.0",
-        "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.11",
+        "vite": "^8.2.1",
         "typescript": "^4.9.5"
     },
     "engines": {
@@ -226,7 +220,7 @@ packages/{package-name}/
         }
     },
     "scripts": {
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
+        "build": "vite build && tsc -p tsconfig.build.json",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -241,17 +235,14 @@ packages/{package-name}/
         "@vue/babel-plugin-jsx": "^1.5.0"
     },
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^16.0.3",
-        "@rollup/plugin-typescript": "^12.3.0",
         "@types/jest": "^29.5.14",
         "@vue/test-utils": "^2.4.5",
         "@vue/vue3-jest": "^29.2.6",
         "jest": "^30.4.2",
         "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
-        "rollup": "^3.30.0",
-        "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.11",
+        "vite": "^8.2.1",
         "typescript": "^4.9.5"
     },
     "engines": {
@@ -285,7 +276,7 @@ packages/{package-name}/
         }
     },
     "scripts": {
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
+        "build": "vite build && tsc -p tsconfig.build.json",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -301,15 +292,12 @@ packages/{package-name}/
         "lodash-es": "^4.18.1"
     },
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^16.0.3",
-        "@rollup/plugin-typescript": "^12.3.0",
         "@types/jest": "^29.5.14",
         "@types/lodash-es": "^4.17.12",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "rollup": "^3.30.0",
-        "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.11",
+        "vite": "^8.2.1",
         "typescript": "^4.9.5"
     },
     "engines": {
@@ -346,7 +334,7 @@ packages/{package-name}/
         }
     },
     "scripts": {
-        "build": "rollup -c rollup.config.ts --configPlugin typescript",
+        "build": "vite build && tsc -p tsconfig.build.json",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -363,17 +351,14 @@ packages/{package-name}/
         "vue-router": "^5.1.0"
     },
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^16.0.3",
-        "@rollup/plugin-typescript": "^12.3.0",
         "@types/jest": "^29.5.14",
         "@vue/test-utils": "^2.4.5",
         "@vue/vue3-jest": "^29.2.6",
         "jest": "^30.4.2",
         "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
-        "rollup": "^3.30.0",
-        "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.11",
+        "vite": "^8.2.1",
         "typescript": "^4.9.5"
     },
     "engines": {
@@ -391,74 +376,34 @@ packages/{package-name}/
 
 **说明**: 根据用户选择的包类型，使用上面对应的配置模板。每种类型的配置都已包含完整的依赖设置和脚本命令。
 
-### 5. 配置 rollup.config.ts
+### 5. 配置 vite.config.ts
 
-创建`rollup.config.ts`文件，直接使用如下内容（与 shared 包保持一致）：
+创建`vite.config.ts`文件，直接使用如下内容（与 shared 包保持一致）：
 
 ```ts
-import { defineConfig } from 'rollup';
-import resolve from '@rollup/plugin-node-resolve';
-import typescript from '@rollup/plugin-typescript';
-import dts from 'rollup-plugin-dts';
-import childProcess from 'child_process';
-import fs from 'fs';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { defineConfig } from 'vite';
 
-const input = 'src/index.ts';
+/** 包根目录（vite.config 以 ESM 执行，无 __dirname） */
+const pkgRoot = fileURLToPath(new URL('.', import.meta.url));
 
-export default defineConfig([
-    /* 1. ESM JavaScript 构建（保持不动） */
-    {
-        input,
-        output: {
-            file: 'dist/index.js',
-            format: 'esm',
-            sourcemap: true, // Rollup 级别的 sourcemap
+export default defineConfig({
+    build: {
+        lib: {
+            entry: resolve(pkgRoot, 'src/index.ts'),
+            formats: ['es'],
+            // 固定产物文件名（Vite 默认按 package.json type 追加 .mjs，这里用函数强制 index.js）
+            fileName: () => 'index.js',
         },
-        external: [/[/\\]__tests__[/\\]/, /\.test\.ts$/, /\.spec\.ts$/, 'react', 'react-dom', 'vue'],
-        plugins: [
-            resolve(),
-            typescript({
-                tsconfig: './tsconfig.json',
-                exclude: ['**/*.test.ts', '**/*.spec.ts'],
-                declaration: false, // 仍然不在这里生成声明
-                sourceMap: true, // 启用 TypeScript 源映射
-            }),
-        ],
+        sourcemap: true,
+        emptyOutDir: true,
+        minify: false,
     },
-
-    /* 2. 类型声明构建：先 tsc → 再 dts 合并 */
-    {
-        input: 'src/index.ts',
-        output: {
-            file: 'dist/index.d.ts',
-            format: 'es',
-        },
-        plugins: [
-            {
-                name: 'tsc-declare',
-                buildStart() {
-                    // 清理并重新生成 .d.ts
-                    const tempDir = 'dist/temp-dts';
-                    if (fs.existsSync(tempDir)) {
-                        fs.rmSync(tempDir, { recursive: true, force: true });
-                    }
-                    childProcess.execSync('npx tsc -p tsconfig.build.json', { stdio: 'inherit' });
-                },
-            },
-            dts(),
-            {
-                name: 'clean-temp',
-                buildEnd() {
-                    const tempDir = 'dist/temp-dts';
-                    if (fs.existsSync(tempDir)) {
-                        fs.rmSync(tempDir, { recursive: true, force: true });
-                    }
-                },
-            },
-        ],
-    },
-]);
+});
 ```
+
+**说明**: JS 产物由 Vite（lib 模式）构建为 `dist/index.js`；类型声明由构建脚本中的 `tsc -p tsconfig.build.json` 输出到 `dist/index.d.ts`。
 
 ### 6. 配置 tsconfig.json
 
@@ -493,7 +438,7 @@ export default defineConfig([
         "tests/**/*.tsx",
         "types/*.d.ts",
         "../../types/*.d.ts",
-        "rollup.config.ts"
+        "vite.config.ts"
     ],
     "exclude": ["node_modules"]
 }
@@ -509,7 +454,7 @@ export default defineConfig([
     "compilerOptions": {
         "declaration": true, // 关键：输出 .d.ts
         "emitDeclarationOnly": true, // 只发类型，不生成 js
-        "outDir": "dist/temp-dts", // 临时目录，rollup 后再删
+        "outDir": "dist", // 与 vite lib 构建共用 dist 目录，vite 先清空再 tsc 生成声明
         "skipLibCheck": true, // 避免三方包类型错误阻塞构建
         "isolatedModules": false // 与 emitDeclarationOnly 共存
     },
@@ -519,7 +464,7 @@ export default defineConfig([
         "tests", // 测试文件不要
         "**/*.test.ts",
         "**/*.spec.ts",
-        "rollup.config.ts" // 构建脚本不要
+        "vite.config.ts" // 构建脚本不要
     ]
 }
 ```
@@ -1453,7 +1398,7 @@ pnpm test:coverage
 
 ## 🔧 技术栈
 
-- **构建工具**: Rollup + TypeScript
+- **构建工具**: Vite（lib 模式）
 - **测试框架**: Jest + Vue Test Utils（组件库）
 - **开发语言**: TypeScript 4.9+
 - **包管理**: pnpm
@@ -1518,14 +1463,14 @@ MIT License © 2024 My App
         ├── package.json
         ├── tsconfig.json
         ├── tsconfig.build.json
-        └── rollup.config.ts
+        └── vite.config.ts
     ```
 
 4. **配置文件**:
 
     - `package.json`: 配置为工具库类型（无额外依赖）
     - `tsconfig.json`: 添加 Vue JSX 支持
-    - `rollup.config.ts`: 使用标准构建配置
+    - `vite.config.ts`: 使用标准构建配置
     - `README.md`: 包含安装和使用说明
 
 5. **源码文件**:
@@ -1770,7 +1715,7 @@ MIT License © 2024 My App
 
 ### 6. 构建配置
 
-- 使用 Rollup 进行构建
+- 使用 Vite（lib 模式）进行构建
 - 生成 ES 模块和类型声明
 - 配置 source map 以支持调试
 - 外部化依赖项，避免重复打包
@@ -1905,7 +1850,7 @@ MIT License © 2024 My App
 调试步骤:
 1. 检查 TypeScript 配置是否正确
 2. 确保所有依赖已安装 (pnpm install)
-3. 检查 rollup 配置是否有语法错误
+3. 检查 vite.config.ts 配置是否有语法错误
 4. 查看详细的构建日志
 ```
 
@@ -1952,7 +1897,7 @@ MIT License © 2024 My App
 2. **文件内容验证**:
 
     - 检查 package.json 中的名称是否正确
-    - 验证 tsconfig.json 和 rollup.config.ts 配置是否正确
+    - 验证 tsconfig.json 和 vite.config.ts 配置是否正确
     - 确保 README.md 中的占位符已被替换
 
 3. **构建验证**:
@@ -1998,11 +1943,11 @@ MIT License © 2024 My App
 
 如果需要自定义构建配置，可以修改以下文件：
 
-1. **rollup.config.ts**:
+1. **vite.config.ts**:
 
     - 调整输出格式（ESM、CJS、UMD）
-    - 添加额外的 Rollup 插件
-    - 配置外部依赖
+    - 添加额外的 Vite/Rollup 插件（Vite 底层为 Rollup）
+    - 配置外部依赖（`build.rollupOptions.external`）
 
 2. **tsconfig.json**:
 

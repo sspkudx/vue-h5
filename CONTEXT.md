@@ -18,41 +18,41 @@
 
 | 层 | 实际选型 |
 | --- | --- |
-| 框架 | Vue 3.5 + TypeScript 5.9，TSX（@vue/babel-plugin-jsx）与 SFC 混用 |
-| 构建 | **Vue CLI 5 / webpack 5**（不是 Vite；曾计划在 README 中声称 Vite，已纠正为实话） |
-| 状态 | Pinia 3 |
+| 框架 | Vue 3.5 + TypeScript 5.9，TSX（@vitejs/plugin-vue-jsx）与 SFC 混用 |
+| 构建 | **Vite 8**（apps：plugin-vue / plugin-vue-jsx / plugin-legacy；packages：Vite lib 模式） |
+| 状态 | Pinia 4 |
 | 样式 | Less + CSS Modules（`*.module.less`，kebab→camel 双导出），`ress` reset |
 | 移动端适配 | postcss-px-to-viewport，自定义单位 `mpx` → `vmin`（viewportWidth 390；横竖屏切换尺寸会变，双刃剑，已知晓） |
 | 包管理 | pnpm workspace（`apps/*` + `packages/*`），.npmrc 指华为云镜像 + `shamefully-hoist=true` |
-| 测试 | Jest 29 + ts-jest，根配置只覆盖 `packages/**` |
-| 规范 | ESLint（旧式 eslintrc）+ Prettier + stylelint（BEM 类名约束 + 属性排序） |
+| 测试 | Jest 30 + ts-jest，根配置只覆盖 `packages/**` |
+| 规范 | ESLint 10（flat config）+ Prettier 3 + stylelint 17（BEM 类名约束 + 属性排序） |
 | 构建编排 | `scripts/build.sh` / `build-packages.sh`（先 packages 后 apps，支持并行） |
 
 ## 结构
 
 - `apps/example-app`：唯一应用，也是 create-vue-app 技能的参照实现。
-- `packages/shared`（`@my-app/shared`）：纯工具库（类型守卫 + 数字工具），Rollup 出 ESM + 聚合 d.ts，测试质量是仓库标杆。
+- `packages/shared`（`@my-app/shared`）：纯工具库（类型守卫 + 数字工具），Vite lib 模式出 ESM + tsc 出 d.ts，测试质量是仓库标杆。
 - `.claude/skills/`：7 个 AI 技能；`.catpaw/skills/` 是其镜像（靠 `scripts/sync-skills.sh` 同步）。
 - `docs/agents/`：模块化文档（AGENTS.md 是索引）。
 - `types/`：css/img/vue 的 d.ts shim，由各子项目 tsconfig 引用（根目录无 tsconfig.json）。
 
 ## 关键架构决策
 
-1. **monorepo 联调双 alias**：dev 环境把 `@my-app/*` alias 到源码（热更新），prod 指向 dist。这是仓库核心工程价值，改动 vue.config.js 时必须保留。
+1. **monorepo 联调双 alias**：dev 环境把 `@my-app/*` alias 到源码（热更新），prod 指向 dist。这是仓库核心工程价值，改动 vite.config.ts 时必须保留。
 2. **运行时依赖归各 app 自管**，根 package.json 只放工具链（原先把 vue/pinia 等装在根上 + hoist 兜底，已纠正）。
 3. **依赖解析**：jest moduleNameMapper 与 `@my-app/*` 别名对齐，新增包要同步两处。
 
 ## 整改基线决策（2026-08 评审后）
 
 - Node 基线：**22 LTS**；pnpm：**10**（`packageManager` 字段锁定，corepack 启用）。
-- 依赖策略：除 TypeScript（留 5.x，7.0 原生版工具链不兼容）、Babel（留 7.x，8 与 Vue CLI 5 不兼容）外，其余依赖已升到 latest（ESLint 10 flat config、stylelint 17 flat config、prettier 3、rollup 4、jest 30、pinia 4、ress 6）。
-- browserslist：显式设备下限（Chrome>=61 / Android>=6 / iOS>=11，不含 IE11），不用 `not dead`。
+- 依赖策略：除 TypeScript（留 5.x，7.0 原生版工具链不兼容）外，其余依赖已升到 latest（ESLint 10 flat config、stylelint 17 flat config、prettier 3、jest 30、pinia 4、ress 6）。
+- browserslist：兼容性基线 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），不用 `not dead`；由 @vitejs/plugin-legacy 自动生成 legacy 产物（ES5 + core-js polyfill + SystemJS）。
 - 提交规范：husky + lint-staged + commitlint；CI：GitHub Actions（lint + test + build）。
-- 构建工具短期不迁 Vite，文档如实描述 webpack；Vite 迁移如要做，另立项。
+- 构建工具：已从 Vue CLI 5/webpack 迁移到 **Vite 8**（apps）+ Vite lib 模式（packages），迁移前后功能经浏览器冒烟测试验证一致。
 - 技能归档：`.claude/skills/`（唯一事实来源，入库）；`.catpaw/skills/` 本地镜像（`pnpm sync:skills` 同步）。
-- **`compat/node-14` 分支**：面向构建机仍为 Node 14 的流水线场景；该分支除文档修正与技能归档外，保持评审前原状（Node 14 基线、旧依赖、无 husky/CI）。注意：该分支上的文档只描述其分支自身的真实状态。
+- **`compat/node-14` 分支**：面向构建机仍为 Node 14 的流水线场景；该分支保持 Node 14 基线 + 旧依赖（vue-cli/rollup）+ 无 husky/CI，兼容性基线同为 Chrome 49。注意：该分支上的文档只描述其分支自身的真实状态。
 
 ## 已知未竟事项（详见 docs/agents/business-infrastructure.md）
 
 - 业务基建只做到最小闭环（请求封装/env/proxy/全局错误处理）；登录权限、埋点、mock、UI 组件库选型未做。
-- apps 无测试覆盖；ESLint 8 旧栈待升 flat config；stylelint 15 待升。
+- apps 无测试覆盖；types 校验由各 app 的 vue-tsc 承担。

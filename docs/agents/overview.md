@@ -5,7 +5,8 @@ vue-h5 是一个基于 Vue 3 + TypeScript + PNPM Workspaces 的现代化 H5 项�
 ## 技术栈
 
 - **前端框架**: Vue 3 + TypeScript
-- **构建工具**: Vue CLI + Webpack
+- **构建工具**: Vite（apps：plugin-vue / plugin-vue-jsx / plugin-legacy；packages：lib 模式）
+- **兼容性基线**: Chrome 49（桌面端 + 移动端统一，由根目录 .browserslistrc + plugin-legacy 保证）
 - **包管理器**: PNPM + Workspaces
 - **样式预处理器**: Less + CSS Modules
 - **状态管理**: Pinia
@@ -106,7 +107,7 @@ pnpm dev:{app-name}
 
 - 在 `packages` 目录下创建新的依赖包
 - 支持四种包类型：工具库、组件库、工具函数集、插件库
-- 自动配置 TypeScript、Rollup、Jest 等
+- 自动配置 TypeScript、Vite、Jest 等
 
 ### 工程效率技能
 

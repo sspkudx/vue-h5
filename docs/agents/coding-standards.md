@@ -5,43 +5,48 @@
 ## 文件命名规范
 
 ### 1. 组件文件
+
 - **命名规则**: 使用 PascalCase（大驼峰）
 - **示例**:
-  - `HomeView.vue` 或 `HomeView.tsx`
-  - `UserProfile.vue`
-  - `ProductCard.tsx`
+    - `HomeView.vue` 或 `HomeView.tsx`
+    - `UserProfile.vue`
+    - `ProductCard.tsx`
 - **说明**: Vue 组件文件名应与组件名一致
 
 ### 2. 工具函数文件
+
 - **命名规则**: 使用 kebab-case（短横线连接）
 - **示例**:
-  - `date-utils.ts`
-  - `number-helpers.ts`
-  - `auth-helpers.ts`
+    - `date-utils.ts`
+    - `number-helpers.ts`
+    - `auth-helpers.ts`
 - **说明**: 描述文件功能的动词+名词形式
 
 ### 3. 样式文件
+
 - **命名规则**: 使用 `.module.less` 后缀
 - **示例**:
-  - `style.module.less`
-  - `button.module.less`
-  - `layout.module.less`
+    - `style.module.less`
+    - `button.module.less`
+    - `layout.module.less`
 - **说明**: 使用 CSS Modules 实现样式隔离
 
 ### 4. 配置文件
+
 - **命名规则**: 使用 kebab-case
 - **示例**:
-  - `vue.config.js`
-  - `jest.config.js`
-  - `tsconfig.json`
+    - `vite.config.ts`
+    - `jest.config.js`
+    - `tsconfig.json`
 - **说明**: 遵循工具的标准命名约定
 
 ### 5. 测试文件
+
 - **命名规则**: 使用 `.test.ts` 或 `.spec.ts` 后缀
 - **示例**:
-  - `utils.test.ts`
-  - `component.spec.ts`
-  - `hook.test.ts`
+    - `utils.test.ts`
+    - `component.spec.ts`
+    - `hook.test.ts`
 - **说明**: 与源文件同名，放在 `__tests__` 目录下
 
 ## 目录结构规范
@@ -133,33 +138,35 @@ packages/{package-name}/
 ## TypeScript 规范
 
 ### 1. 严格模式
+
 始终使用严格类型检查配置：
 
 ```json
 {
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true
-  }
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true
+    }
 }
 ```
 
 ### 2. 接口定义
+
 为所有公共 API 提供接口定义：
 
 ```typescript
 // 定义清晰的接口
 export interface User {
-  id: number;
-  name: string;
-  email: string;
-  createdAt: Date;
+    id: number;
+    name: string;
+    email: string;
+    createdAt: Date;
 }
 
 // 使用 Type 别名定义复杂类型
@@ -167,13 +174,14 @@ export type UserRole = 'admin' | 'user' | 'guest';
 
 // 使用枚举定义常量
 export enum UserStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  PENDING = 'pending'
+    ACTIVE = 'active',
+    INACTIVE = 'inactive',
+    PENDING = 'pending',
 }
 ```
 
 ### 3. 类型导出
+
 正确导出类型定义：
 
 ```typescript
@@ -182,9 +190,9 @@ export type { User, UserRole };
 
 // 正确：直接导出接口
 export interface Product {
-  id: number;
-  name: string;
-  price: number;
+    id: number;
+    name: string;
+    price: number;
 }
 
 // 避免：混合导出值和类型
@@ -192,26 +200,25 @@ export interface Product {
 ```
 
 ### 4. 泛型使用
+
 在适当的地方使用泛型提高复用性：
 
 ```typescript
 // 通用响应类型
 export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
+    success: boolean;
+    data: T;
+    message?: string;
 }
 
 // 通用工具函数
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  // 实现...
+export function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+    // 实现...
 }
 ```
 
 ### 5. 类型推断
+
 充分利用 TypeScript 的类型推断：
 
 ```typescript
@@ -220,7 +227,7 @@ const add = (a: number, b: number) => a + b;
 
 // 明确指定复杂类型的返回类型
 const getUser = (id: number): Promise<User> => {
-  // 实现...
+    // 实现...
 };
 
 // 使用 const 断言
@@ -230,6 +237,7 @@ const COLORS = ['red', 'green', 'blue'] as const;
 ## Vue 组件规范
 
 ### 1. 组合式 API
+
 优先使用 `<script setup>` 语法：
 
 ```vue
@@ -244,61 +252,61 @@ const doubleCount = computed(() => count.value * 2);
 
 // 方法
 const increment = () => {
-  count.value++;
+    count.value++;
 };
 </script>
 
 <template>
-  <button @click="increment">
-    Count: {{ count }}, Double: {{ doubleCount }}
-  </button>
+    <button @click="increment">Count: {{ count }}, Double: {{ doubleCount }}</button>
 </template>
 
 <style module>
 .button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
 }
 </style>
 ```
 
 ### 2. Props 和 Emits 类型定义
+
 为组件 Props 和 Emits 提供完整类型定义：
 
 ```vue
 <script setup lang="ts">
 // 定义 Props 接口
 interface Props {
-  title: string;
-  count?: number;
-  disabled?: boolean;
+    title: string;
+    count?: number;
+    disabled?: boolean;
 }
 
 // 定义 Emits 类型
 interface Emits {
-  (e: 'update:title', value: string): void;
-  (e: 'click'): void;
+    (e: 'update:title', value: string): void;
+    (e: 'click'): void;
 }
 
 // 使用 defineProps 和 defineEmits
 const props = withDefaults(defineProps<Props>(), {
-  count: 0,
-  disabled: false
+    count: 0,
+    disabled: false,
 });
 
 const emit = defineEmits<Emits>();
 
 // 处理事件
 const handleClick = () => {
-  if (!props.disabled) {
-    emit('click');
-  }
+    if (!props.disabled) {
+        emit('click');
+    }
 };
 </script>
 ```
 
 ### 3. 组件命名
+
 使用多单词命名避免冲突：
 
 ```vue
@@ -314,35 +322,37 @@ const handleClick = () => {
 ```
 
 ### 4. 样式隔离
+
 使用 CSS Modules 或 Scoped CSS：
 
 ```vue
 <!-- 使用 CSS Modules -->
 <style module>
 .container {
-  padding: 20px;
+    padding: 20px;
 }
 
 .title {
-  font-size: 24px;
-  color: #333;
+    font-size: 24px;
+    color: #333;
 }
 </style>
 
 <!-- 或者使用 Scoped CSS -->
 <style scoped>
 .container {
-  padding: 20px;
+    padding: 20px;
 }
 
 .title {
-  font-size: 24px;
-  color: #333;
+    font-size: 24px;
+    color: #333;
 }
 </style>
 ```
 
 ### 5. 组件组织
+
 按功能组织组件代码：
 
 ```vue
@@ -352,10 +362,10 @@ import { ref, computed } from 'vue';
 
 // 2. 类型定义
 interface Props {
-  // ...
+    // ...
 }
 interface Emits {
-  // ...
+    // ...
 }
 
 // 3. Props 和 Emits
@@ -371,17 +381,17 @@ const formattedCount = computed(() => `Count: ${count.value}`);
 
 // 6. 方法
 const increment = () => {
-  count.value++;
+    count.value++;
 };
 
 // 7. 生命周期
 onMounted(() => {
-  // 初始化逻辑
+    // 初始化逻辑
 });
 
 // 8. 监听器
 watch(count, (newValue, oldValue) => {
-  // 处理变化
+    // 处理变化
 });
 </script>
 ```
@@ -389,6 +399,7 @@ watch(count, (newValue, oldValue) => {
 ## 测试规范
 
 ### 1. 测试文件位置
+
 在 `__tests__` 目录中，保持与源码相同的结构：
 
 ```
@@ -404,20 +415,22 @@ src/
 ```
 
 ### 2. 测试文件命名
+
 使用 `.test.ts` 或 `.spec.ts` 后缀：
 
 ```typescript
 // 正确
-Button.test.tsx
-utils.spec.ts
-hook.test.ts
+Button.test.tsx;
+utils.spec.ts;
+hook.test.ts;
 
 // 避免
-Button.test.js
-utils.test.jsx
+Button.test.js;
+utils.test.jsx;
 ```
 
 ### 3. 测试覆盖率目标
+
 关键功能应达到 80% 以上覆盖率：
 
 ```bash
@@ -432,42 +445,43 @@ Lines        : 85% ( 100/118 )
 ```
 
 ### 4. 测试类型
+
 以单元测试为主，适当添加集成测试：
 
 ```typescript
 // 单元测试示例
 describe('formatDate', () => {
-  it('should format date correctly', () => {
-    const date = new Date('2023-01-01');
-    expect(formatDate(date, 'YYYY-MM-DD')).toBe('2023-01-01');
-  });
+    it('should format date correctly', () => {
+        const date = new Date('2023-01-01');
+        expect(formatDate(date, 'YYYY-MM-DD')).toBe('2023-01-01');
+    });
 
-  it('should handle invalid date', () => {
-    expect(() => formatDate(null as any, 'YYYY-MM-DD'))
-      .toThrow('Invalid date');
-  });
+    it('should handle invalid date', () => {
+        expect(() => formatDate(null as any, 'YYYY-MM-DD')).toThrow('Invalid date');
+    });
 });
 
 // 组件测试示例
 describe('Button', () => {
-  it('renders correctly', () => {
-    const wrapper = mount(Button, {
-      props: { label: 'Click me' }
+    it('renders correctly', () => {
+        const wrapper = mount(Button, {
+            props: { label: 'Click me' },
+        });
+        expect(wrapper.text()).toContain('Click me');
     });
-    expect(wrapper.text()).toContain('Click me');
-  });
 
-  it('emits click event', async () => {
-    const wrapper = mount(Button);
-    await wrapper.trigger('click');
-    expect(wrapper.emitted('click')).toHaveLength(1);
-  });
+    it('emits click event', async () => {
+        const wrapper = mount(Button);
+        await wrapper.trigger('click');
+        expect(wrapper.emitted('click')).toHaveLength(1);
+    });
 });
 ```
 
 ## Git 提交规范
 
 ### 1. 提交信息格式
+
 使用 Conventional Commits 规范：
 
 ```
@@ -499,10 +513,11 @@ git commit -m "refactor: improve error handling"
 git commit -m "test: add unit tests for utils"
 
 # 构建配置
-git commit -m "chore: update webpack configuration"
+git commit -m "chore: update vite configuration"
 ```
 
 ### 3. 提交信息规范
+
 - **类型**：必填，使用上述类型之一
 - **范围**：可选，说明影响范围
 - **描述**：必填，简明扼要
@@ -533,69 +548,70 @@ refactor/improve-performance # 代码重构
 ## 代码质量检查
 
 ### 1. ESLint 规则
+
 项目使用以下 ESLint 规则：
 
 ```javascript
 // .eslintrc.js
 module.exports = {
-  rules: {
-    // TypeScript 相关
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    
-    // Vue 相关
-    'vue/multi-word-component-names': 'error',
-    'vue/no-unused-components': 'warn',
-    
-    // 代码风格
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-unused-vars': 'warn',
-    
-    // 最佳实践
-    'prefer-const': 'error',
-    'no-var': 'error',
-    'eqeqeq': ['error', 'always']
-  }
+    rules: {
+        // TypeScript 相关
+        '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+
+        // Vue 相关
+        'vue/multi-word-component-names': 'error',
+        'vue/no-unused-components': 'warn',
+
+        // 代码风格
+        'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+        'no-unused-vars': 'warn',
+
+        // 最佳实践
+        'prefer-const': 'error',
+        'no-var': 'error',
+        eqeqeq: ['error', 'always'],
+    },
 };
 ```
 
 ### 2. Prettier 配置
+
 项目使用 Prettier 统一代码格式：
 
 ```json
 {
-  "semi": true,
-  "trailingComma": "es5",
-  "singleQuote": true,
-  "printWidth": 100,
-  "tabWidth": 2,
-  "useTabs": false,
-  "bracketSpacing": true,
-  "arrowParens": "avoid"
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "bracketSpacing": true,
+    "arrowParens": "avoid"
 }
 ```
 
 ### 3. Stylelint 配置
+
 项目使用 Stylelint 检查样式代码：
 
 ```json
 {
-  "extends": [
-    "stylelint-config-standard",
-    "stylelint-config-recommended-less"
-  ],
-  "rules": {
-    "selector-class-pattern": "^[a-z][a-zA-Z0-9]+$",
-    "no-duplicate-selectors": true,
-    "no-empty-source": true
-  }
+    "extends": ["stylelint-config-standard", "stylelint-config-recommended-less"],
+    "rules": {
+        "selector-class-pattern": "^[a-z][a-zA-Z0-9]+$",
+        "no-duplicate-selectors": true,
+        "no-empty-source": true
+    }
 }
 ```
 
 ## 性能优化
 
 ### 1. 代码分割
+
 使用动态导入分割代码块：
 
 ```typescript
@@ -604,12 +620,11 @@ const HomeView = () => import('./views/HomeView.vue');
 const AboutView = () => import('./views/AboutView.vue');
 
 // 组件懒加载
-const HeavyComponent = defineAsyncComponent(() =>
-  import('./components/HeavyComponent.vue')
-);
+const HeavyComponent = defineAsyncComponent(() => import('./components/HeavyComponent.vue'));
 ```
 
 ### 2. Tree Shaking
+
 确保包支持 ES 模块：
 
 ```javascript
@@ -627,26 +642,28 @@ const HeavyComponent = defineAsyncComponent(() =>
 ```
 
 ### 3. 图片优化
+
 使用合适的图片格式和压缩：
 
 ```vue
 <template>
-  <!-- 使用 WebP 格式 -->
-  <img src="@/assets/images/logo.webp" alt="Logo">
-  
-  <!-- 懒加载图片 -->
-  <img v-lazy="imageUrl" alt="Lazy loaded image">
-  
-  <!-- 响应式图片 -->
-  <picture>
-    <source srcset="image-large.webp" media="(min-width: 1024px)">
-    <source srcset="image-medium.webp" media="(min-width: 768px)">
-    <img src="image-small.webp" alt="Responsive image">
-  </picture>
+    <!-- 使用 WebP 格式 -->
+    <img src="@/assets/images/logo.webp" alt="Logo" />
+
+    <!-- 懒加载图片 -->
+    <img v-lazy="imageUrl" alt="Lazy loaded image" />
+
+    <!-- 响应式图片 -->
+    <picture>
+        <source srcset="image-large.webp" media="(min-width: 1024px)" />
+        <source srcset="image-medium.webp" media="(min-width: 768px)" />
+        <img src="image-small.webp" alt="Responsive image" />
+    </picture>
 </template>
 ```
 
 ### 4. 状态管理优化
+
 合理使用 Pinia store：
 
 ```typescript
@@ -666,6 +683,7 @@ const { user, isLoggedIn } = storeToRefs(store);
 ## 安全最佳实践
 
 ### 1. 输入验证
+
 始终验证用户输入：
 
 ```typescript
@@ -673,30 +691,31 @@ const { user, isLoggedIn } = storeToRefs(store);
 import { z } from 'zod';
 
 const userSchema = z.object({
-  name: z.string().min(1).max(100),
-  email: z.string().email(),
-  age: z.number().min(0).max(150)
+    name: z.string().min(1).max(100),
+    email: z.string().email(),
+    age: z.number().min(0).max(150),
 });
 
 function createUser(data: unknown) {
-  const validated = userSchema.parse(data);
-  // 处理验证后的数据
+    const validated = userSchema.parse(data);
+    // 处理验证后的数据
 }
 ```
 
 ### 2. XSS 防护
+
 防止跨站脚本攻击：
 
 ```vue
 <template>
-  <!-- 避免直接渲染 HTML -->
-  <!-- 错误：<div v-html="userInput"></div> -->
-  
-  <!-- 使用文本插值 -->
-  <div>{{ userInput }}</div>
-  
-  <!-- 或者使用 sanitize-html 库 -->
-  <div v-html="sanitizedHtml"></div>
+    <!-- 避免直接渲染 HTML -->
+    <!-- 错误：<div v-html="userInput"></div> -->
+
+    <!-- 使用文本插值 -->
+    <div>{{ userInput }}</div>
+
+    <!-- 或者使用 sanitize-html 库 -->
+    <div v-html="sanitizedHtml"></div>
 </template>
 
 <script setup lang="ts">
@@ -708,6 +727,7 @@ const sanitizedHtml = computed(() => DOMPurify.sanitize(userInput.value));
 ```
 
 ### 3. 敏感信息保护
+
 保护敏感配置信息：
 
 ```typescript
@@ -722,6 +742,7 @@ const apiKey = import.meta.env.VITE_API_KEY;
 ## 文档注释规范
 
 ### 1. JSDoc 注释
+
 为公共 API 添加 JSDoc 注释：
 
 ```typescript
@@ -734,7 +755,7 @@ const apiKey = import.meta.env.VITE_API_KEY;
  * formatDate(new Date(), 'YYYY-MM-DD') // '2023-01-01'
  */
 export function formatDate(date: Date, format: string): string {
-  // 实现...
+    // 实现...
 }
 
 /**
@@ -742,18 +763,19 @@ export function formatDate(date: Date, format: string): string {
  * @interface
  */
 export interface User {
-  /** 用户ID */
-  id: number;
-  /** 用户名 */
-  name: string;
-  /** 邮箱地址 */
-  email: string;
-  /** 创建时间 */
-  createdAt: Date;
+    /** 用户ID */
+    id: number;
+    /** 用户名 */
+    name: string;
+    /** 邮箱地址 */
+    email: string;
+    /** 创建时间 */
+    createdAt: Date;
 }
 ```
 
 ### 2. Vue 组件文档
+
 为组件添加文档注释：
 
 ```vue
@@ -762,7 +784,7 @@ export interface User {
  * 用户头像组件
  * @component
  * @description 显示用户头像，支持不同尺寸和形状
- * 
+ *
  * @example
  * <UserAvatar
  *   :src="user.avatar"
@@ -771,17 +793,17 @@ export interface User {
  * />
  */
 interface Props {
-  /** 头像图片地址 */
-  src: string;
-  /** 头像尺寸，单位像素 */
-  size?: number;
-  /** 头像形状，circle 或 square */
-  shape?: 'circle' | 'square';
+    /** 头像图片地址 */
+    src: string;
+    /** 头像尺寸，单位像素 */
+    size?: number;
+    /** 头像形状，circle 或 square */
+    shape?: 'circle' | 'square';
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  size: 40,
-  shape: 'circle'
+    size: 40,
+    shape: 'circle',
 });
 </script>
 ```

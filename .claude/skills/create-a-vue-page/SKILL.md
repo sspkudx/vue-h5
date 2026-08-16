@@ -157,7 +157,7 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
     path: '/{page-name}',
     name: '{PageName}',
     component() {
-        return import(/* webpackChunkName: "{PageName}" */ '../views/{PageName}/index');
+        return import('../views/{PageName}/index');
     },
 },
 ```
@@ -171,7 +171,7 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
     path: '/{page-name}',
     name: '{PageName}',
     component() {
-        return import(/* webpackChunkName: "{PageName}" */ '../views/{PageName}/{PageName}.vue');
+        return import('../views/{PageName}/{PageName}.vue');
     },
 },
 ```
@@ -194,7 +194,7 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
         path: '/user-profile',
         name: 'UserProfile',
         component() {
-            return import(/* webpackChunkName: "UserProfile" */ '../views/UserProfile/UserProfile.vue');
+            return import('../views/UserProfile/UserProfile.vue');
         },
     }
     ```
@@ -216,7 +216,7 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
         path: '/settings',
         name: 'Settings',
         component() {
-            return import(/* webpackChunkName: "Settings" */ '../views/Settings/index');
+            return import('../views/Settings/index');
         },
     }
     ```

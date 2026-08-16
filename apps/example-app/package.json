@@ -2,14 +2,14 @@
     "name": "example-app",
     "version": "1.0.0",
     "scripts": {
-        "dev": "vue-cli-service serve",
-        "build": "vue-cli-service build",
-        "lint": "vue-cli-service lint --fix"
+        "dev": "vite",
+        "build": "vue-tsc --noEmit && vite build",
+        "typecheck": "vue-tsc --noEmit",
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,vue}\" --fix"
     },
     "dependencies": {
         "@my-app/shared": "workspace:*",
         "axios": "^1.19.0",
-        "core-js": "^3.50.0",
         "pinia": "^4.0.3",
         "ress": "^6.0.0",
         "vue": "^3.5.41",

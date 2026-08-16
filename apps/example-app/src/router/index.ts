@@ -8,24 +8,24 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component() {
-                return import(/* webpackChunkName: "HomeView" */ '../views/HomeView/index');
+                return import('../views/HomeView/index');
             },
         },
         {
             path: '/about',
             name: 'about',
             // route level code-splitting
-            // this generates a separate chunk (about.[hash].js) for this route
+            // this generates a separate chunk for this route
             // which is lazy-loaded when the route is visited.
             component() {
-                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/index');
+                return import('../views/AboutView/index');
             },
         },
         {
             path: '/playground',
             name: 'PlaygroundPage',
             component() {
-                return import(/* webpackChunkName: "PlaygroundPage" */ '../views/PlaygroundPage/PlaygroundPage.vue');
+                return import('../views/PlaygroundPage/PlaygroundPage.vue');
             },
         },
     ],
