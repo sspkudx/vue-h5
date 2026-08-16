@@ -10,6 +10,7 @@ node_modules/
 # Package files
 package-lock.json
 package.json
+pnpm-lock.yaml
 tsconfig.json
 
 # Apps build outputs
