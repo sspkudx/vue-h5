@@ -45,8 +45,8 @@
 
 ## 整改基线决策（2026-08 评审后）
 
-- Node 基线：**22 LTS**；pnpm：**11**（`packageManager` 字段锁定，corepack 启用）。pnpm 11 起配置全部写入 `pnpm-workspace.yaml`（`.npmrc` 仅 registry/auth）；默认 `minimumReleaseAge=1440`（依赖须发布满 24h）已显式关闭，`allowBuilds` 放行 core-js / unrs-resolver。
-- 依赖策略：全部 latest。TypeScript 已升 **6.0**（`~6.0.3` 锁定次版本：ts-jest peer `<7`、typescript-eslint peer `<6.1`，7.0 原生版待工具链跟进后再评估）。TS 6 适配点：`baseUrl` 已废弃并移除（paths 相对 tsconfig 解析）；`types` 默认 `[]` 需显式声明（shared 为 `["jest", "node"]`，app 为 `["vite/client", "node"]`）；`rootDir` 不再自动推断（tsconfig.build.json 显式 `./src`）。
+- Node 基线：**22 LTS**；pnpm：**11**（`packageManager` 字段锁定，corepack 启用）。pnpm 11 起配置全部写入 `pnpm-workspace.yaml`（`.npmrc` 仅 registry/auth）；`allowBuilds` 放行 core-js / unrs-resolver。
+- 依赖策略：全部 latest，但更新不激进——采用 pnpm 11 `minimumReleaseAge=1440`（新版本发布满 24h 才被采纳），确需抢新/锁文件已存在的新发布包走 `minimumReleaseAgeExclude` 白名单（当前豁免：csstools 补丁包）。TypeScript 已升 **6.0**（`~6.0.3` 锁定次版本：ts-jest peer `<7`、typescript-eslint peer `<6.1`，7.0 原生版待工具链跟进后再评估）。TS 6 适配点：`baseUrl` 已废弃并移除（paths 相对 tsconfig 解析）；`types` 默认 `[]` 需显式声明（shared 为 `["jest", "node"]`，app 为 `["vite/client", "node"]`）；`rootDir` 不再自动推断（tsconfig.build.json 显式 `./src`）。
 - browserslist：兼容性基线 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），不用 `not dead`；由 @vitejs/plugin-legacy 自动生成 legacy 产物（ES5 + core-js polyfill + SystemJS）。
 - 提交规范：**约定式提交 v1.0.0**（https://www.conventionalcommits.org/zh-hans/v1.0.0/），由 husky `commit-msg` 钩子 + commitlint 强制校验（两个分支均启用）；main 另有 `pre-commit`（lint-staged：prettier + eslint）自动格式化。CI：GitHub Actions（lint + test + build）。
 - 构建工具：已从 Vue CLI 5/webpack 迁移到 **Vite 8**（apps）+ Vite lib 模式（packages），迁移前后功能经浏览器冒烟测试验证一致。
