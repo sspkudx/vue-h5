@@ -145,13 +145,17 @@ npx prettier --write src/components/MyComponent.vue
 
 ### 3.4 Git 提交前检查
 
-> ⚠️ 当前分支未配置 husky / lint-staged 钩子（保持 Node 14 兼容基线），提交前请手动运行：
+```bash
+git add .
+git commit -m "feat: 添加新功能"
+```
+
+- **commit-msg 钩子（已启用）**：commitlint v17 强制校验提交信息是否符合**约定式提交 v1.0.0**（https://www.conventionalcommits.org/zh-hans/v1.0.0/），不合规提交会被拦截。
+- **无 pre-commit 格式化钩子**（保持 Node 14 兼容基线）：提交前请手动运行：
 
 ```bash
 pnpm lint && pnpm lint:style && pnpm test
 ```
-
-（后续若接入钩子自动化，请同步更新本文档。）
 
 ## 4. 测试
 
