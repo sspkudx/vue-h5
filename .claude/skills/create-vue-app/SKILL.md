@@ -631,6 +631,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
 7. **格式一致性**: 确保新增的 scripts 格式与现有 scripts 保持一致（`pnpm -F {app-name} {command}`）
+8. **兼容性基线**: 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一），由根目录 `.browserslistrc` + babel 转译 + core-js polyfill 保证。新建应用**无需**单独配置 browserslist，构建产物中 `-legacy` 文件即为基线产物（Chrome 49 自动加载，现代浏览器加载 `type="module"` 产物）。不要降低根目录 `.browserslistrc` 的基线：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持）
 
 ## 错误处理
 

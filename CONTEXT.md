@@ -8,8 +8,8 @@
 - Node：**14.18+**（`.node-version = 14`，pnpm 7，lockfile v5.4）——构建机限制，非终端设备兼容性手段
 - 依赖：保持升级前版本（ESLint 8 旧式 eslintrc、stylelint 15、prettier 2、rollup 3、jest 29、pinia 3、ress 5）
 - 无 husky / lint-staged / commitlint / CI：提交前手动 `pnpm lint && pnpm lint:style && pnpm test`
-- browserslist：维持原样（`not dead` 排除老设备——已知取舍，如有低端设备需求请在 main 分支跟进）
 - 无业务基建（axios 封装 / env / proxy / 全局错误处理）：见 main 分支 `docs/agents/business-infrastructure.md`
+- browserslist：**Chrome 49 兼容性基线**（桌面端 + 移动端统一，含 Android WebView），由 babel 转译 + core-js polyfill 保证；Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持），故下限不得低于 49
 
 ## 与 main 一致的改动
 

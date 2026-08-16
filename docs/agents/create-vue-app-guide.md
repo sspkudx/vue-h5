@@ -143,6 +143,13 @@ pnpm run lint:my-app
 
 ## 配置说明
 
+### 兼容性基线
+
+- 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView）
+- 由根目录 `.browserslistrc` 显式下限 + babel 转译 + core-js polyfill 保证，新建应用无需单独配置
+- 构建产物区分双版本：`-legacy` 文件（`nomodule`，Chrome 49 加载）与 `type="module"` 产物（现代浏览器加载）
+- 下限不得低于 Chrome 49：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持，无法 polyfill）
+
 ### 端口配置
 
 默认情况下，应用会使用自动分配的端口。如果需要指定端口，可以在创建时指定：
