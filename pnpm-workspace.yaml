@@ -2,6 +2,16 @@ packages:
     - 'apps/*'
     - 'packages/*'
 
+# pnpm 11+ 配置统一迁移至本文件（.npmrc 仅保留 registry/auth）
+shamefullyHoist: true
+engineStrict: true
+
+# pnpm 11 默认不执行依赖的构建脚本；core-js（legacy 产物 polyfill）与
+# unrs-resolver（eslint 原生解析器）为必要依赖，显式放行。
+allowBuilds:
+    core-js: true
+    unrs-resolver: true
+
 catalogs:
     default:
         axios: ^1.19.0
@@ -9,3 +19,8 @@ catalogs:
         ress: ^6.0.0
         vue: ^3.5.41
         vue-router: ^5.2.0
+
+# pnpm 11 默认 minimumReleaseAge=1440（依赖须发布满 24h 才可安装），会阻断刚发布的新包
+# （如 csstools 补丁包），导致 lockfile 更新后 24h 内无法安装；按项目"全部 latest"策略关闭。
+# 如需恢复供应链延迟策略，可改为 10080（一周）。
+minimumReleaseAge: 0

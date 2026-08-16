@@ -23,7 +23,7 @@
 | 状态 | Pinia 4 |
 | 样式 | Less + CSS Modules（`*.module.less`，kebab→camel 双导出），`ress` reset |
 | 移动端适配 | postcss-px-to-viewport，自定义单位 `mpx` → `vmin`（viewportWidth 390；横竖屏切换尺寸会变，双刃剑，已知晓） |
-| 包管理 | pnpm workspace（`apps/*` + `packages/*`），.npmrc 指华为云镜像 + `shamefully-hoist=true`；高频共享依赖由 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（`catalog:` 协议） |
+| 包管理 | pnpm 11 workspace（`apps/*` + `packages/*`），registry 指华为云镜像 + `shamefully-hoist`（配置在 `pnpm-workspace.yaml`）；高频共享依赖由 `catalogs.default` 统一版本（`catalog:` 协议） |
 | 测试 | Jest 30 + ts-jest，根配置只覆盖 `packages/**` |
 | 规范 | ESLint 10（flat config）+ Prettier 3 + stylelint 17（BEM 类名约束 + 属性排序） |
 | 构建编排 | `scripts/build.sh` / `build-packages.sh`（先 packages 后 apps，支持并行） |
@@ -45,7 +45,7 @@
 
 ## 整改基线决策（2026-08 评审后）
 
-- Node 基线：**22 LTS**；pnpm：**10**（`packageManager` 字段锁定，corepack 启用）。
+- Node 基线：**22 LTS**；pnpm：**11**（`packageManager` 字段锁定，corepack 启用）。pnpm 11 起配置全部写入 `pnpm-workspace.yaml`（`.npmrc` 仅 registry/auth）；默认 `minimumReleaseAge=1440`（依赖须发布满 24h）已显式关闭，`allowBuilds` 放行 core-js / unrs-resolver。
 - 依赖策略：全部 latest。TypeScript 已升 **6.0**（`~6.0.3` 锁定次版本：ts-jest peer `<7`、typescript-eslint peer `<6.1`，7.0 原生版待工具链跟进后再评估）。TS 6 适配点：`baseUrl` 已废弃并移除（paths 相对 tsconfig 解析）；`types` 默认 `[]` 需显式声明（shared 为 `["jest", "node"]`，app 为 `["vite/client", "node"]`）；`rootDir` 不再自动推断（tsconfig.build.json 显式 `./src`）。
 - browserslist：兼容性基线 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），不用 `not dead`；由 @vitejs/plugin-legacy 自动生成 legacy 产物（ES5 + core-js polyfill + SystemJS）。
 - 提交规范：**约定式提交 v1.0.0**（https://www.conventionalcommits.org/zh-hans/v1.0.0/），由 husky `commit-msg` 钩子 + commitlint 强制校验（两个分支均启用）；main 另有 `pre-commit`（lint-staged：prettier + eslint）自动格式化。CI：GitHub Actions（lint + test + build）。
