@@ -43,7 +43,7 @@ apps/
 
 ### 技能位置：
 
-`./skills/create-vue-app/SKILL.md`
+`./.claude/skills/create-vue-app/SKILL.md`
 
 ### 创建新应用的方式：
 
@@ -438,7 +438,7 @@ npx tsc --noEmit
 -   [Vue 3 官方文档](https://vuejs.org/)
 -   [Vue Router](https://router.vuejs.org/)
 -   [Pinia](https://pinia.vuejs.org/)
--   [Vite](https://vitejs.dev/)
+-   [Vue CLI（webpack）](https://cli.vuejs.org/)
 
 ### 项目内资源
 

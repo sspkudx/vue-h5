@@ -18,7 +18,8 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
-        "test:shared": "pnpm -F @my-app/shared test"
+        "test:shared": "pnpm -F @my-app/shared test",
+        "sync:skills": "sh ./scripts/sync-skills.sh"
     },
     "dependencies": {
         "@vue/babel-plugin-jsx": "^1.5.0",

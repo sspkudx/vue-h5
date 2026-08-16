@@ -22,7 +22,7 @@ pnpm-debug.log*
 *.sw?
 
 .catpaw
-.claude
+.claude/.DS_Store
 .cursor
 
 # Unit test

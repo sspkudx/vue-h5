@@ -31,16 +31,16 @@
 ```bash
 # 复制技能文件到 AI 编辑器目录
 # CatPaw
-cp -r skills/create-vue-app/ .catpaw/skills/
+cp -r .claude/skills/create-vue-app/ .catpaw/skills/
 
 # Cursor
-cp -r skills/create-vue-app/ .cursor/skills/
+cp -r .claude/skills/create-vue-app/ .cursor/skills/
 
 # Windsurf
-cp -r skills/create-vue-app/ .windsurf/skills/
+cp -r .claude/skills/create-vue-app/ .windsurf/skills/
 
 # Trae
-cp -r skills/create-vue-app/ .trae/skills/
+cp -r .claude/skills/create-vue-app/ .trae/skills/
 ```
 
 ### 2. 验证技能功能
@@ -157,7 +157,7 @@ pnpm list --depth=0
 **解决方案**:
 ```bash
 # 1. 检查模板文件
-cat skills/create-vue-app/templates/package.json
+cat .claude/skills/create-vue-app/templates/package.json
 
 # 2. 检查变量替换
 # 验证模板变量是否正确替换

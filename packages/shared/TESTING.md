@@ -100,8 +100,7 @@ pnpm test:watch
 packages/shared/src/
 ├── __tests__/
 │   ├── index.test.ts        # safeNum 函数测试
-│   ├── utils.test.ts        # 工具函数测试
-│   └── node14-compatibility.test.ts  # Node 14 兼容性测试
+│   └── utils.test.ts        # 工具函数测试
 └── index.ts                 # 源代码
 ```
 
@@ -178,20 +177,6 @@ describe('safeNum', () => {
    - 精度限制
    - 极值处理
    - 边界情况四舍五入
-
-### Node 14 兼容性测试
-- 可选链操作符 (`?.`)
-- 空值合并操作符 (`??`)
-- `Promise.allSettled()`
-- `String.matchAll()`
-- `BigInt`
-- `globalThis`
-- 数字分隔符 (`_`)
-- `String.prototype.replaceAll()`
-- 逻辑赋值运算符 (`||=`, `&&=`, `??=`)
-- `Promise.any()` (如果可用)
-- `Array.prototype.at()` (如果可用)
-- JavaScript 版本验证
 
 ## CI/CD 集成建议
 

@@ -6,7 +6,7 @@
 
 ## ✨ 特性亮点
 
--   **现代化技术栈**: Vue 3 + TypeScript + Vite + PNPM
+-   **现代化技术栈**: Vue 3 + TypeScript + Vue CLI（webpack 5）+ PNPM
 -   **Monorepo 架构**: 支持多应用、多包统一管理
 -   **AI 智能开发**: 内置 Skills 快速创建应用和包
 -   **完整工具链**: ESLint, Prettier, Jest, Rollup 等
@@ -120,9 +120,14 @@ vue-h5/
 │   └── [your-app]/         # 你的应用（通过 AI 技能创建）
 ├── packages/                # 共享包目录
 │   └── shared/             # 共享工具包示例
-├── skills/                  # AI 辅助开发技能
+├── .claude/skills/          # AI 辅助开发技能（7 个技能，已入库）
 │   ├── create-vue-app/     # 创建 Vue 应用技能
-│   └── create-a-package/   # 创建依赖包技能
+│   ├── create-a-vue-page/  # 创建 Vue 页面技能
+│   ├── create-component/   # 创建 Vue 组件技能
+│   ├── create-a-package/   # 创建依赖包技能
+│   ├── design-to-code/     # 设计稿转代码技能
+│   ├── git-commit-push/    # Git 提交推送技能
+│   └── create-skill/       # 创建新技能技能
 ├── scripts/                 # 构建脚本
 ├── types/                   # TypeScript 类型定义
 └── public/                  # 静态资源
@@ -141,7 +146,7 @@ vue-h5/
 "在 apps 目录下添加新应用 user-portal"
 ```
 
-**技能位置**: `./skills/create-vue-app/SKILL.md`
+**技能位置**: `./.claude/skills/create-vue-app/SKILL.md`
 
 -   ✅ 自动生成完整的 Vue 3 + TypeScript 应用结构
 -   ✅ 支持自定义应用名称和端口号
@@ -156,7 +161,7 @@ vue-h5/
 "在 packages 目录下添加新包 auth-helpers，类型为工具函数集，描述为 '用户认证相关工具函数'"
 ```
 
-**技能位置**: `./skills/create-a-package/SKILL.md`
+**技能位置**: `./.claude/skills/create-a-package/SKILL.md`
 
 -   ✅ 支持四种包类型：工具库、组件库、工具函数集、插件库
 -   ✅ 自动配置 TypeScript + Rollup 开发环境

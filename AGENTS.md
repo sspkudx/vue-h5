@@ -98,26 +98,30 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 ### 项目技能目录
 
 ```
-skills/
-├── create-vue-app/     # 创建 Vue 应用技能
-├── create-a-package/   # 创建依赖包技能
-├── create-skill/       # 创建新技能技能
-└── git-commit-push/    # Git 提交推送技能
+.claude/skills/
+├── create-vue-app/      # 创建 Vue 应用技能
+├── create-a-vue-page/   # 创建 Vue 页面技能（tsx / .vue）
+├── create-component/    # 创建 Vue 组件技能（SFC / defineComponent / FunctionalComponent）
+├── create-a-package/    # 创建依赖包技能
+├── design-to-code/      # 设计稿转代码 + 视觉走查
+├── create-skill/        # 创建新技能技能
+└── git-commit-push/     # Git 提交推送技能
 ```
 
 ### AI 编辑器技能目录
 
--   **CatPaw**: `.catpaw/skills/` 目录
--   **Cursor**: `.cursor/skills/` 目录
--   **Windsurf**: `.windsurf/skills/` 目录
--   **Trae**: `.trae/skills/` 目录
+-   **CatPaw**: `.catpaw/skills/` 目录（运行 `pnpm sync:skills` 从 `.claude/skills/` 同步）
+-   **Cursor**: `.cursor/skills/` 目录（如使用该编辑器，参照 sync 脚本放置）
+-   **Windsurf**: `.windsurf/skills/` 目录（同上）
+-   **Trae**: `.trae/skills/` 目录（同上）
 
 ## 文档更新历史
 
-| 版本 | 日期       | 更新内容             |
-| ---- | ---------- | -------------------- |
-| v2.0 | 2024-01-01 | 文档重构为模块化结构 |
-| v1.0 | 2023-12-01 | 初始版本             |
+| 版本 | 日期       | 更新内容                                                         |
+| ---- | ---------- | ---------------------------------------------------------------- |
+| v3.0 | 2026-08-16 | 登记全部 7 个技能；技能归档至 .claude/skills 并同步脚本化        |
+| v2.0 | 2024-01-01 | 文档重构为模块化结构                                             |
+| v1.0 | 2023-12-01 | 初始版本                                                         |
 
 ## 贡献指南
 

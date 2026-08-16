@@ -145,19 +145,13 @@ npx prettier --write src/components/MyComponent.vue
 
 ### 3.4 Git 提交前检查
 
-项目配置了 husky 和 lint-staged，在提交代码时会自动运行：
+> ⚠️ 当前分支未配置 husky / lint-staged 钩子（保持 Node 14 兼容基线），提交前请手动运行：
 
 ```bash
-# Git 提交流程
-git add .
-git commit -m "feat: add new feature"
-
-# 提交时会自动执行：
-# 1. 代码格式化 (Prettier)
-# 2. 代码检查 (ESLint)
-# 3. 样式检查 (Stylelint)
-# 4. 测试运行 (Jest)
+pnpm lint && pnpm lint:style && pnpm test
 ```
+
+（后续若接入钩子自动化，请同步更新本文档。）
 
 ## 4. 测试
 
@@ -227,13 +221,13 @@ describe('MyComponent', () => {
 
 ```bash
 # 构建特定应用
-pnpm build:{app-name}
+pnpm -F {app-name} build
 
-# 构建所有应用
-pnpm build:apps
+# 构建所有应用（不含 packages）
+sh ./scripts/build.sh --apps-only
 
 # 构建并分析包大小
-pnpm build:{app-name} --report
+pnpm -F {app-name} build -- --report
 ```
 
 ### 5.2 包构建
@@ -246,8 +240,7 @@ pnpm build:packages
 cd packages/{package-name}
 pnpm build
 
-# 构建并生成类型声明
-pnpm build:types
+# 类型声明随构建自动生成（Rollup + rollup-plugin-dts 聚合为单个 d.ts）
 ```
 
 ### 5.3 完整构建
@@ -268,11 +261,8 @@ pnpm build
 ### 6.1 生产构建
 
 ```bash
-# 生产环境构建
-NODE_ENV=production pnpm build:{app-name}
-
-# 或者使用预设脚本
-pnpm build:prod:{app-name}
+# 生产环境构建（应用 build 默认即生产模式）
+pnpm -F {app-name} build
 ```
 
 ### 6.2 构建产物
@@ -302,11 +292,11 @@ packages/{package-name}/dist/  # 包构建产物
 
 3. **构建验证**
    ```bash
+   # 重新构建验证
+   pnpm -F {app-name} build
+
    # 检查构建产物
    ls -la apps/{app-name}/dist/
-   
-   # 验证构建产物完整性
-   pnpm build:verify
    ```
 
 ## 7. 开发环境配置

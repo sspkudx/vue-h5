@@ -46,7 +46,7 @@ packages/
 
 ### 技能位置：
 
-`./skills/create-a-package/SKILL.md`
+`./.claude/skills/create-a-package/SKILL.md`
 
 ### 支持创建的包类型：
 

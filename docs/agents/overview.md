@@ -22,9 +22,14 @@ vue-h5/
 │   └── [your-app]/         # 用户创建的应用
 ├── packages/                # 共享包目录
 │   └── shared/             # 共享工具包示例
-├── skills/                  # AI 技能目录
+├── .claude/skills/          # AI 技能目录（7 个技能）
 │   ├── create-vue-app/     # 创建 Vue 应用技能
-│   └── create-a-package/   # 创建依赖包技能
+│   ├── create-a-vue-page/  # 创建 Vue 页面技能
+│   ├── create-component/   # 创建 Vue 组件技能
+│   ├── create-a-package/   # 创建依赖包技能
+│   ├── design-to-code/     # 设计稿转代码技能
+│   ├── git-commit-push/    # Git 提交推送技能
+│   └── create-skill/       # 创建新技能技能
 ├── types/                   # TypeScript 类型定义
 ├── scripts/                 # 构建脚本
 └── public/                  # 静态资源
@@ -32,9 +37,9 @@ vue-h5/
 
 ## 技能目录
 
-技能文件位于以下目录：
-- `.catpaw/skills/` - CatPaw IDE 的技能目录
-- `skills/` - 项目中的技能模板目录
+技能文件统一归档于以下目录（已提交到仓库）：
+- `.claude/skills/` - 技能唯一事实来源（Claude Code / Cursor / Windsurf / opencode 通用）
+- `.catpaw/skills/` - CatPaw 镜像（运行 `pnpm sync:skills` 同步，本地生成不入库）
 
 ## 设计理念
 
@@ -77,17 +82,26 @@ pnpm dev:{app-name}
 
 ## 技能概览
 
-项目内置了以下 AI 开发技能：
+项目内置了 7 个 AI 开发技能：
 
 ### 创建 Vue 应用技能 (`create-vue-app`)
 - 在 `apps` 目录下创建新的 Vue 应用
-- 基于现有 example-app 模板生成完整结构
+- 直接生成完整的源码和配置文件（支持 tsx / .vue 两种页面方式）
 - 支持自定义应用名称和端口号
+
+### 页面与组件技能 (`create-a-vue-page` / `create-component`)
+- 在应用的 `views` 目录下创建页面（tsx / .vue 两种方式）
+- 创建三种形式的组件：SFC、defineComponent、FunctionalComponent
 
 ### 创建依赖包技能 (`create-a-package`)
 - 在 `packages` 目录下创建新的依赖包
 - 支持四种包类型：工具库、组件库、工具函数集、插件库
 - 自动配置 TypeScript、Rollup、Jest 等
+
+### 工程效率技能
+- `design-to-code`：设计稿转代码 + 视觉走查，附带校验脚本
+- `git-commit-push`：按项目规范（语义化提交）提交与推送
+- `create-skill`：创建新的 AI 技能
 
 ## 下一步
 
