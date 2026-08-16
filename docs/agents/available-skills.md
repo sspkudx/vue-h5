@@ -12,6 +12,7 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 | create-a-package | 在 packages 下创建依赖包（四种类型） | `.claude/skills/create-a-package/SKILL.md` |
 | design-to-code | 设计稿转代码 + 视觉走查（附校验脚本） | `.claude/skills/design-to-code/SKILL.md` |
 | git-commit-push | 按项目规范提交推送（语义化提交、Gerrit） | `.claude/skills/git-commit-push/SKILL.md` |
+| update-dependencies | 按项目规范检查更新依赖（pnpm 11 供应链策略 + catalog） | `.claude/skills/update-dependencies/SKILL.md` |
 | create-skill | 创建新的 AI 技能 | `.claude/skills/create-skill/SKILL.md` |
 
 ## 1. create-vue-app
@@ -104,6 +105,7 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 - `.claude/skills/create-a-package/SKILL.md` - 创建依赖包技能
 - `.claude/skills/design-to-code/SKILL.md` - 设计稿转代码技能
 - `.claude/skills/git-commit-push/SKILL.md` - Git 提交推送技能
+- `.claude/skills/update-dependencies/SKILL.md` - 依赖更新技能
 - `.claude/skills/create-skill/SKILL.md` - 创建新技能技能
 
 ### AI 编辑器技能目录

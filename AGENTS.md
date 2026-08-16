@@ -102,13 +102,14 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 
 ```
 .claude/skills/
-├── create-vue-app/      # 创建 Vue 应用技能
-├── create-a-vue-page/   # 创建 Vue 页面技能（tsx / .vue）
-├── create-component/    # 创建 Vue 组件技能（SFC / defineComponent / FunctionalComponent）
-├── create-a-package/    # 创建依赖包技能
-├── design-to-code/      # 设计稿转代码 + 视觉走查
-├── create-skill/        # 创建新技能技能
-└── git-commit-push/     # Git 提交推送技能
+├── create-vue-app/          # 创建 Vue 应用技能
+├── create-a-vue-page/       # 创建 Vue 页面技能（tsx / .vue）
+├── create-component/        # 创建 Vue 组件技能（SFC / defineComponent / FunctionalComponent）
+├── create-a-package/        # 创建依赖包技能
+├── design-to-code/          # 设计稿转代码 + 视觉走查
+├── update-dependencies/     # 依赖更新技能（pnpm 11 供应链策略 + catalog）
+├── create-skill/            # 创建新技能技能
+└── git-commit-push/         # Git 提交推送技能
 ```
 
 ### AI 编辑器技能目录
@@ -121,6 +122,7 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 
 | 版本 | 日期 | 更新内容 |
 | --- | --- | --- |
+| v3.3 | 2026-08-16 | 新增 update-dependencies 依赖更新技能（pnpm 11 minimumReleaseAge/allowBuilds + catalog 统一版本）；登记技能数 7 → 8 |
 | v3.2 | 2026-08-16 | 提交信息强制约定式提交 v1.0.0（commitlint）；compat/node-14 分支仅保留 commit-msg 校验（无 pre-commit 格式化） |
 | v3.1 | 2026-08-16 | 新增根 tsconfig.base.json 公共 TS 配置；移除 .catpaw/skills 镜像与 sync 脚本；README 增加 Node 14 分支指引 |
 | v3.0 | 2026-08-16 | 登记全部 7 个技能；新增 CONTEXT.md、业务基础设施文档；同步脚本化 |
