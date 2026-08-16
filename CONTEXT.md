@@ -32,9 +32,9 @@
 
 - `apps/example-app`：唯一应用，也是 create-vue-app 技能的参照实现。
 - `packages/shared`（`@my-app/shared`）：纯工具库（类型守卫 + 数字工具），Vite lib 模式出 ESM + tsc 出 d.ts，测试质量是仓库标杆。
-- `.claude/skills/`：7 个 AI 技能；`.catpaw/skills/` 是其镜像（靠 `scripts/sync-skills.sh` 同步）。
+- `.claude/skills/`：7 个 AI 技能（唯一事实来源，已入库）。
 - `docs/agents/`：模块化文档（AGENTS.md 是索引）。
-- `types/`：css/img/vue 的 d.ts shim，由各子项目 tsconfig 引用（根目录无 tsconfig.json）。
+- `types/`：css/img/vue 的 d.ts shim，由各子项目 tsconfig 引用；根目录 `tsconfig.base.json` 是公共 TS 编译配置（`moduleResolution: "bundler"`），apps/packages 的 tsconfig 均 extends 它。
 
 ## 关键架构决策
 
@@ -49,7 +49,7 @@
 - browserslist：兼容性基线 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），不用 `not dead`；由 @vitejs/plugin-legacy 自动生成 legacy 产物（ES5 + core-js polyfill + SystemJS）。
 - 提交规范：husky + lint-staged + commitlint；CI：GitHub Actions（lint + test + build）。
 - 构建工具：已从 Vue CLI 5/webpack 迁移到 **Vite 8**（apps）+ Vite lib 模式（packages），迁移前后功能经浏览器冒烟测试验证一致。
-- 技能归档：`.claude/skills/`（唯一事实来源，入库）；`.catpaw/skills/` 本地镜像（`pnpm sync:skills` 同步）。
+- 技能归档：`.claude/skills/`（唯一事实来源，入库）；原 `.catpaw/skills/` 本地镜像与 `pnpm sync:skills` 同步脚本已移除。
 - **`compat/node-14` 分支**：面向构建机仍为 Node 14 的流水线场景；该分支保持 Node 14 基线 + 旧依赖（vue-cli/rollup）+ 无 husky/CI，兼容性基线同为 Chrome 49。注意：该分支上的文档只描述其分支自身的真实状态。
 
 ## 已知未竟事项（详见 docs/agents/business-infrastructure.md）

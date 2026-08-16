@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        // bundler：支持 package.json exports 解析（Vite 8+ 仅提供 exports，无顶层 main/types）
+        "moduleResolution": "bundler",
+        "strict": true,
+        "jsx": "preserve",
+        "jsxImportSource": "vue",
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "useDefineForClassFields": true,
+        "sourceMap": true,
+        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    }
+}

@@ -49,6 +49,12 @@ pnpm dev:example
 corepack enable
 ```
 
+> 💡 **构建机还是 Node 14？** 主分支要求 Node 22 LTS。如果你的流水线/构建机暂时无法升级 Node，可以直接复用 `compat/node-14` 分支模板（保持 Node 14 基线 + 旧工具链，兼容性基线同为 Chrome 49）：
+>
+> ```bash
+> npx degit sspkudx/vue-h5#compat/node-14 my-project
+> ```
+
 ### 🔄 使用 degit 复用项目模板
 
 #### 什么是 degit？

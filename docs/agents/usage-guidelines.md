@@ -124,8 +124,7 @@
 技能文件位于以下目录：
 
 - 项目技能目录：`/.claude/skills/`（唯一事实来源，已入库）
-- AI 编辑器镜像目录（本地生成，不入库）：
-    - CatPaw: `.catpaw/skills/`（运行 `pnpm sync:skills` 同步）
+- AI 编辑器镜像目录（如使用对应编辑器，自行从 `.claude/skills/` 复制，本地生成不入库）：
     - Cursor: `.cursor/skills/`
     - Windsurf: `.windsurf/skills/`
     - Trae: `.trae/skills/`

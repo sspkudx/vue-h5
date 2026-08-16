@@ -106,17 +106,17 @@ design-to-code/
 
 ```bash
 # 运行代码质量检查
-node .catpaw/skills/design-to-code/scripts/check-code-quality.js
+node .claude/skills/design-to-code/scripts/check-code-quality.js
 
 # 检查特定目录
-node .catpaw/skills/design-to-code/scripts/check-code-quality.js --dir src/components
+node .claude/skills/design-to-code/scripts/check-code-quality.js --dir src/components
 ```
 
 ### 3. 技能验证
 
 ```bash
 # 验证技能完整性
-node .catpaw/skills/design-to-code/scripts/validate-skill.js
+node .claude/skills/design-to-code/scripts/validate-skill.js
 ```
 
 ## 🎨 技术特色

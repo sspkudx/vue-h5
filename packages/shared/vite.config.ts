@@ -10,7 +10,9 @@ export default defineConfig({
         lib: {
             entry: resolve(pkgRoot, 'src/index.ts'),
             formats: ['es'],
-            fileName: () => 'index.js',
+            fileName() {
+                return 'index.js';
+            },
         },
         sourcemap: true,
         emptyOutDir: true,

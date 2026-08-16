@@ -63,7 +63,7 @@ src/components/Button/style.module.less # 按钮样式（使用 CSS Modules）
 
 ```bash
 # 运行代码质量检查
-node .catpaw/skills/design-to-code/scripts/check-code-quality.js
+node .claude/skills/design-to-code/scripts/check-code-quality.js
 
 # 输出结果示例：
 ✅ 通过: 15, ⚠️ 警告: 3, ❌ 失败: 1

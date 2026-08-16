@@ -211,7 +211,7 @@ pnpm lint
 pnpm lint:fix
 
 # 使用专用检查工具
-node .catpaw/skills/design-to-code/scripts/check-code-quality.js
+node .claude/skills/design-to-code/scripts/check-code-quality.js
 ```
 
 #### 2. 视觉一致性检查清单

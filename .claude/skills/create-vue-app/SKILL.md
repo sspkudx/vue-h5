@@ -175,31 +175,18 @@ export default defineConfig(({ mode }) => {
 
 ### 6. 配置 tsconfig.json
 
-创建`tsconfig.json`文件，内容如下：
+创建`tsconfig.json`文件，继承仓库根目录的公共配置`tsconfig.base.json`（含 `moduleResolution: "bundler"` 等统一编译选项），仅保留应用特有配置，内容如下：
 
 ```json
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "target": "esnext",
-        "module": "esnext",
-        "strict": true,
-        "jsx": "preserve",
-        "jsxImportSource": "vue",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "useDefineForClassFields": true,
-        "sourceMap": true,
         "baseUrl": ".",
-        "types": ["vite/client"],
+        "types": ["vite/client", "node"],
         "paths": {
             "@/*": ["src/*"],
             "@my-app/shared": ["../../packages/shared/dist/index"]
-        },
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+        }
     },
     "include": [
         "src/**/*.ts",
@@ -208,11 +195,14 @@ export default defineConfig(({ mode }) => {
         "tests/**/*.ts",
         "tests/**/*.tsx",
         "types/*.d.ts",
-        "../../types/*.d.ts"
+        "../../types/*.d.ts",
+        "vite.config.ts"
     ],
     "exclude": ["node_modules"]
 }
 ```
+
+> **注意**：不要回退到 `moduleResolution: "node"`——Vite 8+ 的 package.json 仅提供 `exports` 字段（无顶层 `main`/`types`），旧解析算法会报 `Cannot find module 'vite'`。公共编译选项统一由根目录 `tsconfig.base.json` 维护。
 
 ### 7. 创建源码文件
 

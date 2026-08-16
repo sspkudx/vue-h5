@@ -16,7 +16,7 @@
 
 ```bash
 # 安装依赖
-cd /Users/yueb/Projects/vue-h5/.catpaw/skills/design-to-code/scripts
+cd /Users/yueb/Projects/vue-h5/.claude/skills/design-to-code/scripts
 npm install
 ```
 
@@ -47,7 +47,7 @@ node check-code-quality.js src/components/Button/index.tsx
 // package.json 中添加脚本
 {
     "scripts": {
-        "check:design": "node .catpaw/skills/design-to-code/scripts/check-code-quality.js"
+        "check:design": "node .claude/skills/design-to-code/scripts/check-code-quality.js"
     }
 }
 ```
@@ -170,7 +170,7 @@ const CONFIG = {
 ```bash
 # .husky/pre-commit
 #!/bin/sh
-node .catpaw/skills/design-to-code/scripts/check-code-quality.js
+node .claude/skills/design-to-code/scripts/check-code-quality.js
 ```
 
 ### CI/CD 集成
@@ -190,7 +190,7 @@ jobs:
               with:
                   node-version: '14'
             - run: npm ci
-            - run: node .catpaw/skills/design-to-code/scripts/check-code-quality.js
+            - run: node .claude/skills/design-to-code/scripts/check-code-quality.js
 ```
 
 ## 常见问题

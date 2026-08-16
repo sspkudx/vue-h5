@@ -41,7 +41,6 @@ vue-h5/
 技能文件统一归档于以下目录（已提交到仓库）：
 
 - `.claude/skills/` - 技能唯一事实来源（Claude Code / Cursor / Windsurf / opencode 通用）
-- `.catpaw/skills/` - CatPaw 镜像（运行 `pnpm sync:skills` 同步，本地生成不入库）
 
 ## 设计理念
 

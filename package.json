@@ -21,8 +21,7 @@
         "test:coverage": "jest --coverage",
         "test:shared": "pnpm -F @my-app/shared test",
         "prepare": "husky || true",
-        "lint-staged": "lint-staged",
-        "sync:skills": "sh ./scripts/sync-skills.sh"
+        "lint-staged": "lint-staged"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,vue}": [

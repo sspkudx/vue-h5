@@ -23,7 +23,6 @@ pnpm-debug.log*
 # 团队共享 .vscode（settings.json / extensions.json 等提交到仓库）
 
 # AI 编辑器目录（.claude 下的技能已归档进仓库，勿忽略）
-.catpaw
 .claude/.DS_Store
 .cursor
 .windsurf
