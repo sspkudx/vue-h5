@@ -713,10 +713,13 @@ pnpm update --latest
 # 3. 强制重新安装
 pnpm i --force
 
-# 4. 使用 resolution 字段指定版本（在 package.json 中）
-"resolutions": {
-  "vue": "3.5.33",
-  "vue-router": "4.2.0"
+# 4. 统一管理版本：修改 pnpm-workspace.yaml 的 catalogs.default 后执行 pnpm install
+# 5. 临时覆盖单个依赖版本（pnpm 用 overrides，非 yarn 的 resolutions）：
+"pnpm": {
+  "overrides": {
+    "vue": "3.5.41",
+    "vue-router": "5.2.0"
+  }
 }
 ```
 

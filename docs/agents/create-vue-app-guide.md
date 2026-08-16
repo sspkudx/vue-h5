@@ -51,11 +51,11 @@ apps/{app-name}/
     },
     "dependencies": {
         "@my-app/shared": "workspace:*",
-        "axios": "^1.19.0",
-        "pinia": "^4.0.3",
-        "ress": "^6.0.0",
-        "vue": "^3.5.41",
-        "vue-router": "^5.2.0"
+        "axios": "catalog:",
+        "pinia": "catalog:",
+        "ress": "catalog:",
+        "vue": "catalog:",
+        "vue-router": "catalog:"
     },
     "keywords": [],
     "author": "",
@@ -185,8 +185,8 @@ server: {
 
 新创建的应用会自动配置以下依赖：
 
-1. **项目共享包**：`@my-app/shared`
-2. **Vue 3 相关依赖**：`vue`, `vue-router`, `pinia`
+1. **项目共享包**：`@my-app/shared`（`workspace:*`）
+2. **Vue 3 相关依赖**：`vue`, `vue-router`, `pinia`, `axios`, `ress`（均通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default`，全仓库统一版本）
 3. **开发工具**：`typescript`, `eslint`, `prettier`
 4. **构建工具**：`vite`, `@vitejs/plugin-vue`, `@vitejs/plugin-vue-jsx`, `@vitejs/plugin-legacy`, `vue-tsc`（位于根 devDependencies）
 
@@ -348,9 +348,9 @@ rm -rf apps/{app-name}/dist
 
 ### 4. 依赖管理
 
-- 定期更新依赖版本
-- 检查依赖安全漏洞
-- 使用 workspace:* 引用本地包
+- 高频共享依赖（vue/pinia/vue-router/axios/ress）通过 `catalog:` 引用，版本统一由 `pnpm-workspace.yaml` 的 `catalogs.default` 管理，升级只改一处
+- 本地包使用 `workspace:*` 引用
+- 定期更新依赖版本、检查依赖安全漏洞
 
 ## 下一步
 

@@ -86,11 +86,11 @@ apps/{app-name}/
     },
     "dependencies": {
         "@my-app/shared": "workspace:*",
-        "axios": "^1.19.0",
-        "pinia": "^4.0.3",
-        "ress": "^6.0.0",
-        "vue": "^3.5.41",
-        "vue-router": "^5.2.0"
+        "axios": "catalog:",
+        "pinia": "catalog:",
+        "ress": "catalog:",
+        "vue": "catalog:",
+        "vue-router": "catalog:"
     },
     "keywords": [],
     "author": "",
@@ -528,7 +528,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
 3. **路径映射**: tsconfig.json 中的路径映射需要正确指向共享包
-4. **依赖管理**: 新应用会自动依赖`@my-app/shared`包
+4. **依赖管理**: 应用依赖通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（axios/pinia/ress/vue/vue-router），新应用版本自动与 example-app 保持一致；`@my-app/shared` 使用 `workspace:*` 引用本地包
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
 7. **格式一致性**: 确保新增的 scripts 格式与现有 scripts 保持一致（`pnpm -F {app-name} {command}`）

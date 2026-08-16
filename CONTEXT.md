@@ -23,7 +23,7 @@
 | 状态 | Pinia 4 |
 | 样式 | Less + CSS Modules（`*.module.less`，kebab→camel 双导出），`ress` reset |
 | 移动端适配 | postcss-px-to-viewport，自定义单位 `mpx` → `vmin`（viewportWidth 390；横竖屏切换尺寸会变，双刃剑，已知晓） |
-| 包管理 | pnpm workspace（`apps/*` + `packages/*`），.npmrc 指华为云镜像 + `shamefully-hoist=true` |
+| 包管理 | pnpm workspace（`apps/*` + `packages/*`），.npmrc 指华为云镜像 + `shamefully-hoist=true`；高频共享依赖由 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（`catalog:` 协议） |
 | 测试 | Jest 30 + ts-jest，根配置只覆盖 `packages/**` |
 | 规范 | ESLint 10（flat config）+ Prettier 3 + stylelint 17（BEM 类名约束 + 属性排序） |
 | 构建编排 | `scripts/build.sh` / `build-packages.sh`（先 packages 后 apps，支持并行） |
@@ -40,7 +40,8 @@
 
 1. **monorepo 联调双 alias**：dev 环境把 `@my-app/*` alias 到源码（热更新），prod 指向 dist。这是仓库核心工程价值，改动 vite.config.ts 时必须保留。
 2. **运行时依赖归各 app 自管**，根 package.json 只放工具链（原先把 vue/pinia 等装在根上 + hoist 兜底，已纠正）。
-3. **依赖解析**：jest moduleNameMapper 与 `@my-app/*` 别名对齐，新增包要同步两处。
+3. **catalog 统一版本**：高频共享依赖（vue/vue-router/pinia/axios/ress）在 `pnpm-workspace.yaml` 的 `catalogs.default` 定义版本，各 app/包用 `catalog:` 引用，升级只改一处、全仓一致（2026-08 起）。
+4. **依赖解析**：jest moduleNameMapper 与 `@my-app/*` 别名对齐，新增包要同步两处。
 
 ## 整改基线决策（2026-08 评审后）
 

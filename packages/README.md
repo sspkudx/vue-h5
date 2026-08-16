@@ -739,7 +739,7 @@ export const analyticsPlugin = {
 {
     "name": "@my-app/ui-components",
     "peerDependencies": {
-        "vue": "^3.5.33", // 运行时依赖
+        "vue": "catalog:", // 运行时依赖（版本统一由 pnpm-workspace.yaml 的 catalogs.default 管理）
         "lodash": "^4.17.21" // 工具函数
     },
     "devDependencies": {

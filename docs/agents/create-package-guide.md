@@ -121,7 +121,7 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "peerDependencies": {
-        "vue": "^3.5.33",
+        "vue": "catalog:",
         "@vue/babel-plugin-jsx": "^1.5.0"
     },
     "devDependencies": {
@@ -301,7 +301,7 @@ packages/utils/
 ```json
 {
     "peerDependencies": {
-        "vue": "^3.5.33",
+        "vue": "catalog:",
         "@vue/babel-plugin-jsx": "^1.5.0"
     }
 }
@@ -485,6 +485,7 @@ describe('formatDate', () => {
 
 ### 5. 依赖管理
 
+- 优先用 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 中的共享依赖（vue/pinia/vue-router/axios/ress），版本统一管理
 - 合理使用 peerDependencies
 - 避免不必要的依赖
 - 定期更新依赖版本

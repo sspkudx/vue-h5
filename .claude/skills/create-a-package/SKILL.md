@@ -134,10 +134,10 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "vue": "^3.5.38",
+        "vue": "catalog:",
         "@vue/babel-plugin-jsx": "^1.5.0",
-        "pinia": "^3.0.4",
-        "vue-router": "^5.1.0",
+        "pinia": "catalog:",
+        "vue-router": "catalog:",
         "lodash-es": "^4.18.1"
     },
     "devDependencies": {
@@ -229,7 +229,7 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "peerDependencies": {
-        "vue": "^3.5.38"
+        "vue": "catalog:"
     },
     "dependencies": {
         "@vue/babel-plugin-jsx": "^1.5.0"
@@ -256,7 +256,7 @@ packages/{package-name}/
 1. **组件测试依赖**: 添加了 `@vue/test-utils`, `@vue/vue3-jest`, `jest-environment-jsdom` 用于组件测试
 2. **JSX 支持**: 添加 `@vue/babel-plugin-jsx` 依赖以支持 Vue JSX 语法
 3. **Vue 依赖**: `vue` 作为 peerDependencies，避免版本冲突
-4. **额外依赖**: 可以根据需要添加 `pinia`, `vue-router` 等，如果组件库需要使用状态管理或路由
+4. **额外依赖**: 可以根据需要添加 `pinia`, `vue-router` 等（用 `catalog:` 引用，版本以 `pnpm-workspace.yaml` 的 `catalogs.default` 为准），如果组件库需要使用状态管理或路由
 
 #### 4.4 工具函数集配置
 
@@ -285,7 +285,7 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "peerDependencies": {
-        "vue": "^3.5.38"
+        "vue": "catalog:"
     },
     "dependencies": {
         "@vue/babel-plugin-jsx": "^1.5.0",
@@ -343,12 +343,12 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "peerDependencies": {
-        "vue": "^3.5.38"
+        "vue": "catalog:"
     },
     "dependencies": {
         "@vue/babel-plugin-jsx": "^1.5.0",
-        "pinia": "^3.0.4",
-        "vue-router": "^5.1.0"
+        "pinia": "catalog:",
+        "vue-router": "catalog:"
     },
     "devDependencies": {
         "@types/jest": "^29.5.14",
@@ -1514,7 +1514,7 @@ MIT License © 2024 My App
     ```json
     {
         "peerDependencies": {
-            "vue": "^3.5.33",
+            "vue": "catalog:",
             "@vue/babel-plugin-jsx": "^1.5.0"
         }
     }
@@ -1578,9 +1578,9 @@ MIT License © 2024 My App
     ```json
     {
         "peerDependencies": {
-            "vue": "^3.5.33",
-            "axios": "^0.29.0",
-            "pinia": "^3.0.4"
+            "vue": "catalog:",
+            "axios": "catalog:",
+            "pinia": "catalog:"
         }
     }
     ```
@@ -1831,7 +1831,7 @@ MIT License © 2024 My App
 ```
 错误: 依赖包版本与项目不兼容
 建议: 使用与项目相同的依赖版本
-检查: 参考根目录 package.json 中的依赖版本
+检查: 参考 pnpm-workspace.yaml 中的 catalogs.default 版本（catalog: 引用）或根目录 package.json 中的依赖版本
 ```
 
 #### 6. 构建失败
@@ -1861,7 +1861,7 @@ MIT License © 2024 My App
 
 3. **依赖检查**:
 
-    - 检查根目录 package.json 中的依赖版本
+    - 优先用 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 中的依赖（vue/pinia/vue-router/axios/ress），其余参考根目录 package.json 中的依赖版本
     - 确保 peerDependencies 版本兼容
 
 4. **路径验证**:
