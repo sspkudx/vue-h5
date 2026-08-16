@@ -103,8 +103,7 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 
 ### AI 编辑器技能目录
 对于不同的 AI 编辑器，技能文件需要放在对应的位置：
-- **CatPaw**: `.catpaw/skills/` 目录（由 `scripts/sync-skills.sh` 从 `.claude/skills/` 同步）
-- **Cursor**: `.cursor/skills/` 目录（如使用该编辑器，可参照 sync 脚本放置）
+- **Cursor**: `.cursor/skills/` 目录（如使用该编辑器，可从 `.claude/skills/` 复制）
 - **Windsurf**: `.windsurf/skills/` 目录（同上）
 - **Trae**: `.trae/skills/` 目录（同上）
 

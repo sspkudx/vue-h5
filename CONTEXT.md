@@ -13,7 +13,7 @@
 
 ## 与 main 一致的改动
 
-- 技能归档：`.claude/skills/`（唯一事实来源，已入库）；`.catpaw/skills/` 本地镜像（`pnpm sync:skills`）
+- 技能归档：`.claude/skills/`（唯一事实来源，已入库）；原 `.catpaw/skills/` 本地镜像与 `pnpm sync:skills` 同步脚本已移除
 - 提交规范强制：**约定式提交 v1.0.0**（https://www.conventionalcommits.org/zh-hans/v1.0.0/），commit-msg 钩子 + commitlint v17（main 为 v21）强制校验；本分支不引入 pre-commit 格式化（Node 14 基线考虑）
 - 文档修正：README 构建工具实话（webpack）、workflow 幽灵命令、登记全部 7 个技能、example-app README、TESTING.md 失实引用
 

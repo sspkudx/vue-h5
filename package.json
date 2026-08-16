@@ -19,8 +19,7 @@
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "test:shared": "pnpm -F @my-app/shared test",
-        "prepare": "husky install",
-        "sync:skills": "sh ./scripts/sync-skills.sh"
+        "prepare": "husky install"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,vue}": [

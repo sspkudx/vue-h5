@@ -109,8 +109,7 @@
 ### 技能文件位置
 技能文件位于以下目录：
 - 项目技能目录：`/.claude/skills/`
-- AI 编辑器技能目录：
-  - CatPaw: `.catpaw/skills/`
+- AI 编辑器技能目录（如使用对应编辑器，自行从 `.claude/skills/` 复制）：
   - Cursor: `.cursor/skills/`
   - Windsurf: `.windsurf/skills/`
   - Trae: `.trae/skills/`

@@ -30,9 +30,6 @@
 ### 1. 部署到 AI 编辑器
 ```bash
 # 复制技能文件到 AI 编辑器目录
-# CatPaw
-cp -r .claude/skills/create-vue-app/ .catpaw/skills/
-
 # Cursor
 cp -r .claude/skills/create-vue-app/ .cursor/skills/
 
@@ -124,10 +121,10 @@ tests/
 **解决方案**:
 ```bash
 # 1. 检查技能文件位置
-ls -la .catpaw/skills/
+ls -la .claude/skills/
 
 # 2. 检查技能文件格式
-cat .catpaw/skills/create-vue-app/SKILL.md | head -5
+cat .claude/skills/create-vue-app/SKILL.md | head -5
 
 # 3. 重启 AI 编辑器
 # 4. 检查编辑器配置
