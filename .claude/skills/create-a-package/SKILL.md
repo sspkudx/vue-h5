@@ -415,7 +415,8 @@ export default defineConfig({
     "compilerOptions": {
         "jsxFactory": "h",
         "jsxFragmentFactory": "Fragment",
-        "baseUrl": "./"
+        // TS 6.0 起 types 默认为 []，jest 全局与 node 类型需显式声明
+        "types": ["jest", "node"]
     },
     "include": [
         "src/**/*.ts",
@@ -443,6 +444,7 @@ export default defineConfig({
     "compilerOptions": {
         "declaration": true, // 关键：输出 .d.ts
         "emitDeclarationOnly": true, // 只发类型，不生成 js
+        "rootDir": "./src", // TS 6.0 起 rootDir 不再自动推断，需显式指定以保持 dist 扁平结构
         "outDir": "dist", // 与 vite lib 构建共用 dist 目录，vite 先清空再 tsc 生成声明
         "skipLibCheck": true, // 避免三方包类型错误阻塞构建
         "isolatedModules": false // 与 emitDeclarationOnly 共存

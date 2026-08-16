@@ -3,7 +3,8 @@
     "compilerOptions": {
         "jsxFactory": "h",
         "jsxFragmentFactory": "Fragment",
-        "baseUrl": "./"
+        // TS 6.0 起 types 默认为 []，jest 全局（describe/test/expect）与 node 类型需显式声明
+        "types": ["jest", "node"]
     },
     "include": [
         "src/**/*.ts",

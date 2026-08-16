@@ -4,7 +4,16 @@ module.exports = {
     roots: ['<rootDir>/packages'],
     testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
     transform: {
-        '^.+\\.ts$': 'ts-jest',
+        // TS 6.0 起 types 默认为 []，根目录无 tsconfig.json，需内联提供 jest/node 全局类型
+        '^.+\\.ts$': [
+            'ts-jest',
+            {
+                tsconfig: {
+                    types: ['jest', 'node'],
+                    esModuleInterop: true,
+                },
+            },
+        ],
     },
     transformIgnorePatterns: ['node_modules/(?!(.*))'],
     moduleFileExtensions: ['ts', 'js', 'json', 'node'],

@@ -45,7 +45,7 @@
 ## 整改基线决策（2026-08 评审后）
 
 - Node 基线：**22 LTS**；pnpm：**10**（`packageManager` 字段锁定，corepack 启用）。
-- 依赖策略：除 TypeScript（留 5.x，7.0 原生版工具链不兼容）外，其余依赖已升到 latest（ESLint 10 flat config、stylelint 17 flat config、prettier 3、jest 30、pinia 4、ress 6）。
+- 依赖策略：全部 latest。TypeScript 已升 **6.0**（`~6.0.3` 锁定次版本：ts-jest peer `<7`、typescript-eslint peer `<6.1`，7.0 原生版待工具链跟进后再评估）。TS 6 适配点：`baseUrl` 已废弃并移除（paths 相对 tsconfig 解析）；`types` 默认 `[]` 需显式声明（shared 为 `["jest", "node"]`，app 为 `["vite/client", "node"]`）；`rootDir` 不再自动推断（tsconfig.build.json 显式 `./src`）。
 - browserslist：兼容性基线 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），不用 `not dead`；由 @vitejs/plugin-legacy 自动生成 legacy 产物（ES5 + core-js polyfill + SystemJS）。
 - 提交规范：husky + lint-staged + commitlint；CI：GitHub Actions（lint + test + build）。
 - 构建工具：已从 Vue CLI 5/webpack 迁移到 **Vite 8**（apps）+ Vite lib 模式（packages），迁移前后功能经浏览器冒烟测试验证一致。
