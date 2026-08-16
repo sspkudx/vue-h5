@@ -51,6 +51,7 @@ pnpm dev
 ### 2.1 应用开发流程
 
 #### 修改应用代码
+
 当修改应用代码时，开发服务器会自动热重载，无需手动操作：
 
 ```bash
@@ -59,6 +60,7 @@ pnpm dev
 ```
 
 #### 修改包代码
+
 当修改包代码时，需要重新构建包才能生效：
 
 ```bash
@@ -77,6 +79,7 @@ pnpm dev
 ### 2.2 包开发流程
 
 #### 包开发模式
+
 ```bash
 # 进入包目录
 cd packages/{package-name}
@@ -91,6 +94,7 @@ pnpm dev
 ```
 
 #### 包依赖更新
+
 当包依赖发生变化时：
 
 ```bash
@@ -145,19 +149,21 @@ npx prettier --write src/components/MyComponent.vue
 
 ### 3.4 Git 提交前检查
 
-项目配置了 husky 和 lint-staged，在提交代码时会自动运行：
+项目配置了 husky + lint-staged + commitlint，提交代码时会自动运行：
 
 ```bash
 # Git 提交流程
 git add .
 git commit -m "feat: add new feature"
 
-# 提交时会自动执行：
-# 1. 代码格式化 (Prettier)
-# 2. 代码检查 (ESLint)
-# 3. 样式检查 (Stylelint)
-# 4. 测试运行 (Jest)
+# 提交时会自动执行（pre-commit 钩子，仅针对暂存文件）：
+# 1. ESLint --fix（js/ts/vue，含 Prettier 格式化）
+# 2. Stylelint --fix（css/less/vue）
+# 3. Prettier --write（json/yml/md）
+# commit-msg 钩子：commitlint 校验提交信息格式（type: subject）
 ```
+
+> 注意：钩子不自动跑测试，测试请在提交前手动执行 `pnpm test`，或依赖 CI 兜底。
 
 ## 4. 测试
 
@@ -190,6 +196,7 @@ pnpm -F {app-name} test
 - **行覆盖率**：执行的行百分比
 
 查看覆盖率报告：
+
 ```bash
 # 生成覆盖率报告后，在浏览器中打开
 open coverage/lcov-report/index.html
@@ -198,23 +205,24 @@ open coverage/lcov-report/index.html
 ### 4.3 测试最佳实践
 
 #### 单元测试
+
 ```typescript
 // 测试工具函数
 describe('formatDate', () => {
     it('should format date correctly', () => {
-        expect(formatDate(new Date('2023-01-01'), 'YYYY-MM-DD'))
-            .toBe('2023-01-01');
+        expect(formatDate(new Date('2023-01-01'), 'YYYY-MM-DD')).toBe('2023-01-01');
     });
 });
 ```
 
 #### 组件测试
+
 ```typescript
 // 测试 Vue 组件
 describe('MyComponent', () => {
     it('renders correctly', () => {
         const wrapper = mount(MyComponent, {
-            props: { msg: 'Hello' }
+            props: { msg: 'Hello' },
         });
         expect(wrapper.text()).toContain('Hello');
     });
@@ -227,13 +235,13 @@ describe('MyComponent', () => {
 
 ```bash
 # 构建特定应用
-pnpm build:{app-name}
+pnpm -F {app-name} build
 
-# 构建所有应用
-pnpm build:apps
+# 构建所有应用（不含 packages）
+sh ./scripts/build.sh --apps-only
 
 # 构建并分析包大小
-pnpm build:{app-name} --report
+pnpm -F {app-name} build -- --report
 ```
 
 ### 5.2 包构建
@@ -246,8 +254,7 @@ pnpm build:packages
 cd packages/{package-name}
 pnpm build
 
-# 构建并生成类型声明
-pnpm build:types
+# 类型声明随构建自动生成（Rollup + rollup-plugin-dts 聚合为单个 d.ts）
 ```
 
 ### 5.3 完整构建
@@ -268,16 +275,14 @@ pnpm build
 ### 6.1 生产构建
 
 ```bash
-# 生产环境构建
-NODE_ENV=production pnpm build:{app-name}
-
-# 或者使用预设脚本
-pnpm build:prod:{app-name}
+# 生产环境构建（应用 build 默认即生产模式）
+pnpm -F {app-name} build
 ```
 
 ### 6.2 构建产物
 
 构建产物位于：
+
 ```
 apps/{app-name}/dist/      # 应用构建产物
 packages/{package-name}/dist/  # 包构建产物
@@ -288,26 +293,28 @@ packages/{package-name}/dist/  # 包构建产物
 部署前检查：
 
 1. **代码质量**
-   ```bash
-   pnpm lint
-   pnpm test
-   pnpm build
-   ```
+
+    ```bash
+    pnpm lint
+    pnpm test
+    pnpm build
+    ```
 
 2. **依赖检查**
-   ```bash
-   pnpm audit
-   pnpm outdated
-   ```
+
+    ```bash
+    pnpm audit
+    pnpm outdated
+    ```
 
 3. **构建验证**
-   ```bash
-   # 检查构建产物
-   ls -la apps/{app-name}/dist/
-   
-   # 验证构建产物完整性
-   pnpm build:verify
-   ```
+    ```bash
+    # 重新构建验证
+    pnpm -F {app-name} build
+
+    # 检查构建产物
+    ls -la apps/{app-name}/dist/
+    ```
 
 ## 7. 开发环境配置
 
@@ -332,10 +339,10 @@ module.exports = {
         proxy: {
             '/api': {
                 target: 'http://localhost:3000',
-                changeOrigin: true
-            }
-        }
-    }
+                changeOrigin: true,
+            },
+        },
+    },
 };
 ```
 
@@ -351,10 +358,10 @@ module.exports = {
         client: {
             overlay: {
                 errors: true,
-                warnings: false
-            }
-        }
-    }
+                warnings: false,
+            },
+        },
+    },
 };
 ```
 
@@ -517,21 +524,25 @@ git push origin main --tags
 ### 常见问题
 
 #### 开发服务器无法启动
+
 - 检查端口是否被占用
 - 检查依赖是否完整安装
 - 查看错误日志
 
 #### 热重载失效
+
 - 检查文件变化监听
 - 检查 Webpack 配置
 - 尝试重启开发服务器
 
 #### 构建失败
+
 - 检查 TypeScript 错误
 - 检查依赖版本冲突
 - 清理构建缓存
 
 #### 包引用错误
+
 - 确保包已构建
 - 检查路径别名配置
 - 重新安装依赖

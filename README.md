@@ -6,10 +6,10 @@
 
 ## ✨ 特性亮点
 
--   **现代化技术栈**: Vue 3 + TypeScript + Vite + PNPM
--   **Monorepo 架构**: 支持多应用、多包统一管理
--   **AI 智能开发**: 内置 Skills 快速创建应用和包
--   **完整工具链**: ESLint, Prettier, Jest, Rollup 等
+- **现代化技术栈**: Vue 3 + TypeScript + Vue CLI（webpack 5）+ PNPM
+- **Monorepo 架构**: 支持多应用、多包统一管理
+- **AI 智能开发**: 内置 Skills 快速创建应用和包
+- **完整工具链**: ESLint, Stylelint, Prettier, Jest, Rollup, Husky + commitlint, GitHub Actions CI
 
 ## ⚡ 快速开始（5 分钟上手）
 
@@ -39,10 +39,15 @@ pnpm dev:example
 
 ### 📦 环境要求
 
-| 工具         | 要求     | 说明                         |
-| ------------ | -------- | ---------------------------- |
-| **Node.js**  | 14.18.0+ | 推荐使用 LTS 版本            |
-| **包管理器** | 不限     | 推荐 PNPM（支持 Workspaces） |
+| 工具         | 要求     | 说明                                   |
+| ------------ | -------- | -------------------------------------- |
+| **Node.js**  | 22 LTS   | 见根目录 `.node-version`               |
+| **包管理器** | PNPM 10+ | 已锁定 `packageManager`，推荐 corepack |
+
+```bash
+# 首次使用启用 corepack，自动对齐 packageManager 中声明的 pnpm 版本
+corepack enable
+```
 
 ### 🔄 使用 degit 复用项目模板
 
@@ -141,11 +146,11 @@ vue-h5/
 "在 apps 目录下添加新应用 user-portal"
 ```
 
-**技能位置**: `./skills/create-vue-app/SKILL.md`
+**技能位置**: `./.claude/skills/create-vue-app/SKILL.md`
 
--   ✅ 自动生成完整的 Vue 3 + TypeScript 应用结构
--   ✅ 支持自定义应用名称和端口号
--   ✅ 包含路由、状态管理、示例组件
+- ✅ 自动生成完整的 Vue 3 + TypeScript 应用结构
+- ✅ 支持自定义应用名称和端口号
+- ✅ 包含路由、状态管理、示例组件
 
 #### 创建新依赖包
 
@@ -156,11 +161,11 @@ vue-h5/
 "在 packages 目录下添加新包 auth-helpers，类型为工具函数集，描述为 '用户认证相关工具函数'"
 ```
 
-**技能位置**: `./skills/create-a-package/SKILL.md`
+**技能位置**: `./.claude/skills/create-a-package/SKILL.md`
 
--   ✅ 支持四种包类型：工具库、组件库、工具函数集、插件库
--   ✅ 自动配置 TypeScript + Rollup 开发环境
--   ✅ 生成测试框架配置和详细文档
+- ✅ 支持四种包类型：工具库、组件库、工具函数集、插件库
+- ✅ 自动配置 TypeScript + Rollup 开发环境
+- ✅ 生成测试框架配置和详细文档
 
 ### 🔧 Monorepo 开发指南
 
@@ -234,17 +239,15 @@ pnpm -F @my-app/shared test   # 运行测试
 
 ```bash
 # 使用 fnm（推荐）
-fnm install 14.21.3
-fnm use 14.21.3
-fnm default 14.21.3
+fnm install 22
+fnm use 22
 
 # 使用 nvm
-nvm install 14.21.3
-nvm use 14.21.3
-nvm alias default 14.21.3
+nvm install 22
+nvm use 22
 
-# 验证版本
-node --version  # 应该显示 v14.21.3
+# 验证版本（应显示 v22.x；.node-version 由 fnm/nvm 自动识别）
+node --version
 ```
 
 #### 2. 依赖安装失败
@@ -329,10 +332,10 @@ packages/shared/
 
 ### 📞 支持
 
--   📖 **查看示例**: 查看 `example-app` 目录获取示例代码
--   🤖 **使用技能**: 使用内置的 AI Skills 快速创建应用和包
--   ⚙️ **参考配置**: 参考现有配置进行自定义开发
--   🐛 **报告问题**: 在 GitHub Issues 中报告问题
+- 📖 **查看示例**: 查看 `example-app` 目录获取示例代码
+- 🤖 **使用技能**: 使用内置的 AI Skills 快速创建应用和包
+- ⚙️ **参考配置**: 参考现有配置进行自定义开发
+- 🐛 **报告问题**: 在 GitHub Issues 中报告问题
 
 ---
 

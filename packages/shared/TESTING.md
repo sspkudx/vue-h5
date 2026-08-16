@@ -47,52 +47,21 @@ cd packages/shared
 pnpm test:watch
 ```
 
-## Node 14 环境
+## Node 版本
 
-根据项目要求，测试需要适配 Node 14 环境。以下是配置步骤：
+项目基线为 **Node 22 LTS**（见根目录 `.node-version` 与 `engines`）。使用 fnm 或 nvm 对齐版本即可：
 
-### 使用 fnm 管理 Node 版本
+```bash
+# fnm
+fnm install 22 && fnm use 22
 
-1. 安装 fnm (Fast Node Manager):
+# nvm
+nvm install 22 && nvm use 22
 
-    ```bash
-    # 使用 Homebrew (macOS)
-    brew install fnm
+node --version  # 应显示 v22.x
+```
 
-    # 或使用 curl
-    curl -fsSL https://fnm.vercel.app/install | bash
-    ```
-
-2. 初始化 fnm:
-
-    ```bash
-    # 将以下内容添加到 ~/.zshrc 或 ~/.bashrc
-    eval "$(fnm env --use-on-cd)"
-    ```
-
-3. 安装并切换到 Node 14:
-
-    ```bash
-    # 安装 Node 14
-    fnm install 14
-
-    # 切换到 Node 14
-    fnm use 14
-
-    # 验证版本
-    node --version  # 应该显示 v14.x.x
-    ```
-
-### Node 14 兼容性说明
-
-测试已经验证了以下 Node 14 特性：
-
--   ✅ 可选链操作符 `?.` (Node 14+)
--   ✅ 空值合并操作符 `??` (Node 14+)
--   ✅ `Promise.allSettled()` (Node 12.9.0+)
--   ✅ `String.matchAll()` (Node 12+)
--   ✅ `BigInt` (Node 10.4.0+)
--   ✅ `globalThis` (Node 12+)
+> 说明：浏览器兼容性由 `browserslist` + 构建转译保证，与 Node 版本无关；Node 只决定构建机与测试环境的语法能力。
 
 ## 测试目录结构
 
@@ -100,8 +69,7 @@ pnpm test:watch
 packages/shared/src/
 ├── __tests__/
 │   ├── index.test.ts        # safeNum 函数测试
-│   ├── utils.test.ts        # 工具函数测试
-│   └── node14-compatibility.test.ts  # Node 14 兼容性测试
+│   └── utils.test.ts        # 工具函数测试
 └── index.ts                 # 源代码
 ```
 
@@ -126,7 +94,9 @@ describe('safeNum', () => {
 ```
 
 ## 测试覆盖率
+
 当前测试覆盖率为 100%：
+
 - Statements: 100%
 - Branches: 100%
 - Functions: 100%
@@ -135,82 +105,66 @@ describe('safeNum', () => {
 ## 测试用例详情
 
 ### 已测试的函数
+
 1. **safeNum** - 安全数字转换
-   - 有效数字字符串
-   - 数字类型
-   - NaN 值处理
-   - 布尔值处理
-   - 数组处理
-   - 对象处理
-   - 特殊数值（Infinity、科学计数法、十六进制、二进制）
-   - 空格处理
-   - 日期对象
+    - 有效数字字符串
+    - 数字类型
+    - NaN 值处理
+    - 布尔值处理
+    - 数组处理
+    - 对象处理
+    - 特殊数值（Infinity、科学计数法、十六进制、二进制）
+    - 空格处理
+    - 日期对象
 
 2. **isNumber** - 数字类型检查
-   - 有效数字
-   - 非数字值
-   - NaN 处理
+    - 有效数字
+    - 非数字值
+    - NaN 处理
 
 3. **isString** - 字符串类型检查
-   - 字符串值
-   - 非字符串值
+    - 字符串值
+    - 非字符串值
 
 4. **isObject** - 普通对象检查
-   - 普通对象
-   - 非对象值（null、undefined、数组、函数等）
-   - 排除 Map、Set 等内置对象
+    - 普通对象
+    - 非对象值（null、undefined、数组、函数等）
+    - 排除 Map、Set 等内置对象
 
 5. **isEmpty** - 空值检查
-   - null 和 undefined
-   - 空字符串和空白字符串
-   - 空数组和对象
-   - 非空值
-   - 嵌套结构
-   - 函数和符号
-   - Map 和 Set 对象
+    - null 和 undefined
+    - 空字符串和空白字符串
+    - 空数组和对象
+    - 非空值
+    - 嵌套结构
+    - 函数和符号
+    - Map 和 Set 对象
 
 6. **formatNumber** - 数字格式化
-   - 默认小数位数
-   - 自定义小数位数
-   - 无效输入处理
-   - 四舍五入
-   - 大数和小数
-   - 精度限制
-   - 极值处理
-   - 边界情况四舍五入
-
-### Node 14 兼容性测试
-- 可选链操作符 (`?.`)
-- 空值合并操作符 (`??`)
-- `Promise.allSettled()`
-- `String.matchAll()`
-- `BigInt`
-- `globalThis`
-- 数字分隔符 (`_`)
-- `String.prototype.replaceAll()`
-- 逻辑赋值运算符 (`||=`, `&&=`, `??=`)
-- `Promise.any()` (如果可用)
-- `Array.prototype.at()` (如果可用)
-- JavaScript 版本验证
+    - 默认小数位数
+    - 自定义小数位数
+    - 无效输入处理
+    - 四舍五入
+    - 大数和小数
+    - 精度限制
+    - 极值处理
+    - 边界情况四舍五入
 
 ## CI/CD 集成建议
 
-可以在 CI 配置中添加以下步骤：
+仓库已提供 GitHub Actions（`.github/workflows/ci.yml`），包含 lint、测试与构建。如需单独运行测试：
 
 ```yaml
 steps:
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-          node-version: '14'
+          node-version-file: .node-version
 
     - name: Install dependencies
-      run: pnpm install
+      run: pnpm install --frozen-lockfile
 
     - name: Run tests
       run: pnpm test
-
-    - name: Generate coverage report
-      run: pnpm test:coverage
 ```
 
 ## 故障排除
@@ -225,7 +179,7 @@ steps:
 
 ### Node 版本问题
 
-如果遇到语法错误，请确认当前 Node 版本是否为 14 或更高：
+如果遇到语法错误或依赖安装失败，请确认当前 Node 版本是否为 22（根目录 `engines` 已声明）：
 
 ```bash
 node --version
@@ -250,7 +204,7 @@ pnpm install
 
 ## 参考链接
 
--   [Jest 文档](https://jestjs.io/docs/getting-started)
--   [ts-jest 文档](https://kulshekhar.github.io/ts-jest/)
--   [Node 14 新特性](https://nodejs.org/en/blog/release/v14.0.0/)
--   [fnm 文档](https://github.com/Schniz/fnm)
+- [Jest 文档](https://jestjs.io/docs/getting-started)
+- [ts-jest 文档](https://kulshekhar.github.io/ts-jest/)
+- [Node.js LTS 版本](https://nodejs.org/en/about/previous-releases)
+- [fnm 文档](https://github.com/Schniz/fnm)

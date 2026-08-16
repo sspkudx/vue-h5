@@ -43,14 +43,19 @@ apps/{app-name}/
 {
     "name": "{app-name}",
     "version": "1.0.0",
-    "main": "main.ts",
     "scripts": {
         "dev": "vue-cli-service serve",
         "build": "vue-cli-service build",
         "lint": "vue-cli-service lint --fix"
     },
     "dependencies": {
-        "@my-app/shared": "workspace:*"
+        "@my-app/shared": "workspace:*",
+        "axios": "^1.19.0",
+        "core-js": "^3.50.0",
+        "pinia": "^4.0.3",
+        "ress": "^6.0.0",
+        "vue": "^3.5.41",
+        "vue-router": "^5.2.0"
     },
     "keywords": [],
     "author": "",
@@ -155,11 +160,11 @@ pnpm run lint:my-app
 
 ```javascript
 module.exports = {
-  devServer: {
-    port: 3001,  // 自定义端口
-    // ... 其他配置
-  }
-}
+    devServer: {
+        port: 3001, // 自定义端口
+        // ... 其他配置
+    },
+};
 ```
 
 ### 应用名称规范
@@ -189,6 +194,7 @@ module.exports = {
 ```
 
 **创建的应用结构**：
+
 ```
 apps/user-portal/
 ├── src/
@@ -197,13 +203,14 @@ apps/user-portal/
 ```
 
 **根目录 scripts 更新**：
+
 ```json
 {
-  "scripts": {
-    "dev:user-portal": "./scripts/build-packages.sh --skip-clean && pnpm -F user-portal dev",
-    "build:user-portal": "pnpm -F user-portal build",
-    "lint:user-portal": "pnpm -F user-portal lint"
-  }
+    "scripts": {
+        "dev:user-portal": "./scripts/build-packages.sh --skip-clean && pnpm -F user-portal dev",
+        "build:user-portal": "pnpm -F user-portal build",
+        "lint:user-portal": "pnpm -F user-portal lint"
+    }
 }
 ```
 
@@ -215,6 +222,7 @@ apps/user-portal/
 ```
 
 **默认行为**：
+
 - 应用名称：`admin-dashboard`
 - 端口：自动分配（通常为 3000+）
 - 使用标准模板结构
@@ -223,18 +231,18 @@ apps/user-portal/
 
 ### 主要文件
 
-| 文件路径 | 说明 |
-|----------|------|
-| `src/App.tsx` | 应用根组件，使用 Vue JSX 语法 |
-| `src/main.ts` | 应用入口文件，初始化 Vue 应用 |
-| `src/plugins/index.ts` | Vue 插件配置，可添加全局插件 |
-| `src/router/index.ts` | 路由配置，定义应用路由 |
-| `src/views/HomeView/` | 首页组件，包含示例代码 |
-| `src/views/AboutView/` | 关于页面组件，包含示例代码 |
-| `index.htm` | HTML 模板文件 |
-| `vue.config.js` | Vue CLI 配置文件 |
-| `tsconfig.json` | TypeScript 配置文件 |
-| `package.json` | 应用配置和依赖管理 |
+| 文件路径               | 说明                          |
+| ---------------------- | ----------------------------- |
+| `src/App.tsx`          | 应用根组件，使用 Vue JSX 语法 |
+| `src/main.ts`          | 应用入口文件，初始化 Vue 应用 |
+| `src/plugins/index.ts` | Vue 插件配置，可添加全局插件  |
+| `src/router/index.ts`  | 路由配置，定义应用路由        |
+| `src/views/HomeView/`  | 首页组件，包含示例代码        |
+| `src/views/AboutView/` | 关于页面组件，包含示例代码    |
+| `index.htm`            | HTML 模板文件                 |
+| `vue.config.js`        | Vue CLI 配置文件              |
+| `tsconfig.json`        | TypeScript 配置文件           |
+| `package.json`         | 应用配置和依赖管理            |
 
 ### 样式文件
 
@@ -275,6 +283,7 @@ apps/user-portal/
 ### 常见问题
 
 #### 1. 端口被占用
+
 ```bash
 # 修改 vue.config.js 中的端口配置
 devServer: {
@@ -283,6 +292,7 @@ devServer: {
 ```
 
 #### 2. 依赖安装失败
+
 ```bash
 # 清理 node_modules 并重新安装
 rm -rf node_modules
@@ -291,6 +301,7 @@ pnpm install
 ```
 
 #### 3. 类型错误
+
 ```bash
 # 检查 TypeScript 配置
 pnpm -F {app-name} tsc --noEmit
@@ -300,6 +311,7 @@ rm -rf node_modules/.cache
 ```
 
 #### 4. 构建失败
+
 ```bash
 # 查看详细错误信息
 pnpm build:{app-name} --verbose
@@ -311,21 +323,25 @@ rm -rf apps/{app-name}/dist
 ## 最佳实践
 
 ### 1. 应用命名
+
 - 使用有意义的名称，反映应用功能
 - 遵循 kebab-case 命名规范
 - 避免使用通用词汇（如 "app"、"web"）
 
 ### 2. 端口管理
+
 - 记录使用的端口号
 - 避免端口冲突
 - 使用端口范围 3000-3999
 
 ### 3. 代码组织
+
 - 保持目录结构清晰
 - 遵循 Vue 3 组合式 API 规范
 - 使用 TypeScript 严格模式
 
 ### 4. 依赖管理
+
 - 定期更新依赖版本
 - 检查依赖安全漏洞
 - 使用 workspace:* 引用本地包

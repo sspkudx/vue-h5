@@ -78,6 +78,7 @@ module.exports = defineConfig(() => {
     const isDev = process.env.NODE_ENV === 'development';
 
     return {
+        // 生产构建转译全部依赖，确保产物语法兼容 browserslist 下限（低端设备）
         transpileDependencies: isProduction,
         lintOnSave: 'error',
         devServer: {
@@ -85,6 +86,13 @@ module.exports = defineConfig(() => {
             client: {
                 overlay: {
                     warnings: false,
+                },
+            },
+            proxy: {
+                '/api': {
+                    // 开发环境 API 代理目标，可通过 .env.development 的 VUE_APP_API_TARGET 覆盖
+                    target: process.env.VUE_APP_API_TARGET || 'http://localhost:3000',
+                    changeOrigin: true,
                 },
             },
         },

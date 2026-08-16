@@ -16,9 +16,12 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 | [创建 Vue 应用指南](./docs/agents/create-vue-app-guide.md) | 创建 Vue 应用的详细指南 | `docs/agents/create-vue-app-guide.md` |
 | [创建依赖包指南](./docs/agents/create-package-guide.md) | 创建依赖包的详细指南 | `docs/agents/create-package-guide.md` |
 | [项目开发工作流](./docs/agents/workflow.md) | 项目开发流程和操作指南 | `docs/agents/workflow.md` |
+| [业务基础设施](./docs/agents/business-infrastructure.md) | 请求封装、环境变量、代理、错误处理及待补清单 | `docs/agents/business-infrastructure.md` |
 | [代码规范与最佳实践](./docs/agents/coding-standards.md) | 代码规范和开发最佳实践 | `docs/agents/coding-standards.md` |
 | [故障排除指南](./docs/agents/troubleshooting.md) | 常见问题解决方案和调试技巧 | `docs/agents/troubleshooting.md` |
 | [技能开发指南](./docs/agents/skill-development-guide.md) | 如何创建和维护 AI 技能 | `docs/agents/skill-development-guide.md` |
+
+> 💡 另有根目录 `CONTEXT.md`：项目持久上下文（业务约束、架构决策、整改基线），供 AI 协作者快速进入状态。
 
 ## 快速开始
 
@@ -98,26 +101,30 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 ### 项目技能目录
 
 ```
-skills/
-├── create-vue-app/     # 创建 Vue 应用技能
-├── create-a-package/   # 创建依赖包技能
-├── create-skill/       # 创建新技能技能
-└── git-commit-push/    # Git 提交推送技能
+.claude/skills/
+├── create-vue-app/      # 创建 Vue 应用技能
+├── create-a-vue-page/   # 创建 Vue 页面技能（tsx / .vue）
+├── create-component/    # 创建 Vue 组件技能（SFC / defineComponent / FunctionalComponent）
+├── create-a-package/    # 创建依赖包技能
+├── design-to-code/      # 设计稿转代码 + 视觉走查
+├── create-skill/        # 创建新技能技能
+└── git-commit-push/     # Git 提交推送技能
 ```
 
 ### AI 编辑器技能目录
 
--   **CatPaw**: `.catpaw/skills/` 目录
--   **Cursor**: `.cursor/skills/` 目录
--   **Windsurf**: `.windsurf/skills/` 目录
--   **Trae**: `.trae/skills/` 目录
+- **CatPaw**: `.catpaw/skills/` 目录（运行 `pnpm sync:skills` 从 `.claude/skills/` 同步）
+- **Cursor**: `.cursor/skills/` 目录（如使用该编辑器，参照 sync 脚本放置）
+- **Windsurf**: `.windsurf/skills/` 目录（同上）
+- **Trae**: `.trae/skills/` 目录（同上）
 
 ## 文档更新历史
 
-| 版本 | 日期       | 更新内容             |
-| ---- | ---------- | -------------------- |
-| v2.0 | 2024-01-01 | 文档重构为模块化结构 |
-| v1.0 | 2023-12-01 | 初始版本             |
+| 版本 | 日期       | 更新内容                                                         |
+| ---- | ---------- | ---------------------------------------------------------------- |
+| v3.0 | 2026-08-16 | 登记全部 7 个技能；新增 CONTEXT.md、业务基础设施文档；同步脚本化 |
+| v2.0 | 2024-01-01 | 文档重构为模块化结构                                             |
+| v1.0 | 2023-12-01 | 初始版本                                                         |
 
 ## 贡献指南
 
@@ -140,10 +147,10 @@ skills/
 
 ## 技能文档导航
 
--   **开始使用**: [项目概览](./docs/agents/overview.md) → [可用技能列表](./docs/agents/available-skills.md) → [技能使用规范](./docs/agents/usage-guidelines.md)
--   **创建应用**: [创建 Vue 应用指南](./docs/agents/create-vue-app-guide.md) → [项目开发工作流](./docs/agents/workflow.md) → [代码规范与最佳实践](./docs/agents/coding-standards.md)
--   **创建包**: [创建依赖包指南](./docs/agents/create-package-guide.md) → [项目开发工作流](./docs/agents/workflow.md) → [代码规范与最佳实践](./docs/agents/coding-standards.md)
--   **解决问题**: [故障排除指南](./docs/agents/troubleshooting.md) → [技能使用规范](./docs/agents/usage-guidelines.md)
--   **开发技能**: [技能开发指南](./docs/agents/skill-development-guide.md) → [代码规范与最佳实践](./docs/agents/coding-standards.md)
+- **开始使用**: [项目概览](./docs/agents/overview.md) → [可用技能列表](./docs/agents/available-skills.md) → [技能使用规范](./docs/agents/usage-guidelines.md)
+- **创建应用**: [创建 Vue 应用指南](./docs/agents/create-vue-app-guide.md) → [项目开发工作流](./docs/agents/workflow.md) → [代码规范与最佳实践](./docs/agents/coding-standards.md)
+- **创建包**: [创建依赖包指南](./docs/agents/create-package-guide.md) → [项目开发工作流](./docs/agents/workflow.md) → [代码规范与最佳实践](./docs/agents/coding-standards.md)
+- **解决问题**: [故障排除指南](./docs/agents/troubleshooting.md) → [技能使用规范](./docs/agents/usage-guidelines.md)
+- **开发技能**: [技能开发指南](./docs/agents/skill-development-guide.md) → [代码规范与最佳实践](./docs/agents/coding-standards.md)
 
 **提示**: 所有文档都位于 `docs/agents/` 目录下，你可以直接访问对应的文件获取详细信息。

@@ -1,8 +1,20 @@
 {
     "name": "@my-app/shared",
     "version": "1.0.0",
-    "description": "",
+    "description": "vue-h5 共享工具库：类型守卫与数字工具",
     "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "sideEffects": false,
     "scripts": {
         "build": "rollup -c rollup.config.ts --configPlugin typescript",
         "test": "jest --config jest.config.js",

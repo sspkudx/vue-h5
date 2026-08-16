@@ -1,4 +1,11 @@
-> 1%
-last 2 versions
-not dead
+# 目标：覆盖商家端低端设备（低端安卓机 / 老 iOS / Win 7 上的 Chrome）
+# 兼容性由这里的显式下限 + babel/core-js 转译保证，与构建机 Node 版本无关。
+# 注意：不要使用 `not dead`——它会把停止更新的老 WebView/Safari 踢出目标范围。
+# Vue 3 依赖 Proxy（无法 polyfill），下限不得低于 Chrome 49 / iOS 10。
+Chrome >= 61
+Edge >= 79
+Firefox >= 68
+Safari >= 11
+iOS >= 11
+Android >= 6
 not ie 11

@@ -2,11 +2,23 @@
 
 vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建应用和包。
 
+## 技能总览
+
+| 技能 | 用途 | 位置 |
+| --- | --- | --- |
+| create-vue-app | 在 apps 下创建 Vue 应用 | `.claude/skills/create-vue-app/SKILL.md` |
+| create-a-vue-page | 在应用的 views 下创建页面（tsx / .vue） | `.claude/skills/create-a-vue-page/SKILL.md` |
+| create-component | 创建 Vue 组件（SFC / defineComponent / FunctionalComponent） | `.claude/skills/create-component/SKILL.md` |
+| create-a-package | 在 packages 下创建依赖包（四种类型） | `.claude/skills/create-a-package/SKILL.md` |
+| design-to-code | 设计稿转代码 + 视觉走查（附校验脚本） | `.claude/skills/design-to-code/SKILL.md` |
+| git-commit-push | 按项目规范提交推送（语义化提交、Gerrit） | `.claude/skills/git-commit-push/SKILL.md` |
+| create-skill | 创建新的 AI 技能 | `.claude/skills/create-skill/SKILL.md` |
+
 ## 1. create-vue-app
 
-**位置**: `/skills/create-vue-app/SKILL.md`
+**位置**: `/.claude/skills/create-vue-app/SKILL.md`
 
-**描述**: 在 apps 目录下创建新的 Vue 应用，基于现有 example-app 模板生成完整的应用结构。
+**描述**: 在 apps 目录下创建新的 Vue 应用，直接生成完整的源码和配置文件（不依赖现有应用模板拷贝），支持自定义端口。
 
 ### 使用场景
 
@@ -34,28 +46,32 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 
 ## 2. create-a-package
 
-**位置**: `/skills/create-a-package/SKILL.md`
+**位置**: `/.claude/skills/create-a-package/SKILL.md`
 
 **描述**: 在 packages 目录下创建新的依赖包，支持四种类型的包创建。
 
 ### 支持的包类型
 
 #### 工具库 (Utility Library)
+
 - **用途**: 通用的工具函数集合
 - **示例**: `formatDate`, `safeNum`, `debounce`
 - **依赖**: 纯 TypeScript/JavaScript
 
 #### 组件库 (Component Library)
+
 - **用途**: 可复用的 Vue 组件
 - **示例**: `Button`, `Modal`, `Form`
 - **依赖**: Vue 3.x + @vue/babel-plugin-jsx
 
 #### 工具函数集 (Helper Functions)
+
 - **用途**: 业务相关的工具函数集合
 - **示例**: `auth`, `http`, `validation`
 - **依赖**: 根据具体功能而定
 
 #### 插件库 (Plugin Library)
+
 - **用途**: Vue 插件或通用插件
 - **示例**: 路由守卫、状态管理插件
 - **依赖**: Vue 及相关框架依赖
@@ -81,17 +97,23 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 ## 技能位置
 
 ### 项目技能目录
-- `skills/create-vue-app/SKILL.md` - 创建 Vue 应用技能
-- `skills/create-a-package/SKILL.md` - 创建依赖包技能
-- `skills/create-skill/SKILL.md` - 创建新技能技能
-- `skills/git-commit-push/SKILL.md` - Git 提交推送技能
+
+- `.claude/skills/create-vue-app/SKILL.md` - 创建 Vue 应用技能
+- `.claude/skills/create-a-vue-page/SKILL.md` - 创建 Vue 页面技能
+- `.claude/skills/create-component/SKILL.md` - 创建 Vue 组件技能
+- `.claude/skills/create-a-package/SKILL.md` - 创建依赖包技能
+- `.claude/skills/design-to-code/SKILL.md` - 设计稿转代码技能
+- `.claude/skills/git-commit-push/SKILL.md` - Git 提交推送技能
+- `.claude/skills/create-skill/SKILL.md` - 创建新技能技能
 
 ### AI 编辑器技能目录
+
 对于不同的 AI 编辑器，技能文件需要放在对应的位置：
-- **CatPaw**: `.catpaw/skills/` 目录
-- **Cursor**: `.cursor/skills/` 目录
-- **Windsurf**: `.windsurf/skills/` 目录
-- **Trae**: `.trae/skills/` 目录
+
+- **CatPaw**: `.catpaw/skills/` 目录（由 `scripts/sync-skills.sh` 从 `.claude/skills/` 同步）
+- **Cursor**: `.cursor/skills/` 目录（如使用该编辑器，可参照 sync 脚本放置）
+- **Windsurf**: `.windsurf/skills/` 目录（同上）
+- **Trae**: `.trae/skills/` 目录（同上）
 
 ## 技能文件结构
 
@@ -102,7 +124,6 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 name: skill-name
 description: 技能简短描述
 ---
-
 # 技能名称
 
 技能详细描述和使用说明...

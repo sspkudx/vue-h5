@@ -7,6 +7,10 @@ const getAppInstance = () => {
     const instance = pluginsList.reduce((current, plugin) => {
         return current.use(plugin);
     }, createApp(App));
+    // 全局错误处理：统一兜底，后续可接入上报（如 sentry）与用户提示
+    instance.config.errorHandler = (error, instance, info) => {
+        console.error('[app-error]', error, instance, info);
+    };
     return instance;
 };
 

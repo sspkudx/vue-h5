@@ -23,7 +23,6 @@ module.exports = {
     moduleNameMapper: {
         '^@my-app/(.*)$': '<rootDir>/packages/$1/src',
     },
-    // Node 14兼容性设置
     testEnvironmentOptions: {
         url: 'http://localhost/',
     },

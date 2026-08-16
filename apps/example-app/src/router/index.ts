@@ -25,7 +25,7 @@ const router = createRouter({
             path: '/playground',
             name: 'PlaygroundPage',
             component() {
-                return import(/* webpackChunkName: "HomeView" */ '../views/PlaygroundPage/PlaygroundPage.vue');
+                return import(/* webpackChunkName: "PlaygroundPage" */ '../views/PlaygroundPage/PlaygroundPage.vue');
             },
         },
     ],

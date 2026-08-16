@@ -1,29 +1,30 @@
 "名为 e2e-test-app 的 Vue 应用，端口号设为 9999";
-    
+
     // 解析参数
     const params = ParameterParser.parse(userInput);
-    
+
     // 验证参数
     const isValid = CreateVueAppSkill.validate(params);
     expect(isValid).toBe(true);
-    
+
     // 执行技能
     await CreateVueAppSkill.execute(params);
-    
+
     // 验证结果
     expect(fs.existsSync('apps/e2e-test-app')).toBe(true);
-    
+
     const vueConfig = fs.readFileSync('apps/e2e-test-app/vue.config.js', 'utf-8');
     expect(vueConfig).toContain('port: 9999');
-    
+
     const packageJson = JSON.parse(fs.readFileSync('apps/e2e-test-app/package.json', 'utf-8'));
     expect(packageJson.name).toBe('e2e-test-app');
-    
+
     // 清理
     fs.rmSync('apps/e2e-test-app', { recursive: true });
-  });
-});
-```
+
+}); });
+
+````
 
 ## 技能部署
 
@@ -31,19 +32,20 @@
 ```bash
 # 复制技能文件到 AI 编辑器目录
 # CatPaw
-cp -r skills/create-vue-app/ .catpaw/skills/
+cp -r .claude/skills/create-vue-app/ .catpaw/skills/
 
 # Cursor
-cp -r skills/create-vue-app/ .cursor/skills/
+cp -r .claude/skills/create-vue-app/ .cursor/skills/
 
 # Windsurf
-cp -r skills/create-vue-app/ .windsurf/skills/
+cp -r .claude/skills/create-vue-app/ .windsurf/skills/
 
 # Trae
-cp -r skills/create-vue-app/ .trae/skills/
-```
+cp -r .claude/skills/create-vue-app/ .trae/skills/
+````
 
 ### 2. 验证技能功能
+
 ```bash
 # 在 AI 编辑器中测试技能
 # 1. 重启 AI 编辑器
@@ -53,6 +55,7 @@ cp -r skills/create-vue-app/ .trae/skills/
 ```
 
 ### 3. 更新项目文档
+
 ```bash
 # 更新技能列表
 # 在 docs/agents/available-skills.md 中添加新技能
@@ -67,18 +70,21 @@ cp -r skills/create-vue-app/ .trae/skills/
 ## 技能维护清单
 
 ### 每周维护
+
 - [ ] 测试所有技能功能
 - [ ] 检查依赖版本
 - [ ] 验证生成的文件结构
 - [ ] 更新示例代码
 
 ### 每月维护
+
 - [ ] 检查技能文档完整性
 - [ ] 更新技能模板
 - [ ] 优化技能性能
 - [ ] 收集用户反馈
 
 ### 每季度维护
+
 - [ ] 审查技能架构
 - [ ] 评估技能使用情况
 - [ ] 规划技能改进
@@ -87,6 +93,7 @@ cp -r skills/create-vue-app/ .trae/skills/
 ## 技能开发资源
 
 ### 1. 模板资源
+
 ```typescript
 // 项目模板目录
 templates/
@@ -97,6 +104,7 @@ templates/
 ```
 
 ### 2. 工具函数
+
 ```typescript
 // 技能开发工具函数
 utils/
@@ -107,6 +115,7 @@ utils/
 ```
 
 ### 3. 测试工具
+
 ```typescript
 // 技能测试工具
 tests/
@@ -119,9 +128,11 @@ tests/
 ## 故障排除
 
 ### 1. 技能未被识别
+
 **问题**: AI 编辑器无法识别技能
 
 **解决方案**:
+
 ```bash
 # 1. 检查技能文件位置
 ls -la .catpaw/skills/
@@ -134,9 +145,11 @@ cat .catpaw/skills/create-vue-app/SKILL.md | head -5
 ```
 
 ### 2. 技能执行失败
+
 **问题**: 技能执行过程中出错
 
 **解决方案**:
+
 ```bash
 # 1. 检查错误信息
 # 查看控制台输出
@@ -152,12 +165,14 @@ pnpm list --depth=0
 ```
 
 ### 3. 生成文件错误
+
 **问题**: 生成的文件包含错误
 
 **解决方案**:
+
 ```bash
 # 1. 检查模板文件
-cat skills/create-vue-app/templates/package.json
+cat .claude/skills/create-vue-app/templates/package.json
 
 # 2. 检查变量替换
 # 验证模板变量是否正确替换
@@ -170,9 +185,11 @@ cat apps/new-app/package.json
 ```
 
 ### 4. 性能问题
+
 **问题**: 技能执行速度慢
 
 **解决方案**:
+
 ```bash
 # 1. 分析执行时间
 time pnpm run create-app my-app

@@ -5,24 +5,28 @@
 ## 支持的包类型
 
 ### 1. 工具库 (Utility Library)
+
 - **用途**: 通用的工具函数集合
 - **示例**: `formatDate`, `safeNum`, `debounce`, `cloneDeep`
 - **依赖**: 纯 TypeScript/JavaScript，无框架依赖
 - **典型场景**: 日期处理、数字格式化、深拷贝、防抖节流等通用工具
 
 ### 2. 组件库 (Component Library)
+
 - **用途**: 可复用的 Vue 组件集合
 - **示例**: `Button`, `Modal`, `Form`, `Table`
 - **依赖**: Vue 3.x + @vue/babel-plugin-jsx
 - **典型场景**: UI 组件库、业务组件库
 
 ### 3. 工具函数集 (Helper Functions)
+
 - **用途**: 业务相关的工具函数集合
 - **示例**: `auth`, `http`, `validation`, `storage`
 - **依赖**: 根据具体功能而定，可能包含业务相关依赖
 - **典型场景**: 认证相关工具、HTTP 请求封装、表单验证、本地存储
 
 ### 4. 插件库 (Plugin Library)
+
 - **用途**: Vue 插件或通用插件
 - **示例**: 路由守卫、状态管理插件、日志插件
 - **依赖**: Vue 及相关框架依赖
@@ -77,14 +81,14 @@ packages/{package-name}/
     "peerDependencies": {},
     "devDependencies": {
         "@types/jest": "^29.5.0",
-        "jest": "^29.7.0",
-        "rimraf": "^5.0.5",
-        "rollup": "^4.12.0",
-        "ts-jest": "^29.1.0",
-        "typescript": "^5.3.0"
+        "jest": "^30.4.2",
+        "rimraf": "^6.1.3",
+        "rollup": "^4.62.4",
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
-        "node": ">= 14"
+        "node": ">= 22"
     }
 }
 ```
@@ -123,14 +127,14 @@ packages/{package-name}/
     "devDependencies": {
         "@types/jest": "^29.5.0",
         "@vue/test-utils": "^2.4.0",
-        "jest": "^29.7.0",
-        "rimraf": "^5.0.5",
-        "rollup": "^4.12.0",
-        "ts-jest": "^29.1.0",
-        "typescript": "^5.3.0"
+        "jest": "^30.4.2",
+        "rimraf": "^6.1.3",
+        "rollup": "^4.62.4",
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
-        "node": ">= 14"
+        "node": ">= 22"
     }
 }
 ```
@@ -268,6 +272,7 @@ import { logPlugin } from '@my-app/vue-plugins';
 ```
 
 **创建的包结构**：
+
 ```
 packages/utils/
 ├── src/
@@ -292,6 +297,7 @@ packages/utils/
 ```
 
 **包配置特点**：
+
 ```json
 {
     "peerDependencies": {
@@ -306,11 +312,13 @@ packages/utils/
 ### 工具库 (Utility Library)
 
 **适用场景**：
+
 - 通用的工具函数
 - 纯 TypeScript/JavaScript 代码
 - 无框架依赖
 
 **示例代码**：
+
 ```typescript
 // src/date-utils.ts
 export function formatDate(date: Date, format: string): string {
@@ -325,11 +333,13 @@ export function daysBetween(start: Date, end: Date): number {
 ### 组件库 (Component Library)
 
 **适用场景**：
+
 - 可复用的 Vue 组件
 - UI 组件库
 - 业务组件库
 
 **示例代码**：
+
 ```typescript
 // src/components/Button.tsx
 import { defineComponent } from 'vue';
@@ -355,11 +365,13 @@ export const Button = defineComponent({
 ### 工具函数集 (Helper Functions)
 
 **适用场景**：
+
 - 业务相关的工具函数
 - 特定领域的工具集合
 - 可能需要特定依赖
 
 **示例代码**：
+
 ```typescript
 // src/auth.ts
 export async function login(username: string, password: string): Promise<User> {
@@ -378,11 +390,13 @@ export function getCurrentUser(): User | null {
 ### 插件库 (Plugin Library)
 
 **适用场景**：
+
 - Vue 插件
 - 全局功能扩展
 - 中间件、拦截器
 
 **示例代码**：
+
 ```typescript
 // src/log-plugin.ts
 import type { App } from 'vue';
@@ -395,9 +409,9 @@ export const logPlugin = {
             },
             error(message: string) {
                 console.error(`[ERROR] ${message}`);
-            }
+            },
         };
-    }
+    },
 };
 ```
 
@@ -406,6 +420,7 @@ export const logPlugin = {
 ### Jest 配置
 
 每个包都包含完整的 Jest 测试配置：
+
 - TypeScript 支持
 - 覆盖率报告
 - 测试文件匹配模式
@@ -445,26 +460,31 @@ describe('formatDate', () => {
 ## 最佳实践
 
 ### 1. 包命名
+
 - 使用有意义的名称，反映包功能
 - 遵循 `@my-app/` 命名空间
 - 使用 kebab-case 命名规范
 
 ### 2. 版本管理
+
 - 初始版本使用 `1.0.0`
 - 遵循语义化版本规范
 - 及时更新版本号
 
 ### 3. 文档编写
+
 - 提供清晰的 README.md
 - 包含使用示例
 - 说明 API 接口
 
 ### 4. 测试覆盖
+
 - 编写单元测试
 - 保持高测试覆盖率
 - 测试边界条件
 
 ### 5. 依赖管理
+
 - 合理使用 peerDependencies
 - 避免不必要的依赖
 - 定期更新依赖版本
@@ -474,6 +494,7 @@ describe('formatDate', () => {
 ### 常见问题
 
 #### 1. 包引用问题
+
 ```bash
 # 确保所有包都已构建
 pnpm build:packages
@@ -483,6 +504,7 @@ pnpm i --force
 ```
 
 #### 2. 类型错误
+
 ```bash
 # 检查 TypeScript 配置
 cd packages/{package-name}
@@ -490,6 +512,7 @@ pnpm tsc --noEmit
 ```
 
 #### 3. 构建失败
+
 ```bash
 # 查看详细错误信息
 pnpm build --verbose
@@ -499,6 +522,7 @@ rm -rf packages/{package-name}/dist
 ```
 
 #### 4. 测试失败
+
 ```bash
 # 查看测试详细输出
 pnpm test --verbose

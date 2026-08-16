@@ -22,3 +22,18 @@ declare module '*.gif' {
     const img: string;
     export default img;
 }
+
+declare module '*.svg' {
+    const img: string;
+    export default img;
+}
+
+declare module '*.webp' {
+    const img: string;
+    export default img;
+}
+
+declare module '*.avif' {
+    const img: string;
+    export default img;
+}
