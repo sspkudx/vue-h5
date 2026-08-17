@@ -265,12 +265,14 @@ export default defineComponent({
 {
     "compilerOptions": {
         "paths": {
-            "@my-app/shared": ["../../packages/shared/dist/index"],
-            "@my-app/*": ["../../packages/*/dist/index"]
+            "@my-app/shared": ["../../packages/shared/src/index.ts"],
+            "@my-app/*": ["../../packages/*/src/index.ts"]
         }
     }
 }
 ```
+
+> paths 指向包源码（`src/index.ts`）而非 dist，与 vite 开发环境 alias 对齐：改包源码后类型即时同步，且类型检查不依赖先构建包。生产构建不设 alias，走 workspace 标准解析（`exports` → `dist`）。
 
 #### 步骤 4: 构建和开发
 

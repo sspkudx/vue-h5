@@ -61,17 +61,17 @@ pnpm build:packages
 pnpm i --force
 
 # 3. 检查包路径映射
-# 在应用的 vite.config.ts 中检查：
+# 在应用的 vite.config.ts 中检查（仅开发环境 alias 到源码，生产走 workspace 标准解析）：
 # resolve: {
 #   alias: {
 #     '@': resolve(appRoot, 'src'),
-#     '@my-app/shared': toRoot('packages/shared/src')
+#     ...(isDev ? { '@my-app/shared': toRoot('packages/shared/src') } : {}),
 #   }
 # }
 
 # 4. 检查 tsconfig.json 中的路径映射
 # "paths": {
-#   "@my-app/*": ["../packages/*"]
+#   "@my-app/shared": ["../../packages/shared/src/index.ts"]
 # }
 
 # 5. 验证包是否存在

@@ -72,13 +72,13 @@ apps/{app-name}/
 - **支持 Less 模块化样式**：CSS Modules 自动转换 + Less 预处理器
 - **Vue / JSX 支持**：`@vitejs/plugin-vue` + `@vitejs/plugin-vue-jsx`
 - **兼容性基线**：`@vitejs/plugin-legacy` 按根目录 `.browserslistrc`（Chrome 49）自动生成 legacy 产物
-- **与 monorepo 包的路径别名映射**：配置 `@my-app/shared` 别名
+- **与 monorepo 包的路径别名映射**：仅开发环境将 `@my-app/shared` alias 到 `packages/shared/src`（支持热更新）；生产构建不设 alias，走 workspace 标准解析（`exports` → `dist`）
 - **开发代理**：`server.proxy` 转发 `/api` 到 `VITE_APP_API_TARGET`
 
 ### tsconfig.json
 
 - **JSX 支持**（Vue JSX）：启用 JSX 语法支持
-- **路径别名映射**：配置包引用路径
+- **路径别名映射**：配置包引用路径（`@my-app/shared` 的 paths 指向 `packages/shared/src/index.ts`，与 dev alias 对齐，类型检查不依赖先构建 shared）
 - **严格的类型检查**：启用 TypeScript 严格模式
 - **monorepo 包引用支持**：配置项目引用
 

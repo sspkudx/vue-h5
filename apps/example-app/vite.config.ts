@@ -34,8 +34,9 @@ export default defineConfig(({ mode }) => {
             alias: {
                 '@': resolve(appRoot, 'src'),
                 // 开发环境指向源码目录（支持热更新）
-                // 生产环境指向构建后的 dist 目录
-                '@my-app/shared': isDev ? toRoot('packages/shared/src') : toRoot('packages/shared/dist'),
+                // 生产环境不设 alias，走 workspace 标准解析（package.json exports -> dist），
+                // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
+                ...(isDev ? { '@my-app/shared': toRoot('packages/shared/src') } : {}),
             },
         },
         server: {

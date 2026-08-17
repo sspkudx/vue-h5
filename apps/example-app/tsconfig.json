@@ -4,7 +4,7 @@
         "types": ["vite/client", "node"],
         "paths": {
             "@/*": ["./src/*"],
-            "@my-app/shared": ["../../packages/shared/dist/index"]
+            "@my-app/shared": ["../../packages/shared/src/index.ts"]
         }
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "types/*.d.ts", "../../types/*.d.ts", "vite.config.ts"],

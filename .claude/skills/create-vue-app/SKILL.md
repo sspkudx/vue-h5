@@ -144,8 +144,9 @@ export default defineConfig(({ mode }) => {
             alias: {
                 '@': resolve(appRoot, 'src'),
                 // 开发环境指向源码目录（支持热更新）
-                // 生产环境指向构建后的 dist 目录
-                '@my-app/shared': isDev ? toRoot('packages/shared/src') : toRoot('packages/shared/dist'),
+                // 生产环境不设 alias，走 workspace 标准解析（package.json exports -> dist），
+                // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
+                ...(isDev ? { '@my-app/shared': toRoot('packages/shared/src') } : {}),
             },
         },
         server: {
@@ -185,7 +186,7 @@ export default defineConfig(({ mode }) => {
         "types": ["vite/client", "node"],
         "paths": {
             "@/*": ["src/*"],
-            "@my-app/shared": ["../../packages/shared/dist/index"]
+            "@my-app/shared": ["../../packages/shared/src/index.ts"]
         }
     },
     "include": [
@@ -203,6 +204,8 @@ export default defineConfig(({ mode }) => {
 ```
 
 > **注意**：不要回退到 `moduleResolution: "node"`——Vite 8+ 的 package.json 仅提供 `exports` 字段（无顶层 `main`/`types`），旧解析算法会报 `Cannot find module 'vite'`。公共编译选项统一由根目录 `tsconfig.base.json` 维护。
+>
+> **paths 指向源码**：`@my-app/shared` 的 paths 指向 `src/index.ts` 而非 dist，与 vite 开发环境 alias 对齐——改 shared 源码后类型即时同步，且 `typecheck` 不依赖先构建 shared。
 
 ### 7. 创建源码文件
 
@@ -567,7 +570,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
-3. **路径映射**: tsconfig.json 中的路径映射需要正确指向共享包
+3. **路径映射**: `@my-app/shared` 仅在开发环境 alias 到 `packages/shared/src`（支持热更新）；生产构建不设 alias，走 workspace 标准解析（`exports` → `dist`），构建顺序由 `scripts/build.sh` 保证（先 packages 后 apps）。tsconfig 的 paths 指向 `src/index.ts` 与 dev 运行时对齐
 4. **依赖管理**: 应用依赖通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（axios/pinia/ress/vue/vue-router），新应用版本自动与 example-app 保持一致；`@my-app/shared` 使用 `workspace:*` 引用本地包
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
