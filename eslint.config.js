@@ -76,6 +76,8 @@ module.exports = defineConfigWithVueTs(
             // CJS 工具配置与脚本（require 用法合法，且不属于 src 代码）
             '**/*.config.js',
             '**/*.config.cjs',
+            '**/.postcssrc.js',
+            '**/.postcssrc.cjs',
             'scripts/**',
             '.claude/skills/**/scripts/**',
         ],
