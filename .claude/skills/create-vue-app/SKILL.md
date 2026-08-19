@@ -62,6 +62,7 @@ apps/{app-name}/
 ├── README.md
 ├── package.json
 ├── tsconfig.json
+├── .postcssrc.js
 └── vite.config.ts
 ```
 
@@ -471,6 +472,25 @@ const increment = () => {
 
 - `README.md`: 创建基本的应用说明文档，包含应用名称和描述
 - `favicon.ico`: 创建默认的 favicon 文件（可以复制项目的默认 favicon 或创建空文件）
+- `.postcssrc.js`: 创建 PostCSS 配置文件（移动端适配基线，mpx → vmin，内容如下）：
+
+```javascript
+module.exports = {
+    plugins: [
+        require('postcss-px-to-viewport')({
+            viewportWidth: 390,
+            unitToConvert: 'mpx',
+            minPixelValue: 0,
+            unitPrecision: 3,
+            viewportUnit: 'vmin',
+            fontViewportUnit: 'vmin',
+        }),
+        require('postcss-calc'),
+    ],
+};
+```
+
+> **说明**：Vite 通过 postcss-load-config 自动加载应用根目录的 `.postcssrc.js`，无需在 vite.config.ts 内联 `css.postcss`；`postcss-px-to-viewport` / `postcss-calc` 属构建工具链，统一位于根 devDependencies（经 `shamefullyHoist` 提升，与 vite/less 同理），应用**无需也不应**在自己的 package.json 重复声明；该文件是 CJS 工具配置，已被根 `eslint.config.js` 的 ignores（`**/.postcssrc.js`）放行，`require()` 写法不会触发 lint 报错。
 
 ### 10. 更新根目录的 package.json
 
@@ -530,6 +550,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 4. vite.config.ts 中的端口配置是否正确
 5. tsconfig.json 中的路径映射是否正确
 6. **根目录 package.json 的 scripts 是否正确更新**：检查是否添加了 dev、build、lint 脚本
+7. `.postcssrc.js` 是否已创建（移动端适配基线，缺失会导致 `mpx` 单位不被转换）
 
 ## 示例
 
@@ -571,12 +592,13 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
 3. **路径映射**: `@my-app/shared` 仅在开发环境 alias 到 `packages/shared/src`（支持热更新）；生产构建不设 alias，走 workspace 标准解析（`exports` → `dist`），构建顺序由 `scripts/build.sh` 保证（先 packages 后 apps）。tsconfig 的 paths 指向 `src/index.ts` 与 dev 运行时对齐
-4. **依赖管理**: 应用依赖通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（axios/pinia/ress/vue/vue-router），新应用版本自动与 example-app 保持一致；`@my-app/shared` 使用 `workspace:*` 引用本地包
+4. **依赖管理**: 应用依赖通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（axios/pinia/ress/vue/vue-router），新应用版本自动与 example-app 保持一致；`@my-app/shared` 使用 `workspace:*` 引用本地包。构建工具链（vite、less、postcss-px-to-viewport、postcss-calc 等）统一位于根 devDependencies，经 `shamefullyHoist` 提升后各应用直接可用，应用自身 package.json 只声明运行时依赖
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
 7. **格式一致性**: 确保新增的 scripts 格式与现有 scripts 保持一致（`pnpm -F {app-name} {command}`）
 8. **构建工具**: 应用使用 **Vite** 构建（`vite` 位于根 devDependencies，脚本直接用 `vite` / `vue-tsc` 即可），构建时自动做类型检查（`vue-tsc --noEmit`）
 9. **兼容性基线**: 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），由根目录 `.browserslistrc` + `@vitejs/plugin-legacy` 保证。新建应用**无需**单独配置 browserslist，`legacy()` 插件自动读取根目录 `.browserslistrc` 并生成 legacy 产物（ES5 + core-js polyfill + SystemJS，`nomodule` 加载），现代浏览器加载 `type="module"` 产物。不要降低根目录 `.browserslistrc` 的基线：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持）
+10. **移动端适配**: 必须创建 `.postcssrc.js`（见第 9 节），这是项目统一的移动端适配基线（`mpx` → `vmin`，viewportWidth 390，见 CONTEXT.md）；样式中的尺寸使用 `mpx` 单位编写，stylelint 已放行该单位（`unit-no-unknown` ignoreUnits）
 
 ## 错误处理
 
