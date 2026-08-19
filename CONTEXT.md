@@ -10,6 +10,7 @@
 - 钩子策略：**无 pre-commit 格式化钩子**（lint-staged 仅可手动 `pnpm lint-staged`）、无 CI；**有 commit-msg 钩子**（commitlint v17 强制约定式提交规范，见下）。提交前手动 `pnpm lint && pnpm lint:style && pnpm test`
 - 无业务基建（axios 封装 / env / proxy / 全局错误处理）：见 main 分支 `docs/agents/business-infrastructure.md`
 - browserslist：**Chrome 49 兼容性基线**（桌面端 + 移动端统一，含 Android WebView），由 babel 转译 + core-js polyfill 保证；Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持），故下限不得低于 49
+- 移动端适配：postcss-px-to-viewport，自定义单位 `mpx` → `vmin`（viewportWidth 390），配置在各应用根目录 `.postcssrc.js`，由 Vue CLI 的 postcss-loader 自动加载；postcss 插件属构建工具链，统一位于根 devDependencies，应用不重复声明
 
 ## 与 main 一致的改动
 

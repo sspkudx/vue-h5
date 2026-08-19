@@ -32,6 +32,7 @@ apps/{app-name}/
 ├── favicon.ico              # 网站图标
 ├── package.json             # 应用配置
 ├── tsconfig.json           # TypeScript 配置
+├── .postcssrc.js           # PostCSS 配置（mpx → vmin 移动端适配）
 └── vue.config.js           # Vue CLI 配置
 ```
 
@@ -184,7 +185,7 @@ module.exports = {
 1. **项目共享包**：`@my-app/shared`
 2. **Vue 3 相关依赖**：`vue`, `vue-router`, `pinia`
 3. **开发工具**：`typescript`, `eslint`, `prettier`
-4. **构建工具**：`@vue/cli-service`, `webpack`
+4. **构建工具**：`@vue/cli-service`, `webpack`, `postcss-px-to-viewport`, `postcss-calc`（均位于根 devDependencies，经 hoisting 提升，应用无需重复声明）
 
 ## 示例
 
@@ -239,6 +240,7 @@ apps/user-portal/
 | `src/views/HomeView/` | 首页组件，包含示例代码 |
 | `src/views/AboutView/` | 关于页面组件，包含示例代码 |
 | `index.htm` | HTML 模板文件 |
+| `.postcssrc.js` | PostCSS 配置（mpx → vmin 移动端适配） |
 | `vue.config.js` | Vue CLI 配置文件 |
 | `tsconfig.json` | TypeScript 配置文件 |
 | `package.json` | 应用配置和依赖管理 |
@@ -248,6 +250,7 @@ apps/user-portal/
 - 使用 `.module.less` 后缀支持 CSS Modules
 - 样式自动局部作用域
 - 支持 Less 预处理器语法
+- 尺寸使用 `mpx` 单位编写，由应用根目录 `.postcssrc.js` 中的 postcss-px-to-viewport 自动转换为 `vmin`（viewportWidth 390，项目统一移动端适配基线）
 - 自动生成唯一的类名避免冲突
 
 ### 类型定义

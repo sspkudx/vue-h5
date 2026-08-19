@@ -558,66 +558,46 @@ refactor/improve-performance # 代码重构
 
 ## 代码质量检查
 
-### 1. ESLint 规则
-项目使用以下 ESLint 规则：
+> 以下为摘要，实际规则以仓库根目录配置文件为准；修改规则请直接改对应配置文件。
 
-```javascript
-// .eslintrc.js
-module.exports = {
-  rules: {
-    // TypeScript 相关
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    
-    // Vue 相关
-    'vue/multi-word-component-names': 'error',
-    'vue/no-unused-components': 'warn',
-    
-    // 代码风格
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-    'no-unused-vars': 'warn',
-    
-    // 最佳实践
-    'prefer-const': 'error',
-    'no-var': 'error',
-    'eqeqeq': ['error', 'always']
-  }
-};
-```
+### 1. ESLint 规则
+
+配置文件为根目录 `.eslintrc.js`（ESLint 8 旧式 eslintrc，本分支 Node 14 基线不使用 flat config）：
+
+- **extends**：`plugin:vue/vue3-essential` + `eslint:recommended` + `@vue/typescript/recommended` + `plugin:prettier/recommended`（Prettier 以 ESLint 规则形式接入，`prettier/prettier` 报错即格式不符）
+- **关键规则**：
+  - 代码风格：`semi: always`、`quotes: single`、`indent: 4`、`prefer-const`、`no-var`、`eqeqeq`
+  - TypeScript：`@typescript-eslint/no-explicit-any: warn`、`@typescript-eslint/no-unused-vars`（`_` 前缀豁免，通用 `no-unused-vars` 已关闭交由 TS 版）
+  - Vue：`vue/multi-word-component-names: off`、`vue/require-default-prop: off`、`vue/require-prop-types: off`
+  - `no-console` / `no-debugger`：生产环境 `warn`，开发环境 `off`
+- **overrides**：测试文件（`__tests__` / `*.test.*` / `*.spec.*`）注入 jest 环境并放宽 `no-empty-function`、`no-explicit-any` 等；`*.vue` 关闭通用 `indent`（交给 Prettier）
+- **忽略文件**：`.eslintignore`（dist、coverage、node_modules 等）；`.postcssrc.js` 等 CJS 工具配置的 `require()` 写法在本分支不会误报（typescript-eslint v5 的 recommended 不含 `no-require-imports`）
 
 ### 2. Prettier 配置
-项目使用 Prettier 统一代码格式：
 
-```json
-{
-  "semi": true,
-  "trailingComma": "es5",
-  "singleQuote": true,
-  "printWidth": 100,
-  "tabWidth": 2,
-  "useTabs": false,
-  "bracketSpacing": true,
-  "arrowParens": "avoid"
-}
+配置文件为根目录 `.prettierrc.yml`：
+
+```yaml
+printWidth: 120
+tabWidth: 4
+semi: true
+singleQuote: true
+trailingComma: 'es5'
+bracketSameLine: false
+arrowParens: 'avoid'
+singleAttributePerLine: false
+proseWrap: never
+vueIndentScriptAndStyle: false
 ```
 
 ### 3. Stylelint 配置
-项目使用 Stylelint 检查样式代码：
 
-```json
-{
-  "extends": [
-    "stylelint-config-standard",
-    "stylelint-config-recommended-less"
-  ],
-  "rules": {
-    "selector-class-pattern": "^[a-z][a-zA-Z0-9]+$",
-    "no-duplicate-selectors": true,
-    "no-empty-source": true
-  }
-}
-```
+配置文件为根目录 `.stylelintrc.cjs`（stylelint 15）：
+
+- **extends**：`stylelint-config-standard` + `stylelint-config-recommended-less` + `stylelint-config-recommended-vue` + `stylelint-config-prettier` + `stylelint-prettier/recommended`
+- **插件**：`stylelint-less`、`stylelint-order`（强制 CSS 属性排序，顺序表见配置文件）
+- **类名约束**：`selector-class-pattern` 强制 BEM 命名（`block__element--modifier`，兼容 CSS Modules）
+- **移动端适配**：`unit-no-unknown` 放行自定义单位 `mpx`（由 postcss-px-to-viewport 转换为 `vmin`）
 
 ## 性能优化
 

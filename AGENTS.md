@@ -118,6 +118,7 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 
 | 版本 | 日期       | 更新内容                                                                                     |
 | ---- | ---------- | -------------------------------------------------------------------------------------------- |
+| v3.3 | 2026-08-20 | create-vue-app 模板补 .postcssrc.js（mpx→vmin 移动端适配基线）并明确构建工具链归根 devDependencies 约定；coding-standards 代码质量检查章节对齐本分支实际配置（.eslintrc.js / .prettierrc.yml / .stylelintrc.cjs）；CONTEXT 补移动端适配说明（跟随 main v3.4，按本分支工具链改写） |
 | v3.2 | 2026-08-17 | 移除 .catpaw/skills 镜像、sync:skills 脚本及全部相关引用（跟随 main）                        |
 | v3.1 | 2026-08-16 | 提交信息强制约定式提交 v1.0.0（commit-msg + commitlint v17）；本分支无 pre-commit 格式化钩子 |
 | v3.0 | 2026-08-16 | 登记全部 7 个技能；技能归档至 .claude/skills 并同步脚本化                                    |
