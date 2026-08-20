@@ -60,14 +60,17 @@ pnpm build:packages
 # 2. 重新链接依赖
 pnpm i --force
 
-# 3. 检查包路径映射
-# 在应用的 vite.config.ts 中检查（仅开发环境 alias 到源码，生产走 workspace 标准解析）：
-# resolve: {
-#   alias: {
-#     '@': resolve(appRoot, 'src'),
-#     ...(isDev ? { '@my-app/shared': toRoot('packages/shared/src') } : {}),
+# 3. 检查包的 exports 是否带 development 条件
+# dev 环境 Vite 默认解析 "development" 条件 -> 包源码（热更新），无需 alias；
+# 生产构建解析 "import" 条件 -> dist：
+# packages/<pkg>/package.json:
+#   "exports": {
+#     ".": {
+#       "types": "./dist/index.d.ts",
+#       "development": "./src/index.ts",
+#       "import": "./dist/index.js"
+#     }
 #   }
-# }
 
 # 4. 检查 tsconfig.json 中的路径映射
 # "paths": {

@@ -38,10 +38,10 @@
 
 ## 关键架构决策
 
-1. **monorepo 联调双 alias**：dev 环境把 `@my-app/*` alias 到源码（热更新），prod 指向 dist。这是仓库核心工程价值，改动 vite.config.ts 时必须保留。
+1. **monorepo 源码联调**：各包 `package.json` 的 `exports` 带 `"development": "./src/index.ts"` 条件（置于 `import` 之前）。Vite dev 默认解析该条件 → 包源码热更新，应用无需为 `@my-app/*` 配置 alias；生产构建解析 `import` 条件 → dist。这是仓库核心工程价值，新增包必须保留该条件（create-a-package 模板已内置）。
 2. **运行时依赖归各 app 自管**，根 package.json 只放工具链（原先把 vue/pinia 等装在根上 + hoist 兜底，已纠正）。
 3. **catalog 统一版本**：高频共享依赖（vue/vue-router/pinia/axios/ress）在 `pnpm-workspace.yaml` 的 `catalogs.default` 定义版本，各 app/包用 `catalog:` 引用，升级只改一处、全仓一致（2026-08 起）。
-4. **依赖解析**：jest moduleNameMapper 与 `@my-app/*` 别名对齐，新增包要同步两处。
+4. **依赖解析**：根 `jest.config.js` 的 moduleNameMapper 用通配规则 `^@my-app/(.*)$` → `packages/$1/src`（新增包自动覆盖）；运行时解析见第 1 条（exports `development` 条件），两处互不依赖。
 
 ## 整改基线决策（2026-08 评审后）
 

@@ -110,7 +110,6 @@ apps/{app-name}/
 
 ```typescript
 import { fileURLToPath } from 'node:url';
-import { resolve } from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
@@ -119,19 +118,9 @@ import legacy from '@vitejs/plugin-legacy';
 /** 应用根目录（vite.config 以 ESM 执行，无 __dirname） */
 const appRoot = fileURLToPath(new URL('.', import.meta.url));
 
-/**
- * 导航到仓库根目录路径
- * @param {string} [rootPath=''] - 相对根目录的子路径，默认为空字符串
- * @returns {string} 解析后的绝对路径
- */
-const toRoot = (rootPath = '') => {
-    return resolve(appRoot, `../../${rootPath}`);
-};
-
 export default defineConfig(({ mode }) => {
     // loadEnv 第三个参数传 '' 以读取全部前缀的变量（含 VITE_APP_API_TARGET）
     const env = loadEnv(mode, appRoot, '');
-    const isDev = mode === 'development';
 
     return {
         plugins: [
@@ -143,11 +132,12 @@ export default defineConfig(({ mode }) => {
         ],
         resolve: {
             alias: {
-                '@': resolve(appRoot, 'src'),
-                // 开发环境指向源码目录（支持热更新）
-                // 生产环境不设 alias，走 workspace 标准解析（package.json exports -> dist），
+                '@': fileURLToPath(new URL('./src', import.meta.url)),
+                // workspace 包（@my-app/*）无需手工 alias：
+                // 各包 package.json 的 exports 带 "development" 条件指向 src，
+                // Vite dev 默认解析 development 条件（源码热更新），
+                // 生产构建解析 import 条件（exports -> dist），
                 // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
-                ...(isDev ? { '@my-app/shared': toRoot('packages/shared/src') } : {}),
             },
         },
         server: {
@@ -206,7 +196,7 @@ export default defineConfig(({ mode }) => {
 
 > **注意**：不要回退到 `moduleResolution: "node"`——Vite 8+ 的 package.json 仅提供 `exports` 字段（无顶层 `main`/`types`），旧解析算法会报 `Cannot find module 'vite'`。公共编译选项统一由根目录 `tsconfig.base.json` 维护。
 >
-> **paths 指向源码**：`@my-app/shared` 的 paths 指向 `src/index.ts` 而非 dist，与 vite 开发环境 alias 对齐——改 shared 源码后类型即时同步，且 `typecheck` 不依赖先构建 shared。
+> **paths 指向源码**：`@my-app/shared` 的 paths 指向 `src/index.ts` 而非 dist，与运行时 dev 解析（exports 的 `development` 条件）对齐——改 shared 源码后类型即时同步，且 `typecheck` 不依赖先构建 shared。
 
 ### 7. 创建源码文件
 
@@ -591,7 +581,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
-3. **路径映射**: `@my-app/shared` 仅在开发环境 alias 到 `packages/shared/src`（支持热更新）；生产构建不设 alias，走 workspace 标准解析（`exports` → `dist`），构建顺序由 `scripts/build.sh` 保证（先 packages 后 apps）。tsconfig 的 paths 指向 `src/index.ts` 与 dev 运行时对齐
+3. **路径映射**: workspace 包（`@my-app/*`）无需在 vite.config 中配置 alias——各包 `package.json` 的 `exports` 带 `"development"` 条件指向 `src`，Vite dev 默认解析该条件（源码热更新）；生产构建解析 `import` 条件（`exports` → `dist`），构建顺序由 `scripts/build.sh` 保证（先 packages 后 apps）。tsconfig 的 paths 指向 `src/index.ts` 与 dev 运行时对齐
 4. **依赖管理**: 应用依赖通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（axios/pinia/ress/vue/vue-router），新应用版本自动与 example-app 保持一致；`@my-app/shared` 使用 `workspace:*` 引用本地包。构建工具链（vite、less、postcss-px-to-viewport、postcss-calc 等）统一位于根 devDependencies，经 `shamefullyHoist` 提升后各应用直接可用，应用自身 package.json 只声明运行时依赖
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本

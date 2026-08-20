@@ -109,6 +109,8 @@ packages/{package-name}/
 
 根据用户选择的包类型，创建不同的 `package.json` 配置：
 
+> **`exports` 必须保留 `"development": "./src/index.ts"` 条件**：Vite dev 默认解析 `development` 条件，应用无需为 workspace 包配置 alias 即可直接加载包源码（热更新）；生产构建解析 `import`/`require` 条件走 `dist`。该条件必须放在 `import` 之前（条件按声明顺序匹配）。
+
 #### 4.1 通用配置（所有类型）
 
 ```json
@@ -120,6 +122,7 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -169,6 +172,7 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -215,6 +219,7 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -271,6 +276,7 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -329,6 +335,7 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }

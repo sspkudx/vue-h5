@@ -1,5 +1,4 @@
 import { fileURLToPath } from 'node:url';
-import { resolve } from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
@@ -8,19 +7,9 @@ import legacy from '@vitejs/plugin-legacy';
 /** 应用根目录（vite.config 以 ESM 执行，无 __dirname） */
 const appRoot = fileURLToPath(new URL('.', import.meta.url));
 
-/**
- * 导航到仓库根目录路径
- * @param {string} [rootPath=''] - 相对根目录的子路径，默认为空字符串
- * @returns {string} 解析后的绝对路径
- */
-const toRoot = (rootPath = '') => {
-    return resolve(appRoot, `../../${rootPath}`);
-};
-
 export default defineConfig(({ mode }) => {
     // loadEnv 第三个参数传 '' 以读取全部前缀的变量（含 VITE_APP_API_TARGET）
     const env = loadEnv(mode, appRoot, '');
-    const isDev = mode === 'development';
 
     return {
         plugins: [
@@ -32,11 +21,12 @@ export default defineConfig(({ mode }) => {
         ],
         resolve: {
             alias: {
-                '@': resolve(appRoot, 'src'),
-                // 开发环境指向源码目录（支持热更新）
-                // 生产环境不设 alias，走 workspace 标准解析（package.json exports -> dist），
+                '@': fileURLToPath(new URL('./src', import.meta.url)),
+                // workspace 包（@my-app/*）无需手工 alias：
+                // 各包 package.json 的 exports 带 "development" 条件指向 src，
+                // Vite dev 默认解析 development 条件（源码热更新），
+                // 生产构建解析 import 条件（exports -> dist），
                 // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
-                ...(isDev ? { '@my-app/shared': toRoot('packages/shared/src') } : {}),
             },
         },
         server: {
