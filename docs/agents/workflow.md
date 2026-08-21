@@ -18,7 +18,27 @@ pnpm install
 pnpm build:packages
 ```
 
-### 1.2 启动开发服务器
+### 1.2 启动开发服务器（开发启动器）
+
+项目内置**开发启动器**（`scripts/dev-launcher/`），自动发现 `apps/*` 与 `packages/*`（每次请求实时重扫，新增即出现，零配置），支持两种形态：
+
+```bash
+# 方式一：Web 控制台（默认）——浏览器打开 http://localhost:8888
+# 勾选要启动的应用/包 → 点「启动所选」；页面显示状态、端口、日志，可单独/全部停止
+pnpm dev
+
+# 方式二：终端交互多选——空格勾选、回车确认，Ctrl+C 停止全部并退出
+pnpm dev --cli
+```
+
+启动器行为要点：
+
+- **首次打开默认全选**，之后记住上次勾选（存于 gitignore 的 `.dev-launcher.json`）
+- **应用** → 启动 dev server（端口从 `vite.config.ts` 解析，实际端口从 vite 输出校准）；**包** → 有 `dev` 脚本（watch 构建：vite JS + tsc d.ts）则监听构建，无则构建一次
+- 特殊场景兜底：`.dev-launcher.json` 支持 `exclude`（排除条目）与 `extra`（手工登记非标准目录项目，含自定义命令）
+- 服务日志实时输出在启动器终端（带 `[名称]` 前缀），Web 控制台可展开查看最近日志
+
+### 1.3 直接启动（绕过启动器）
 
 ```bash
 # 启动示例应用开发服务器
@@ -29,21 +49,8 @@ pnpm dev:{app-name}
 
 # 例如：启动名为 my-app 的应用
 pnpm dev:my-app
-```
 
-### 1.3 多应用开发
-
-```bash
-# 启动多个应用（在不同终端中）
-# 终端 1
-pnpm dev:app1
-
-# 终端 2
-pnpm dev:app2
-
-# 终端 3 - 包开发模式
-cd packages/shared
-pnpm dev
+# 多应用开发：在不同终端分别执行上述命令
 ```
 
 ## 2. 开发工作流
@@ -71,10 +78,13 @@ pnpm build:packages
 cd packages/{package-name}
 pnpm build
 
-# 方法 3：使用开发模式（监听变化）
+# 方法 3：使用开发模式（watch 构建：先完整构建清空 dist，
+# 再并行 vite build --watch（JS）与 tsc --watch（d.ts））
 cd packages/{package-name}
 pnpm dev
 ```
+
+> 注意：应用运行时通过 `exports` 的 `development` 条件直接加载包源码（`src/index.ts`），改包代码无需 watch 构建即可在应用中热更新；`pnpm dev`（watch）主要用于单独开发包、验证 dist 产物或供构建产物消费者使用。也可以直接用启动器（`pnpm dev`）勾选包启动 watch 构建。
 
 ### 2.2 包开发流程
 

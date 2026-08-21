@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hans">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>vue-h5 开发启动器</title>
+        <link
+            rel="icon"
+            href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23409eff'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif'%3EV%3C/text%3E%3C/svg%3E"
+        />
+        <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+        <header class="header">
+            <h1>vue-h5 开发启动器</h1>
+            <p class="subtitle">勾选要启动的应用与包，服务日志实时输出在启动终端</p>
+        </header>
+
+        <main class="main">
+            <section class="toolbar">
+                <button id="btn-select-all" type="button" class="btn btn-secondary">全选</button>
+                <button id="btn-select-none" type="button" class="btn btn-secondary">全不选</button>
+                <button id="btn-start" type="button" class="btn btn-primary">启动所选</button>
+                <button id="btn-stop-all" type="button" class="btn btn-danger">停止全部</button>
+                <button id="btn-refresh" type="button" class="btn btn-secondary">刷新</button>
+                <span id="last-updated" class="last-updated"></span>
+            </section>
+
+            <section id="app-section" class="section">
+                <h2>应用 <span class="section-tip">启动 dev server</span></h2>
+                <div id="app-list" class="entry-list"></div>
+            </section>
+
+            <section id="package-section" class="section">
+                <h2>包 <span class="section-tip">有 dev 脚本为 watch 构建，否则构建一次</span></h2>
+                <div id="package-list" class="entry-list"></div>
+            </section>
+
+            <section id="extra-section" class="section">
+                <h2>手工登记条目 <span class="section-tip">来自 .dev-launcher.json 的 extra</span></h2>
+                <div id="extra-list" class="entry-list"></div>
+            </section>
+        </main>
+
+        <script src="/app.js"></script>
+    </body>
+</html>

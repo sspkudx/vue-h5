@@ -30,6 +30,14 @@ pnpm i  # 推荐使用 PNPM
 ### 3. 启动开发服务器
 
 ```bash
+# 方式一：开发启动器（推荐）——Web 控制台勾选要启动的应用/包
+pnpm dev
+# 打开浏览器访问 http://localhost:8888，勾选后点「启动所选」
+
+# 方式二：终端交互多选（同样自动发现 apps/* 与 packages/*）
+pnpm dev --cli
+
+# 方式三：直接启动示例应用
 pnpm dev:example
 ```
 
@@ -206,7 +214,11 @@ pnpm -F example-app remove lodash
 **开发构建**
 
 ```bash
-# 启动示例应用开发服务器
+# 开发启动器：Web 控制台（默认）或终端多选（--cli），自动发现全部应用与包
+pnpm dev
+pnpm dev --cli
+
+# 直接启动示例应用开发服务器
 pnpm dev:example
 
 # 代码检查与修复
@@ -278,15 +290,17 @@ pnpm i --force
 
 ### 📋 命令速查表
 
-| 命令                    | 功能                   | 说明                            |
-| ----------------------- | ---------------------- | ------------------------------- |
-| `pnpm dev:example`      | 启动示例应用开发服务器 | 访问 http://localhost:2000      |
-| `pnpm build:example`    | 构建示例应用           | 生产环境构建                    |
-| `pnpm lint:example`     | 代码检查与修复         | ESLint + Prettier               |
-| `pnpm test`             | 运行所有测试           | 单元测试                        |
-| `pnpm build:packages`   | 构建所有共享包         | 用于包开发                      |
-| `pnpm build`            | 完整构建               | 构建所有应用和包                |
-| `pnpm -F [包名] [命令]` | 在特定包上运行命令     | 例如：`pnpm -F example-app dev` |
+| 命令                    | 功能                     | 说明                                        |
+| ----------------------- | ------------------------ | ------------------------------------------- |
+| `pnpm dev`              | 开发启动器（Web 控制台） | 勾选启动应用/包，访问 http://localhost:8888 |
+| `pnpm dev --cli`        | 开发启动器（终端多选）   | 空格勾选、回车确认，Ctrl+C 停止全部         |
+| `pnpm dev:example`      | 启动示例应用开发服务器   | 访问 http://localhost:2000                  |
+| `pnpm build:example`    | 构建示例应用             | 生产环境构建                                |
+| `pnpm lint:example`     | 代码检查与修复           | ESLint + Prettier                           |
+| `pnpm test`             | 运行所有测试             | 单元测试                                    |
+| `pnpm build:packages`   | 构建所有共享包           | 用于包开发                                  |
+| `pnpm build`            | 完整构建                 | 构建所有应用和包                            |
+| `pnpm -F [包名] [命令]` | 在特定包上运行命令       | 例如：`pnpm -F example-app dev`             |
 
 ### 📁 项目结构详解
 

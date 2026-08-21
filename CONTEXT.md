@@ -32,8 +32,9 @@
 
 - `apps/example-app`：唯一应用，也是 create-vue-app 技能的参照实现。
 - `packages/shared`（`@my-app/shared`）：纯工具库（类型守卫 + 数字工具），Vite lib 模式出 ESM + tsc 出 d.ts，测试质量是仓库标杆。
-- `.claude/skills/`：7 个 AI 技能（唯一事实来源，已入库）。
+- `.claude/skills/`：8 个 AI 技能（唯一事实来源，已入库）。
 - `docs/agents/`：模块化文档（AGENTS.md 是索引）。
+- `scripts/`：构建编排（build.sh / build-packages.sh / watch-package.sh）与**开发启动器**（`dev-launcher/`，Web 控制台 + CLI 双形态，见架构决策 5）。
 - `types/`：css/img/vue 的 d.ts shim，由各子项目 tsconfig 引用；根目录 `tsconfig.base.json` 是公共 TS 编译配置（`moduleResolution: "bundler"`），apps/packages 的 tsconfig 均 extends 它。
 
 ## 关键架构决策
@@ -42,6 +43,7 @@
 2. **运行时依赖归各 app 自管**，根 package.json 只放工具链（原先把 vue/pinia 等装在根上 + hoist 兜底，已纠正）。
 3. **catalog 统一版本**：高频共享依赖（vue/vue-router/pinia/axios/ress）在 `pnpm-workspace.yaml` 的 `catalogs.default` 定义版本，各 app/包用 `catalog:` 引用，升级只改一处、全仓一致（2026-08 起）。
 4. **依赖解析**：根 `jest.config.js` 的 moduleNameMapper 用通配规则 `^@my-app/(.*)$` → `packages/$1/src`（新增包自动覆盖）；运行时解析见第 1 条（exports `development` 条件），两处互不依赖。
+5. **开发启动器**：`pnpm dev` 启动本地 Web 控制台（`pnpm dev --cli` 走终端多选，共用 `scripts/dev-launcher/core.mjs` 的发现与进程管理）。每次请求实时扫描 `apps/*`、`packages/*`——新应用/包零配置自动出现；应用端口解析自 `vite.config.ts`，实际端口从 vite 输出（`Local:` 行）校准；`.dev-launcher.json`（gitignore）记忆勾选 + `exclude`/`extra` 兜底；退出时清理整棵进程树（服务以 detached 进程组拉起，pnpm 可能再分进程组，需 pgrep 递归清理），避免残留 dev server。包统一提供 `dev` 脚本（`scripts/watch-package.sh`：先完整构建再并行 vite/tsc watch）。
 
 ## 整改基线决策（2026-08 评审后）
 

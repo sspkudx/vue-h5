@@ -110,6 +110,8 @@ packages/{package-name}/
 根据用户选择的包类型，创建不同的 `package.json` 配置：
 
 > **`exports` 必须保留 `"development": "./src/index.ts"` 条件**：Vite dev 默认解析 `development` 条件，应用无需为 workspace 包配置 alias 即可直接加载包源码（热更新）；生产构建解析 `import`/`require` 条件走 `dist`。该条件必须放在 `import` 之前（条件按声明顺序匹配）。
+>
+> **`dev` 脚本（watch 构建）**：模板统一带 `"dev": "bash ../../scripts/watch-package.sh"`——先完整构建一次（清空 dist），再并行 `vite build --watch`（JS）与 `tsc --watch`（d.ts），Ctrl+C 一并退出。新包会被根目录开发启动器（`pnpm dev`）自动发现，无需手工登记。
 
 #### 4.1 通用配置（所有类型）
 
@@ -129,6 +131,7 @@ packages/{package-name}/
     },
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
+        "dev": "bash ../../scripts/watch-package.sh",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -179,6 +182,7 @@ packages/{package-name}/
     },
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
+        "dev": "bash ../../scripts/watch-package.sh",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -226,6 +230,7 @@ packages/{package-name}/
     },
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
+        "dev": "bash ../../scripts/watch-package.sh",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -283,6 +288,7 @@ packages/{package-name}/
     },
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
+        "dev": "bash ../../scripts/watch-package.sh",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"
@@ -342,6 +348,7 @@ packages/{package-name}/
     },
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
+        "dev": "bash ../../scripts/watch-package.sh",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watch",
         "test:coverage": "jest --config jest.config.js --coverage"

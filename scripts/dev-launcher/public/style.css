@@ -1,0 +1,223 @@
+/* 开发启动器页面样式：简洁卡片式布局，移动端友好 */
+
+:root {
+    --bg: #f5f6f8;
+    --card-bg: #fff;
+    --border: #e4e7ed;
+    --text: #303133;
+    --text-secondary: #909399;
+    --primary: #409eff;
+    --success: #67c23a;
+    --danger: #f56c6c;
+    --warning: #e6a23c;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.header {
+    padding: 24px 20px 16px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.subtitle {
+    margin-top: 4px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 16px 20px 48px;
+}
+
+/* 顶部操作栏 */
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.last-updated {
+    margin-left: auto;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* 按钮 */
+.btn {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--text);
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.btn-danger {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: #fff;
+}
+
+/* 分组 */
+.section {
+    margin-bottom: 24px;
+}
+
+.section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.section-tip {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.entry-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 条目卡片 */
+.entry-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+}
+
+.entry-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.entry-card input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.entry-name {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.entry-desc {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.entry-meta {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 状态徽标 */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #fff;
+}
+
+.badge-stopped {
+    background: var(--text-secondary);
+}
+
+.badge-starting,
+.badge-stopping {
+    background: var(--warning);
+}
+
+.badge-running {
+    background: var(--success);
+}
+
+.badge-done {
+    background: var(--primary);
+}
+
+/* 日志区 */
+.logs-toggle {
+    margin-top: 8px;
+    color: var(--primary);
+    background: none;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.logs-box {
+    display: none;
+    margin-top: 8px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    max-height: 260px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.logs-box.open {
+    display: block;
+}
+
+.logs-box .empty {
+    color: #808080;
+}

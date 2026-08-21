@@ -80,16 +80,19 @@ pnpm build:packages
 3. **启动开发服务器**:
 
 ```bash
-# 启动示例应用
-pnpm dev:example
+# 开发启动器（推荐）：Web 控制台勾选要启动的应用/包，自动发现 apps/* 与 packages/*
+pnpm dev
 
-# 启动新创建的应用
-pnpm dev:{app-name}
+# 终端交互多选
+pnpm dev --cli
+
+# 直接启动示例应用
+pnpm dev:example
 ```
 
 ## 技能概览
 
-项目内置了 7 个 AI 开发技能：
+项目内置了 8 个 AI 开发技能：
 
 ### 创建 Vue 应用技能 (`create-vue-app`)
 
@@ -112,6 +115,7 @@ pnpm dev:{app-name}
 
 - `design-to-code`：设计稿转代码 + 视觉走查，附带校验脚本
 - `git-commit-push`：按项目规范（语义化提交）提交与推送
+- `update-dependencies`：按 pnpm 11 供应链策略（minimumReleaseAge/allowBuilds）检查与更新依赖
 - `create-skill`：创建新的 AI 技能
 
 ## 下一步
