@@ -521,7 +521,7 @@ export default Button;
         opacity: 0.6;
     }
 
-    // Types
+    // 类型变体
     &--primary {
         background-color: #007bff;
         color: white;
@@ -549,7 +549,7 @@ export default Button;
         }
     }
 
-    // Sizes
+    // 尺寸变体
     &--small {
         padding: 4px 12px;
         font-size: 12px;
@@ -568,7 +568,7 @@ export default Button;
         min-height: 48px;
     }
 
-    // States
+    // 状态变体
     &--disabled {
         cursor: not-allowed;
         opacity: 0.6;
@@ -583,7 +583,7 @@ export default Button;
         }
     }
 
-    // Elements
+    // 内部元素
     &__text {
         transition: opacity 0.2s;
     }

@@ -5,7 +5,7 @@ vue-h5 模板仓库的示例应用，也是 `create-vue-app` 技能生成新应�
 ## 技术栈
 
 - Vue 3 + TypeScript（TSX 与 SFC 混用）
-- Vue CLI 5 / webpack 5
+- Vite 8（构建 + 开发服务器）
 - Pinia + Vue Router（hash 模式）
 - Less + CSS Modules（`*.module.less`）
 - postcss-px-to-viewport（`mpx` → `vmin` 移动端适配）

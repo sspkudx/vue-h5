@@ -741,6 +741,8 @@ const apiKey = import.meta.env.VITE_API_KEY;
 
 ## 文档注释规范
 
+> **注释语言约定**：注释统一使用中文（示例代码、工具配置等同样适用），避免中英文混用；技术术语（DOM、Vite、axios、chunk 等专有名词）可保留英文原词。行内注释简短说明"为什么"，JSDoc 说明"是什么/怎么用"。
+
 ### 1. JSDoc 注释
 
 为公共 API 添加 JSDoc 注释：

@@ -31,10 +31,10 @@ describe('safeNum', () => {
     });
 
     test('should handle arrays with single number', () => {
-        expect(safeNum([123])).toBe(123); // Number([123]) converts to 123
-        expect(safeNum(['123'])).toBe(123); // Number(['123']) converts to 123
-        expect(safeNum([1, 2, 3])).toBe(0); // Number([1,2,3]) converts to NaN
-        expect(safeNum([])).toBe(0); // Number([]) converts to 0
+        expect(safeNum([123])).toBe(123); // Number([123]) 转换为 123
+        expect(safeNum(['123'])).toBe(123); // Number(['123']) 转换为 123
+        expect(safeNum([1, 2, 3])).toBe(0); // Number([1,2,3]) 转换为 NaN
+        expect(safeNum([])).toBe(0); // Number([]) 转换为 0
     });
 
     test('should handle objects', () => {

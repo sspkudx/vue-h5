@@ -293,9 +293,10 @@ import { type Plugin } from 'vue';
 import { createPinia } from 'pinia';
 import router from '@/router';
 
-/** Pinia instance */
+/** Pinia 状态管理实例 */
 const store = createPinia();
 
+/** 应用插件列表（按声明顺序注册：先路由后状态管理） */
 const pluginsList = Object.freeze<Plugin[]>([router, store]);
 export default pluginsList;
 ```
@@ -305,7 +306,11 @@ export default pluginsList;
 ```typescript
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-/** router used by the app */
+/**
+ * 应用路由实例
+ * @description 采用 hash 模式路由（H5 静态部署友好，无需服务端回退配置）；
+ * 所有页面均为路由级懒加载，访问时再加载对应 chunk
+ */
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
@@ -319,6 +324,7 @@ const router = createRouter({
         {
             path: '/about',
             name: 'about',
+            // 路由级代码分割：该路由单独生成 chunk，首次访问时才懒加载
             component() {
                 return import('../views/AboutView/AboutView.vue');
             },
@@ -336,24 +342,29 @@ import { defineComponent } from 'vue';
 import { safeNum } from '@my-app/shared';
 import styles from './style.module.less';
 
+/**
+ * 首页示例组件
+ * @description 展示 workspace 包（@my-app/shared）的源码联调效果：
+ * safeNum 将入参安全转换为数字，非法输入兜底为 0
+ */
 const HomeView = defineComponent({
     name: 'HomeView',
     setup() {
         const render = () => {
-            // 测试导入的shared包
-            const testString = '123';
-            const testInvalid = 'abc';
-            const num1 = safeNum(testString);
-            const num2 = safeNum(testInvalid);
+            // 示例数据：合法字符串与非法字符串，验证 safeNum 的转换与兜底
+            const validInput = '123';
+            const invalidInput = 'abc';
+            const validNum = safeNum(validInput);
+            const invalidNum = safeNum(invalidInput);
 
             return (
                 <div class={styles.homeView}>
-                    <p class={styles.homeView__text}>Yeah</p>
-                    <p class={[styles.homeView__text, styles.homeView__text_gray]}>hello world</p>
+                    <p class={styles.homeView__text}>首页</p>
+                    <p class={[styles.homeView__text, styles.homeView__text_gray]}>欢迎使用 vue-h5 模板</p>
                     <div>
-                        <p>测试@shared包导入:</p>
-                        <p>safeNum('123') = {num1}</p>
-                        <p>safeNum('abc') = {num2}</p>
+                        <p>@my-app/shared 包导入示例：</p>
+                        <p>safeNum('123') = {validNum}</p>
+                        <p>safeNum('abc') = {invalidNum}</p>
                     </div>
                 </div>
             );
@@ -387,6 +398,10 @@ export default HomeView;
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+/**
+ * 关于页面（SFC 写法示例）
+ * @description 演示 Vue 单文件组件的基础用法：ref 状态 + 事件绑定
+ */
 const count = ref(0);
 
 const increment = () => {
@@ -396,10 +411,9 @@ const increment = () => {
 
 <template>
     <div class="about-view">
-        <h1>About Page</h1>
-        <p>Counter: {{ count }}</p>
-        <button @click="increment">Increment</button>
-        <p>hello world</p>
+        <h1>关于页面</h1>
+        <p>当前计数：{{ count }}</p>
+        <button @click="increment">增加</button>
     </div>
 </template>
 
