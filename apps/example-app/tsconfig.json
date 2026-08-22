@@ -17,7 +17,7 @@
         "types": ["webpack-env"],
     "paths": {
         "@/*": ["src/*"],
-        "@my-app/shared": ["../../packages/shared/dist/index"]
+        "@my-app/shared": ["../../packages/shared/src/index.ts"]
     },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },

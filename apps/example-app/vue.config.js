@@ -12,36 +12,6 @@ const toRoot = (rootPath = '') => {
 };
 
 /**
- * 必需的包配置数组
- * @type {Array<{alias: string, srcPath: string, distPath: string}>}
- * @description 定义项目中必需的包及其路径映射
- */
-const requiredPackages = Object.freeze(
-    ['shared'].map(packageName => {
-        return {
-            alias: `@my-app/${packageName}`,
-            srcPath: toRoot(`packages/${packageName}/src`),
-            distPath: toRoot(`packages/${packageName}/dist`),
-        };
-    })
-);
-
-/**
- * 设置所有必需的包别名路径
- * @param {import('webpack-chain').Config} config - webpack-chain 配置对象
- * @param {boolean} [isDev=false] - 是否为开发环境，默认为 false
- * @returns {import('webpack-chain').Config} 更新后的 webpack-chain 配置对象
- */
-const setAllRequiredPackages = (config, isDev = false) => {
-    return requiredPackages.reduce((conf, item) => {
-        // 开发环境指向源码目录（支持热更新）
-        // 生产环境指向构建后的dist目录
-        const targetPath = isDev ? item.srcPath : item.distPath;
-        return conf.resolve.alias.set(item.alias, targetPath).end().end();
-    }, config);
-};
-
-/**
  * 获取 HtmlWebpackPlugin 的新配置
  * @param {Object} [defaultConfig={}] - 默认配置对象
  * @returns {Object} 更新后的 HtmlWebpackPlugin 配置
@@ -75,8 +45,6 @@ const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
 const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
 
 module.exports = defineConfig(() => {
-    const isDev = process.env.NODE_ENV === 'development';
-
     return {
         transpileDependencies: isProduction,
         lintOnSave: 'error',
@@ -89,12 +57,19 @@ module.exports = defineConfig(() => {
             },
         },
         chainWebpack(config) {
-            setAllRequiredPackages(config, isDev)
+            // workspace 包（@my-app/*）无需手工 alias：
+            // 各包 package.json 的 exports 带 "development" 条件指向 src，
+            // webpack dev 模式默认解析 development 条件（源码热更新），
+            // 生产构建解析 import 条件（exports -> dist），
+            // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
+            config
                 .entry('app')
                 .clear()
                 .add(path.resolve(__dirname, 'src', 'main.ts'))
                 .end()
-                // 配置 .ts & .tsx 文件使用 babel-loader
+                // 配置 .ts & .tsx 文件使用 babel-loader + ts-loader
+                // （不声明 @vue/cli-plugin-babel / @vue/cli-plugin-typescript，
+                // babel/ts 处理完全由本配置接管，避免插件默认规则冲突与 thread-loader 兼容问题）
                 .module.rule('ts')
                 .test(/\.m?tsx?$/)
                 .use('babel-loader')
