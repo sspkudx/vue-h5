@@ -1,29 +1,6 @@
-"名为 e2e-test-app 的 Vue 应用，端口号设为 9999";
-    
-    // 解析参数
-    const params = ParameterParser.parse(userInput);
-    
-    // 验证参数
-    const isValid = CreateVueAppSkill.validate(params);
-    expect(isValid).toBe(true);
-    
-    // 执行技能
-    await CreateVueAppSkill.execute(params);
-    
-    // 验证结果
-    expect(fs.existsSync('apps/e2e-test-app')).toBe(true);
-    
-    const vueConfig = fs.readFileSync('apps/e2e-test-app/vue.config.js', 'utf-8');
-    expect(vueConfig).toContain('port: 9999');
-    
-    const packageJson = JSON.parse(fs.readFileSync('apps/e2e-test-app/package.json', 'utf-8'));
-    expect(packageJson.name).toBe('e2e-test-app');
-    
-    // 清理
-    fs.rmSync('apps/e2e-test-app', { recursive: true });
-  });
-});
-```
+# 技能开发指南
+
+`create-skill` 技能用于创建新的 AI 智能开发技能（SKILL.md），涵盖技能结构设计、SKILL.md 格式规范、测试与部署流程。技能文件统一归档于 `.claude/skills/`（唯一事实来源，已入库）。
 
 ## 技能部署
 

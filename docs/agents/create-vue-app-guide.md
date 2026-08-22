@@ -15,7 +15,7 @@
 ```
 apps/{app-name}/
 ├── src/
-│   ├── App.tsx              # 应用入口组件
+│   ├── App.vue              # 应用入口组件
 │   ├── main.ts              # 应用入口文件
 │   ├── plugins/             # Vue 插件配置
 │   │   └── index.ts
@@ -25,9 +25,11 @@ apps/{app-name}/
 │       ├── HomeView/
 │       │   ├── index.tsx
 │       │   └── style.module.less
-│       └── AboutView/
-│           ├── index.tsx
-│           └── style.module.less
+│       ├── AboutView/
+│       │   ├── index.tsx
+│       │   └── style.module.less
+│       └── PlaygroundPage/
+│           └── PlaygroundPage.vue
 ├── index.htm                # HTML 模板
 ├── favicon.ico              # 网站图标
 ├── package.json             # 应用配置
@@ -53,12 +55,17 @@ apps/{app-name}/
     "dependencies": {
         "@my-app/shared": "workspace:*"
     },
+    "devDependencies": {
+        "@vue/cli-plugin-eslint": "^5.0.9"
+    },
     "keywords": [],
     "author": "",
     "license": "MIT",
     "description": ""
 }
 ```
+
+> **说明**：仅声明 `@vue/cli-plugin-eslint`（提供 `vue-cli-service lint` 命令）；**勿声明** plugin-babel / plugin-typescript（babel/ts 由 vue.config.js 手动配置，插件默认规则会冲突并在 Node 14 生产构建触发 thread-loader 崩溃）。插件本体经 hoisting 共享根 store。
 
 ### vue.config.js
 
@@ -68,7 +75,7 @@ apps/{app-name}/
 - **支持 Less 模块化样式**：配置 CSS Modules
 - **CSS Modules 自动转换**：自动处理样式类名
 - **Babel 和 TypeScript 集成**：支持现代 JavaScript 语法
-- **与 monorepo 包的路径别名映射**：配置 `@my-app/shared` 别名
+- **workspace 包零配置解析**：`@my-app/*` 经包自身 exports `development` 条件指向 src（dev 热更新），无需 alias
 
 ### tsconfig.json
 
@@ -185,7 +192,7 @@ module.exports = {
 1. **项目共享包**：`@my-app/shared`
 2. **Vue 3 相关依赖**：`vue`, `vue-router`, `pinia`
 3. **开发工具**：`typescript`, `eslint`, `prettier`
-4. **构建工具**：`@vue/cli-service`, `webpack`, `postcss-px-to-viewport`, `postcss-calc`（均位于根 devDependencies，经 hoisting 提升，应用无需重复声明）
+4. **构建工具**：`@vue/cli-service`, `webpack`, `postcss-px-to-viewport`, `postcss-calc`（均位于根 devDependencies，经 hoisting 提升，应用无需重复声明）；例外：**`@vue/cli-plugin-eslint` 需在应用 package.json 声明**（vue-cli-service 插件发现机制要求；勿声明 plugin-babel/typescript，babel/ts 由 vue.config.js 手动配置）
 
 ## 示例
 
@@ -233,7 +240,7 @@ apps/user-portal/
 
 | 文件路径 | 说明 |
 |----------|------|
-| `src/App.tsx` | 应用根组件，使用 Vue JSX 语法 |
+| `src/App.vue` | 应用根组件（Vue SFC） |
 | `src/main.ts` | 应用入口文件，初始化 Vue 应用 |
 | `src/plugins/index.ts` | Vue 插件配置，可添加全局插件 |
 | `src/router/index.ts` | 路由配置，定义应用路由 |

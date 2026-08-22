@@ -24,7 +24,8 @@ pnpm build:packages
 # 启动示例应用开发服务器
 pnpm dev:example
 
-# 启动新创建的应用
+# 启动新创建的应用（需先通过 create-vue-app 技能创建，
+# 该技能会同步更新根 package.json 的 dev:{app-name} 脚本）
 pnpm dev:{app-name}
 
 # 例如：启动名为 my-app 的应用
@@ -34,16 +35,15 @@ pnpm dev:my-app
 ### 1.3 多应用开发
 
 ```bash
-# 启动多个应用（在不同终端中）
+# 启动多个应用（在不同终端中；需先创建对应应用并更新根 scripts）
 # 终端 1
 pnpm dev:app1
 
 # 终端 2
 pnpm dev:app2
 
-# 终端 3 - 包开发模式
-cd packages/shared
-pnpm dev
+# 终端 3 - 包代码联调（无需独立进程：应用 dev 通过 exports development 条件直接解析包源码）
+# 修改 packages/shared/src/ 下的代码，应用侧热更新直接生效
 ```
 
 ## 2. 开发工作流
@@ -59,35 +59,30 @@ pnpm dev
 ```
 
 #### 修改包代码
-当修改包代码时，需要重新构建包才能生效：
+开发场景（vue-cli serve）下，workspace 包通过各自 package.json 的 exports `development` 条件直接解析源码，**修改包代码后热更新直接生效**，无需重新构建。
+
+生产构建（vue-cli build）解析 exports 的 `import` 条件（dist 产物），构建前需重新构建包：
 
 ```bash
-# 方法 1：重新构建所有包
+# 重新构建所有包
 pnpm build:packages
 
-# 方法 2：在包的目录下单独构建
+# 或在包的目录下单独构建
 cd packages/{package-name}
 pnpm build
-
-# 方法 3：使用开发模式（监听变化）
-cd packages/{package-name}
-pnpm dev
 ```
 
 ### 2.2 包开发流程
 
 #### 包开发模式
+本分支包无独立 watch 构建脚本（`pnpm dev`），包代码联调通过应用 dev 完成：
+
 ```bash
-# 进入包目录
-cd packages/{package-name}
+# 启动应用 dev（包代码经 exports development 条件直接加载源码）
+pnpm dev:example
 
-# 启动开发模式（监听文件变化）
-pnpm dev
-
-# 开发模式会：
-# 1. 监听 src/ 目录下的文件变化
-# 2. 自动重新构建
-# 3. 生成 source map 便于调试
+# 修改 packages/{package-name}/src/ 下的文件
+# 保存后应用侧热更新直接生效
 ```
 
 #### 包依赖更新
@@ -113,7 +108,7 @@ pnpm lint
 # 自动修复代码规范问题
 pnpm lint:fix
 
-# 检查特定应用的代码
+# 检查特定应用的代码（需已创建应用并更新根 scripts）
 pnpm lint:{app-name}
 ```
 
@@ -127,7 +122,7 @@ pnpm lint:style
 pnpm lint:style:fix
 
 # 检查特定目录的样式
-pnpm lint:style --path apps/{app-name}/src
+pnpm lint:style -- "apps/{app-name}/src/**/*.{css,less,vue}"
 ```
 
 ### 3.3 Prettier 代码格式化
@@ -433,7 +428,7 @@ pnpm -F @my-app/{package-name} remove package-name
 ### 10.1 调试开发服务器
 
 ```bash
-# 启动开发服务器时开启调试
+# 启动开发服务器时开启调试（{app-name} 需已创建并更新根 scripts）
 NODE_OPTIONS=--inspect pnpm dev:{app-name}
 
 # 或者指定端口
@@ -443,17 +438,17 @@ NODE_OPTIONS=--inspect=9229 pnpm dev:{app-name}
 ### 10.2 调试构建过程
 
 ```bash
-# 构建时显示详细日志
+# 构建时显示详细日志（{app-name} 需已创建并更新根 scripts）
 pnpm build:{app-name} --verbose
 
 # 生成 Webpack 配置
-vue inspect > webpack.config.js
+cd apps/example-app && npx vue-cli-service inspect > webpack.config.js
 ```
 
 ### 10.3 性能分析
 
 ```bash
-# 生成构建性能报告
+# 生成构建性能报告（{app-name} 需已创建并更新根 scripts）
 pnpm build:{app-name} --profile
 
 # 分析包大小
@@ -465,13 +460,12 @@ pnpm build:{app-name} --report
 ### 日常开发流程
 
 ```bash
-# 1. 启动开发
+# 1. 启动开发（dev 场景无需先构建包：exports development 条件直接解析源码）
 pnpm install
-pnpm build:packages
-pnpm dev:{app-name}
+pnpm dev:example          # 或 pnpm dev:{app-name}（需已创建应用并更新根 scripts）
 
 # 2. 开发代码
-# 修改代码 -> 自动热重载
+# 修改代码（含 packages/* 源码）-> 自动热重载
 
 # 3. 运行测试
 pnpm test
@@ -484,8 +478,8 @@ pnpm format
 git add .
 git commit -m "feat: add feature"
 
-# 6. 构建验证
-pnpm build:{app-name}
+# 6. 构建验证（生产构建前需先构建包：build.sh 保证先 packages 后 apps）
+pnpm build
 ```
 
 ### 发布流程

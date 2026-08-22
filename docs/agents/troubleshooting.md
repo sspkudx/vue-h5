@@ -51,33 +51,36 @@ pnpm i --offline
 #### 解决方案
 
 ```bash
-# 1. 确保所有包都已构建
+# 1. 确认包已构建（生产构建需要 dist；dev 场景直接解析 src，无需构建）
 pnpm build:packages
 
 # 2. 重新链接依赖
 pnpm i --force
 
-# 3. 检查包路径映射
-# 在应用的 vue.config.js 中检查：
-# configureWebpack: {
-#   resolve: {
-#     alias: {
-#       '@my-app/shared': path.resolve(__dirname, '../../packages/shared')
-#     }
+# 3. 检查包的 exports 配置（dev 热更新依赖 development 条件指向 src）
+# packages/{name}/package.json:
+# "exports": {
+#   ".": {
+#     "types": "./dist/index.d.ts",
+#     "development": "./src/index.ts",
+#     "import": "./dist/index.js"
 #   }
 # }
+# webpack dev 模式默认解析 development 条件（源码热更新），
+# 生产构建解析 import 条件（exports -> dist）；应用无需也不应配置 alias
 
-# 4. 检查 tsconfig.json 中的路径映射
+# 4. 检查 tsconfig.json 中的路径映射（类型检查直接指向源码）
 # "paths": {
-#   "@my-app/*": ["../packages/*"]
+#   "@my-app/shared": ["../../packages/shared/src/index.ts"]
 # }
 
-# 5. 验证包是否存在
+# 5. 验证包产物是否存在（仅生产构建场景必需）
 ls -la packages/shared/dist/
 ```
 
 #### 预防措施
-- 在修改包代码后重新构建
+- dev 场景修改包源码后无需重新构建（webpack 直接解析 src，热更新生效）
+- 生产构建（`pnpm build`）前确保包已重新构建（build.sh 保证先 packages 后 apps）
 - 使用 workspace:* 引用本地包
 - 保持包版本一致
 

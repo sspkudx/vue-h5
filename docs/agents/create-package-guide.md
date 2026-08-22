@@ -58,6 +58,8 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -78,13 +80,13 @@ packages/{package-name}/
     "devDependencies": {
         "@types/jest": "^29.5.0",
         "jest": "^29.7.0",
-        "rimraf": "^5.0.5",
-        "rollup": "^4.12.0",
-        "ts-jest": "^29.1.0",
-        "typescript": "^5.3.0"
+        "rimraf": "^6.1.3",
+        "rollup": "^3.30.0",
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
-        "node": ">= 14"
+        "node": ">= 14.18.0"
     }
 }
 ```
@@ -100,6 +102,8 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -117,20 +121,20 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "peerDependencies": {
-        "vue": "^3.5.33",
+        "vue": "^3.5.40",
         "@vue/babel-plugin-jsx": "^1.5.0"
     },
     "devDependencies": {
         "@types/jest": "^29.5.0",
         "@vue/test-utils": "^2.4.0",
         "jest": "^29.7.0",
-        "rimraf": "^5.0.5",
-        "rollup": "^4.12.0",
-        "ts-jest": "^29.1.0",
-        "typescript": "^5.3.0"
+        "rimraf": "^6.1.3",
+        "rollup": "^3.30.0",
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
-        "node": ">= 14"
+        "node": ">= 14.18.0"
     }
 }
 ```
@@ -295,7 +299,7 @@ packages/utils/
 ```json
 {
     "peerDependencies": {
-        "vue": "^3.5.33",
+        "vue": "^3.5.40",
         "@vue/babel-plugin-jsx": "^1.5.0"
     }
 }

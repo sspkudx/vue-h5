@@ -55,8 +55,11 @@ apps/{app-name}/
 │       ├── HomeView/
 │       │   ├── index.tsx
 │       │   └── style.module.less
-│       └── AboutView/
-│           └── AboutView.vue
+│       ├── AboutView/
+│       │   ├── index.tsx
+│       │   └── style.module.less
+│       └── PlaygroundPage/
+│           └── PlaygroundPage.vue
 ├── index.htm
 ├── favicon.ico
 ├── README.md
@@ -88,12 +91,17 @@ apps/{app-name}/
     "dependencies": {
         "@my-app/shared": "workspace:*"
     },
+    "devDependencies": {
+        "@vue/cli-plugin-eslint": "^5.0.9"
+    },
     "keywords": [],
     "author": "",
     "license": "MIT",
     "description": ""
 }
 ```
+
+> **说明**：仅声明 `@vue/cli-plugin-eslint`（提供 `vue-cli-service lint` 命令与 lintOnSave）——vue-cli-service 的插件发现机制扫描的是**应用自身**声明的依赖，根目录声明不会被应用识别；**不要**声明 plugin-babel / plugin-typescript：本项目 babel/ts 处理由 vue.config.js 手动配置，声明插件会引入默认规则冲突（tsx 规则缺 babel 配置）与 thread-loader 兼容问题（Node 14 下生产构建崩溃）。插件本体经 pnpm hoisting 共享根 store，不重复安装。其余构建工具链（@vue/cli-service、loader、postcss 插件等）仍统一位于根 devDependencies。
 
 ### 5. 配置 vue.config.js
 
@@ -116,36 +124,6 @@ const path = require('path');
  */
 const toRoot = (rootPath = '') => {
     return path.resolve(__dirname, `../../${rootPath}`);
-};
-
-/**
- * 必需的包配置数组
- * @type {Array<{alias: string, srcPath: string, distPath: string}>}
- * @description 定义项目中必需的包及其路径映射
- */
-const requiredPackages = Object.freeze(
-    ['shared'].map(packageName => {
-        return {
-            alias: `@my-app/${packageName}`,
-            srcPath: toRoot(`packages/${packageName}/src`),
-            distPath: toRoot(`packages/${packageName}/dist`),
-        };
-    })
-);
-
-/**
- * 设置所有必需的包别名路径
- * @param {import('webpack-chain').Config} config - webpack-chain 配置对象
- * @param {boolean} [isDev=false] - 是否为开发环境，默认为 false
- * @returns {import('webpack-chain').Config} 更新后的 webpack-chain 配置对象
- */
-const setAllRequiredPackages = (config, isDev = false) => {
-    return requiredPackages.reduce((conf, item) => {
-        // 开发环境指向源码目录（支持热更新）
-        // 生产环境指向构建后的dist目录
-        const targetPath = isDev ? item.srcPath : item.distPath;
-        return conf.resolve.alias.set(item.alias, targetPath).end().end();
-    }, config);
 };
 
 /**
@@ -181,8 +159,6 @@ const isProduction = /prod/i.test(process.env?.NODE_ENV ?? '');
 const newBabelLoader = toRoot('node_modules/babel-loader/lib/index.js');
 
 module.exports = defineConfig(() => {
-    const isDev = process.env.NODE_ENV === 'development';
-
     return {
         transpileDependencies: isProduction,
         lintOnSave: 'error',
@@ -195,7 +171,12 @@ module.exports = defineConfig(() => {
             },
         },
         chainWebpack(config) {
-            setAllRequiredPackages(config, isDev)
+            // workspace 包（@my-app/*）无需手工 alias：
+            // 各包 package.json 的 exports 带 "development" 条件指向 src，
+            // webpack dev 模式默认解析 development 条件（源码热更新），
+            // 生产构建解析 import 条件（exports -> dist），
+            // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
+            config
                 .entry('app')
                 .clear()
                 .add(path.resolve(__dirname, 'src', 'main.ts'))
@@ -287,7 +268,7 @@ module.exports = defineConfig(() => {
         "types": ["webpack-env"],
         "paths": {
             "@/*": ["src/*"],
-            "@my-app/shared": ["../../packages/shared/dist/index"]
+            "@my-app/shared": ["../../packages/shared/src/index.ts"]
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
@@ -425,8 +406,18 @@ const router = createRouter({
         {
             path: '/about',
             name: 'about',
+            // route level code-splitting
+            // this generates a separate chunk (about.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
             component() {
-                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/AboutView.vue');
+                return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/index');
+            },
+        },
+        {
+            path: '/playground',
+            name: 'PlaygroundPage',
+            component() {
+                return import(/* webpackChunkName: "HomeView" */ '../views/PlaygroundPage/PlaygroundPage.vue');
             },
         },
     ],
@@ -487,57 +478,64 @@ export default HomeView;
 }
 ```
 
-#### views/AboutView/AboutView.vue
+#### views/AboutView/index.tsx
+
+```tsx
+import { defineComponent } from 'vue';
+import styles from './style.module.less';
+
+const AboutView = defineComponent({
+    name: 'AboutView',
+    setup() {
+        const render = () => {
+            return <div class={styles['about-view']}>hello world</div>;
+        };
+        return render;
+    },
+});
+
+export default AboutView;
+```
+
+#### views/AboutView/style.module.less
+
+```less
+.about-view {
+    color: #818999;
+}
+```
+
+#### views/PlaygroundPage/PlaygroundPage.vue
 
 ```vue
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 
-const count = ref(0);
+const countValue = shallowRef(0);
 
-const increment = () => {
-    count.value++;
+const addCount = () => {
+    countValue.value++;
 };
 </script>
 
 <template>
-    <div class="about-view">
-        <h1>About Page</h1>
-        <p>Counter: {{ count }}</p>
-        <button @click="increment">Increment</button>
-        <p>hello world</p>
+    <div class="playground-page">
+        <button class="playground-page__button" type="button" @click="addCount">++</button>
+        <p class="playground-page__text">Current count is: {{ countValue }}</p>
     </div>
 </template>
 
 <style lang="less" scoped>
-.about-view {
-    padding: 20px;
-    color: #333;
+.playground-page {
+    display: flex;
+    flex-flow: column;
 
-    h1 {
-        color: #333;
-        font-size: 24px;
-        margin-bottom: 15px;
+    &__button {
+        margin-right: 10px;
     }
 
-    p {
-        margin: 10px 0;
-        font-size: 16px;
-    }
-
-    button {
-        background-color: #42b983;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        margin: 10px 0;
-
-        &:hover {
-            background-color: #42a078;
-        }
+    &__text {
+        margin-top: 10px;
     }
 }
 </style>
@@ -586,7 +584,7 @@ module.exports = {
 };
 ```
 
-> **说明**：Vue CLI 的 postcss-loader 通过 postcss-load-config 自动加载应用根目录的 `.postcssrc.js`，无需在 vue.config.js 内联；`postcss-px-to-viewport` / `postcss-calc` 属构建工具链，统一位于根 devDependencies（经 hoisting 提升，与 @vue/cli-service/less 同理），应用**无需也不应**在自己的 package.json 重复声明；本分支 typescript-eslint v5 的 recommended 不含 `no-require-imports`，该文件的 `require()` 写法不会触发 lint 报错。
+> **说明**：Vue CLI 的 postcss-loader 通过 postcss-load-config 自动加载应用根目录的 `.postcssrc.js`，无需在 vue.config.js 内联；`postcss-px-to-viewport` / `postcss-calc` 属构建工具链，统一位于根 devDependencies（经 hoisting 提升，与 @vue/cli-service/less 同理），应用**无需也不应**在自己的 package.json 重复声明（例外：`@vue/cli-plugin-eslint` 需在应用声明，见第 4 节说明）；本分支 typescript-eslint v5 的 recommended 不含 `no-require-imports`，该文件的 `require()` 写法不会触发 lint 报错。
 
 ### 10. 更新根目录的 package.json
 
@@ -614,7 +612,7 @@ if (!rootPackageJson.scripts) {
 
 // 添加新应用的脚本
 const appName = 'your-app-name'; // 替换为实际应用名称
-rootPackageJson.scripts[`dev:${appName}`] = `./scripts/build-packages.sh --skip-clean && pnpm -F ${appName} dev`;
+rootPackageJson.scripts[`dev:${appName}`] = `pnpm -F ${appName} dev`;
 rootPackageJson.scripts[`build:${appName}`] = `pnpm -F ${appName} build`;
 rootPackageJson.scripts[`lint:${appName}`] = `pnpm -F ${appName} lint`;
 
@@ -626,11 +624,11 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 ```json
 "scripts": {
-    "dev:example": "./scripts/build-packages.sh --skip-clean && pnpm -F example-app dev",
+    "dev:example": "pnpm -F example-app dev",
     "build:example": "pnpm -F example-app build",
     "build:shared": "pnpm -F @my-app/shared build",
     "lint:example": "pnpm -F example-app lint",
-    "dev:{app-name}": "./scripts/build-packages.sh --skip-clean && pnpm -F {app-name} dev",
+    "dev:{app-name}": "pnpm -F {app-name} dev",
     "build:{app-name}": "pnpm -F {app-name} build",
     "lint:{app-name}": "pnpm -F {app-name} lint"
 }
@@ -644,9 +642,10 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 2. 所有文件是否创建成功
 3. package.json 中的名称是否正确
 4. vue.config.js 中的端口配置是否正确
-5. tsconfig.json 中的路径映射是否正确
-6. **根目录 package.json 的 scripts 是否正确更新**：检查是否添加了 dev、build、lint 脚本
-7. `.postcssrc.js` 是否已创建（移动端适配基线，缺失会导致 `mpx` 单位不被转换）
+5. 依赖的 workspace 包（如 @my-app/shared）的 exports 是否带 `development` 条件指向 src（缺失则 dev 不解析源码，无法热更新）
+6. tsconfig.json 中的路径映射是否正确（指向包源码 `src/index.ts`）
+7. **根目录 package.json 的 scripts 是否正确更新**：检查是否添加了 dev、build、lint 脚本
+8. `.postcssrc.js` 是否已创建（移动端适配基线，缺失会导致 `mpx` 单位不被转换）
 
 ## 示例
 
@@ -662,7 +661,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 4. 设置 package.json 的 name 为"my-app"
 5. 设置 vue.config.js 的端口为 3000，标题为"my-app"
 6. **更新根目录 package.json 的 scripts**，添加：
-    - `"dev:my-app": "./scripts/build-packages.sh --skip-clean && pnpm -F my-app dev"`
+    - `"dev:my-app": "pnpm -F my-app dev"`
     - `"build:my-app": "pnpm -F my-app build"`
     - `"lint:my-app": "pnpm -F my-app lint"`
 
@@ -679,7 +678,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 5. 设置 package.json 的 name 为"admin-panel"
 6. 设置 vue.config.js 的端口为 8080，标题为"admin-panel"
 7. **更新根目录 package.json 的 scripts**，添加：
-    - `"dev:admin-panel": "./scripts/build-packages.sh --skip-clean && pnpm -F admin-panel dev"`
+    - `"dev:admin-panel": "pnpm -F admin-panel dev"`
     - `"build:admin-panel": "pnpm -F admin-panel build"`
     - `"lint:admin-panel": "pnpm -F admin-panel lint"`
 
@@ -687,8 +686,8 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
-3. **路径映射**: tsconfig.json 中的路径映射需要正确指向共享包
-4. **依赖管理**: 新应用会自动依赖`@my-app/shared`包；构建工具链（@vue/cli-service、less、postcss-px-to-viewport、postcss-calc 等）统一位于根 devDependencies，经 hoisting 提升后各应用直接可用，应用自身 package.json 只声明运行时依赖
+3. **workspace 包解析**: 依赖的包（@my-app/*）通过各自 package.json 的 exports `development` 条件指向 src（webpack dev 默认解析，源码热更新），应用**无需**配置 alias；tsconfig.json 的 paths 需指向包源码（如 `../../packages/shared/src/index.ts`）
+4. **依赖管理**: 新应用会自动依赖`@my-app/shared`包；**仅 `@vue/cli-plugin-eslint` 需在应用 package.json 声明**（vue-cli-service 插件发现机制要求，缺失则 `vue-cli-service lint` 命令不存在）；**勿声明 plugin-babel / plugin-typescript**（babel/ts 由 vue.config.js 手动配置，插件默认规则会冲突并在 Node 14 生产构建触发 thread-loader 崩溃）；其余构建工具链（@vue/cli-service、less、postcss-px-to-viewport、postcss-calc 等）统一位于根 devDependencies，经 hoisting 提升后各应用直接可用
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
 7. **格式一致性**: 确保新增的 scripts 格式与现有 scripts 保持一致（`pnpm -F {app-name} {command}`）

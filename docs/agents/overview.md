@@ -75,7 +75,7 @@ pnpm build:packages
 # 启动示例应用
 pnpm dev:example
 
-# 启动新创建的应用
+# 启动新创建的应用（需先通过 create-vue-app 技能创建并更新根 scripts）
 pnpm dev:{app-name}
 ```
 

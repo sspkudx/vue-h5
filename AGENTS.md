@@ -118,6 +118,7 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 
 | 版本 | 日期       | 更新内容                                                                                     |
 | ---- | ---------- | -------------------------------------------------------------------------------------------- |
+| v3.4 | 2026-08-22 | monorepo 联调改 exports `development` 条件方案（跟随 main v3.5）：包 exports 带 development 指向 src（webpack dev 自动解析、源码热更新），应用零 alias，tsconfig paths 指向包源码，dev 无前置构建；create-vue-app / create-a-package 模板与 troubleshooting、CONTEXT 同步；修正文档飘移（create-skill 嵌套目录、workflow 幽灵命令/过时描述、CI 基线、skill-development-guide 头部）；lint-staged 降至 12.x（Node 14 兼容）；stylelint 依赖链降级（recommended-vue 1.4.0 + overrides，Node 14/ESM 兼容）；应用补 @vue/cli-plugin-eslint 声明修复 vue-cli-service lint（勿声明 plugin-babel/typescript，babel/ts 由 vue.config.js 手动配置） |
 | v3.3 | 2026-08-20 | create-vue-app 模板补 .postcssrc.js（mpx→vmin 移动端适配基线）并明确构建工具链归根 devDependencies 约定；coding-standards 代码质量检查章节对齐本分支实际配置（.eslintrc.js / .prettierrc.yml / .stylelintrc.cjs）；CONTEXT 补移动端适配说明（跟随 main v3.4，按本分支工具链改写） |
 | v3.2 | 2026-08-17 | 移除 .catpaw/skills 镜像、sync:skills 脚本及全部相关引用（跟随 main）                        |
 | v3.1 | 2026-08-16 | 提交信息强制约定式提交 v1.0.0（commit-msg + commitlint v17）；本分支无 pre-commit 格式化钩子 |

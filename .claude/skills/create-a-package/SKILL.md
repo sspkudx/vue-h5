@@ -94,9 +94,9 @@ description: 在本项目的packages目录下创建新的依赖包。根据用�
 packages/{package-name}/
 ├── src/
 │   ├── index.ts          # 包的主要入口文件
+│   ├── __tests__/        # 测试目录（可选，与源码同层便于相对引用）
+│   │   └── index.test.ts # 测试文件
 │   └── (其他源码文件)    # 可选的源代码文件
-├── __tests__/           # 测试目录（可选）
-│   └── index.test.ts    # 测试文件
 ├── README.md            # 包的说明文档
 ├── package.json         # 包配置文件
 ├── jest.config.js       # Jest测试配置（如果添加测试）
@@ -120,6 +120,8 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -137,7 +139,7 @@ packages/{package-name}/
         "vue": "^3.5.38",
         "@vue/babel-plugin-jsx": "^1.5.0",
         "pinia": "^3.0.4",
-        "vue-router": "^5.1.0",
+        "vue-router": "^5.2.0",
         "lodash-es": "^4.18.1"
     },
     "devDependencies": {
@@ -149,8 +151,8 @@ packages/{package-name}/
         "rimraf": "^6.1.3",
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
-        "ts-jest": "^29.4.11",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "peerDependencies": {},
     "engines": {
@@ -172,6 +174,8 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -193,8 +197,8 @@ packages/{package-name}/
         "rimraf": "^6.1.3",
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
-        "ts-jest": "^29.4.11",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
         "node": ">= 14.18.0"
@@ -221,6 +225,8 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -251,8 +257,8 @@ packages/{package-name}/
         "rimraf": "^6.1.3",
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
-        "ts-jest": "^29.4.11",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
         "node": ">= 14.18.0"
@@ -280,6 +286,8 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -309,8 +317,8 @@ packages/{package-name}/
         "rimraf": "^6.1.3",
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
-        "ts-jest": "^29.4.11",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
         "node": ">= 14.18.0"
@@ -341,6 +349,8 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -373,8 +383,8 @@ packages/{package-name}/
         "rimraf": "^6.1.3",
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
-        "ts-jest": "^29.4.11",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "typescript": "^5.9.3"
     },
     "engines": {
         "node": ">= 14.18.0"
@@ -1017,8 +1027,8 @@ export { authPlugin };
 ##### 通用工具库测试示例
 
 ```typescript
-// __tests__/index.test.ts
-import { safeNum, formatDate } from '../src';
+// src/__tests__/index.test.ts
+import { safeNum, formatDate } from '../index';
 
 describe('工具函数测试', () => {
     describe('safeNum', () => {
@@ -1074,9 +1084,9 @@ describe('工具函数测试', () => {
 ##### Vue 组件测试示例
 
 ```typescript
-// __tests__/components/Button.test.tsx
+// src/__tests__/components/Button.test.tsx
 import { mount } from '@vue/test-utils';
-import { Button } from '../../src/components/Button';
+import { Button } from '../components/Button';
 
 describe('Button组件', () => {
     test('渲染默认按钮', () => {
@@ -1124,7 +1134,7 @@ describe('Button组件', () => {
 ##### 测试工具函数
 
 ```typescript
-// __tests__/utils/test-utils.ts
+// src/__tests__/utils/test-utils.ts
 /**
  * 创建测试用的Vue应用
  */
@@ -1523,9 +1533,9 @@ MIT License © 2024 My App
         ├── src/
         │   ├── index.ts
         │   ├── date-utils.ts
-        │   └── number-utils.ts
-        ├── __tests__/
-        │   └── index.test.ts
+        │   ├── number-utils.ts
+        │   └── __tests__/
+        │       └── index.test.ts
         ├── README.md
         ├── package.json
         ├── tsconfig.json
