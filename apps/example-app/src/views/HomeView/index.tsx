@@ -1,4 +1,5 @@
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 import { safeNum } from '@my-app/shared';
 import styles from './style.module.less';
 
@@ -10,6 +11,16 @@ import styles from './style.module.less';
 const HomeView = defineComponent({
     name: 'HomeView',
     setup() {
+        const router = useRouter();
+
+        const toAbout = () => {
+            router.push('/about');
+        };
+
+        const toPlayground = () => {
+            router.push('/playground');
+        };
+
         const render = () => {
             // 示例数据：合法字符串与非法字符串，验证 safeNum 的转换与兜底
             const validInput = '123';
@@ -18,13 +29,21 @@ const HomeView = defineComponent({
             const invalidNum = safeNum(invalidInput);
 
             return (
-                <div class={styles.homeView}>
-                    <p class={styles.homeView__text}>首页</p>
-                    <p class={[styles.homeView__text, styles.homeView__text_gray]}>欢迎使用 vue-h5 模板</p>
+                <div class={styles['home-view']}>
+                    <p class={styles['home-view__text']}>首页</p>
+                    <p class={[styles['home-view__text'], styles['home-view__text--gray']]}>欢迎使用 vue-h5 模板</p>
                     <div>
                         <p>@my-app/shared 包导入示例：</p>
                         <p>safeNum('123') = {validNum}</p>
                         <p>safeNum('abc') = {invalidNum}</p>
+                    </div>
+                    <div class={styles['home-view__nav']}>
+                        <button type="button" class={styles['home-view__button']} onClick={toAbout}>
+                            关于
+                        </button>
+                        <button type="button" class={styles['home-view__button']} onClick={toPlayground}>
+                            Playground
+                        </button>
                     </div>
                 </div>
             );

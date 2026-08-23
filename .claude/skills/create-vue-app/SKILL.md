@@ -55,8 +55,11 @@ apps/{app-name}/
 │       ├── HomeView/
 │       │   ├── index.tsx
 │       │   └── style.module.less
-│       └── AboutView/
-│           └── AboutView.vue
+│       ├── AboutView/
+│       │   ├── index.tsx
+│       │   └── style.module.less
+│       └── PlaygroundPage/
+│           └── PlaygroundPage.vue
 ├── index.html
 ├── favicon.ico
 ├── README.md
@@ -326,7 +329,14 @@ const router = createRouter({
             name: 'about',
             // 路由级代码分割：该路由单独生成 chunk，首次访问时才懒加载
             component() {
-                return import('../views/AboutView/AboutView.vue');
+                return import('../views/AboutView/index');
+            },
+        },
+        {
+            path: '/playground',
+            name: 'PlaygroundPage',
+            component() {
+                return import('../views/PlaygroundPage/PlaygroundPage.vue');
             },
         },
     ],
@@ -339,17 +349,29 @@ export default router;
 
 ```tsx
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 import { safeNum } from '@my-app/shared';
 import styles from './style.module.less';
 
 /**
  * 首页示例组件
  * @description 展示 workspace 包（@my-app/shared）的源码联调效果：
- * safeNum 将入参安全转换为数字，非法输入兜底为 0
+ * safeNum 将入参安全转换为数字，非法输入兜底为 0；
+ * 同时演示 useRouter 编程式导航跳转到其他示例页
  */
 const HomeView = defineComponent({
     name: 'HomeView',
     setup() {
+        const router = useRouter();
+
+        const toAbout = () => {
+            router.push('/about');
+        };
+
+        const toPlayground = () => {
+            router.push('/playground');
+        };
+
         const render = () => {
             // 示例数据：合法字符串与非法字符串，验证 safeNum 的转换与兜底
             const validInput = '123';
@@ -358,13 +380,21 @@ const HomeView = defineComponent({
             const invalidNum = safeNum(invalidInput);
 
             return (
-                <div class={styles.homeView}>
-                    <p class={styles.homeView__text}>首页</p>
-                    <p class={[styles.homeView__text, styles.homeView__text_gray]}>欢迎使用 vue-h5 模板</p>
+                <div class={styles['home-view']}>
+                    <p class={styles['home-view__text']}>首页</p>
+                    <p class={[styles['home-view__text'], styles['home-view__text--gray']]}>欢迎使用 vue-h5 模板</p>
                     <div>
                         <p>@my-app/shared 包导入示例：</p>
                         <p>safeNum('123') = {validNum}</p>
                         <p>safeNum('abc') = {invalidNum}</p>
+                    </div>
+                    <div class={styles['home-view__nav']}>
+                        <button type="button" class={styles['home-view__button']} onClick={toAbout}>
+                            关于
+                        </button>
+                        <button type="button" class={styles['home-view__button']} onClick={toPlayground}>
+                            Playground
+                        </button>
                     </div>
                 </div>
             );
@@ -379,73 +409,112 @@ export default HomeView;
 #### views/HomeView/style.module.less
 
 ```less
-.homeView {
-    &__text {
-        color: #333;
-        font-size: 20px;
-        font-weight: bold;
+.home-view {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
 
-        &_gray {
-            color: #666;
+    &__text {
+        margin-bottom: 12mpx;
+        font-size: 24mpx;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &--gray {
+            color: #818999;
+        }
+    }
+
+    &__nav {
+        display: flex;
+        margin-top: 24mpx;
+    }
+
+    &__button {
+        padding: 8mpx 24mpx;
+        border: none;
+        border-radius: 8mpx;
+        font-size: 24mpx;
+        color: #fff;
+        background: #42b983;
+        cursor: pointer;
+
+        &:first-child {
+            margin-right: 16mpx;
         }
     }
 }
 ```
 
-#### views/AboutView/AboutView.vue
+#### views/AboutView/index.tsx
+
+```tsx
+import { defineComponent } from 'vue';
+import styles from './style.module.less';
+
+/**
+ * 关于页面
+ * @description 极简示例页，演示 TSX 页面组件的基础写法（defineComponent + setup 返回渲染函数）
+ */
+const AboutView = defineComponent({
+    name: 'AboutView',
+    setup() {
+        const render = () => {
+            return <div class={styles['about-view']}>这是关于页面（示例）</div>;
+        };
+        return render;
+    },
+});
+
+export default AboutView;
+```
+
+#### views/AboutView/style.module.less
+
+```less
+.about-view {
+    color: #818999;
+}
+```
+
+#### views/PlaygroundPage/PlaygroundPage.vue
 
 ```vue
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 
 /**
- * 关于页面（SFC 写法示例）
- * @description 演示 Vue 单文件组件的基础用法：ref 状态 + 事件绑定
+ * 演示页：计数器
+ * @description 示例 shallowRef 的基础用法：点击按钮递增计数，
+ * 页面展示当前计数值
  */
-const count = ref(0);
+const countValue = shallowRef(0);
 
-const increment = () => {
-    count.value++;
+const addCount = () => {
+    countValue.value++;
 };
 </script>
 
 <template>
-    <div class="about-view">
-        <h1>关于页面</h1>
-        <p>当前计数：{{ count }}</p>
-        <button @click="increment">增加</button>
+    <div class="playground-page">
+        <button class="playground-page__button" type="button" @click="addCount">+1</button>
+        <p class="playground-page__text">当前计数：{{ countValue }}</p>
     </div>
 </template>
 
 <style lang="less" scoped>
-.about-view {
-    padding: 20px;
-    color: #333;
+.playground-page {
+    display: flex;
+    flex-flow: column;
 
-    h1 {
-        color: #333;
-        font-size: 24px;
-        margin-bottom: 15px;
+    &__button {
+        margin-right: 10px;
     }
 
-    p {
-        margin: 10px 0;
-        font-size: 16px;
-    }
-
-    button {
-        background-color: #42b983;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        margin: 10px 0;
-
-        &:hover {
-            background-color: #42a078;
-        }
+    &__text {
+        margin-top: 10px;
     }
 }
 </style>
@@ -662,7 +731,7 @@ pnpm run lint:{app-name}
 - 使用 Vue 3 `<script setup>` 语法
 - 传统 Vue 开发体验
 - 模板更加直观易读
-- 目录结构：`views/AboutView/AboutView.vue`
+- 目录结构：`views/PlaygroundPage/PlaygroundPage.vue`
 
 **适用场景**：
 

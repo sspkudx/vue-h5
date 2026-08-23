@@ -25,9 +25,11 @@ apps/{app-name}/
 │       ├── HomeView/
 │       │   ├── index.tsx
 │       │   └── style.module.less
-│       └── AboutView/
-│           ├── index.tsx
-│           └── style.module.less
+│       ├── AboutView/
+│       │   ├── index.tsx
+│       │   └── style.module.less
+│       └── PlaygroundPage/
+│           └── PlaygroundPage.vue
 ├── index.html               # HTML 入口模板
 ├── favicon.ico              # 网站图标
 ├── package.json             # 应用配置
@@ -238,19 +240,20 @@ apps/user-portal/
 
 ### 主要文件
 
-| 文件路径               | 说明                          |
-| ---------------------- | ----------------------------- |
-| `src/App.tsx`          | 应用根组件，使用 Vue JSX 语法 |
-| `src/main.ts`          | 应用入口文件，初始化 Vue 应用 |
-| `src/plugins/index.ts` | Vue 插件配置，可添加全局插件  |
-| `src/router/index.ts`  | 路由配置，定义应用路由        |
-| `src/views/HomeView/`  | 首页组件，包含示例代码        |
-| `src/views/AboutView/` | 关于页面组件，包含示例代码    |
-| `index.html`           | HTML 入口模板                 |
-| `.postcssrc.js`        | PostCSS 配置（mpx → vmin）    |
-| `vite.config.ts`       | Vite 构建配置（含代理/别名）  |
-| `tsconfig.json`        | TypeScript 配置文件           |
-| `package.json`         | 应用配置和依赖管理            |
+| 文件路径                    | 说明                             |
+| --------------------------- | -------------------------------- |
+| `src/App.tsx`               | 应用根组件，使用 Vue JSX 语法    |
+| `src/main.ts`               | 应用入口文件，初始化 Vue 应用    |
+| `src/plugins/index.ts`      | Vue 插件配置，可添加全局插件     |
+| `src/router/index.ts`       | 路由配置，定义应用路由           |
+| `src/views/HomeView/`       | 首页组件，包含示例代码与导航入口 |
+| `src/views/AboutView/`      | 关于页面组件，包含示例代码       |
+| `src/views/PlaygroundPage/` | 演示页组件（SFC 计数器示例）     |
+| `index.html`                | HTML 入口模板                    |
+| `.postcssrc.js`             | PostCSS 配置（mpx → vmin）       |
+| `vite.config.ts`            | Vite 构建配置（含代理/别名）     |
+| `tsconfig.json`             | TypeScript 配置文件              |
+| `package.json`              | 应用配置和依赖管理               |
 
 ### 样式文件
 
