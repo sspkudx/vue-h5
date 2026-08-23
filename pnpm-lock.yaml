@@ -102,8 +102,8 @@ importers:
         specifier: ^8.5.26
         version: 8.5.26
       postcss-calc:
-        specifier: ^10.1.1
-        version: 10.1.1(postcss@8.5.26)
+        specifier: ^11.0.0
+        version: 11.0.0(postcss@8.5.26)
       postcss-html:
         specifier: ^2.0.0
         version: 2.0.0(postcss@8.5.26)
@@ -3487,11 +3487,11 @@ packages:
   pkg-types@2.3.1:
     resolution: {integrity: sha512-y+ichcgc2LrADuhLNAx8DFjVfgz91pRxfZdI3UDhxHvcVEZsenLO+7XaU5vOp0u/7V/wZ+plyuQxtrDlZJ+yeg==}
 
-  postcss-calc@10.1.1:
-    resolution: {integrity: sha512-NYEsLHh8DgG/PRH2+G9BTuUdtf9ViS+vdoQ0YA5OQdGsfN4ztiwtDWNtBl9EKeqNMFnIu8IKZ0cLxEQ5r5KVMw==}
-    engines: {node: ^18.12 || ^20.9 || >=22.0}
+  postcss-calc@11.0.0:
+    resolution: {integrity: sha512-LPFvrfMpfsdZs5SirGIcYvCuZjMzRYT3Iw8SIr0qIPTKzVCNBhcXU8DrpkhB8+mGW1wSLI2B4BEvxMJu3/+zOg==}
+    engines: {node: ^22.22.3 || ^24.15 || >=26.0}
     peerDependencies:
-      postcss: ^8.4.38
+      postcss: ^8.5.25
 
   postcss-html@2.0.0:
     resolution: {integrity: sha512-f2Rvw5FCollEfVj3wfN7JdQb7n2rNIthW+epw2EByio7M6P7RH0BTj8a/ODHrUXd0cmO7ychb6YniymV93182Q==}
@@ -7984,11 +7984,11 @@ snapshots:
       exsolve: 1.1.1
       pathe: 2.0.3
 
-  postcss-calc@10.1.1(postcss@8.5.26):
+  postcss-calc@11.0.0(postcss@8.5.26):
     dependencies:
+      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-tokenizer': 4.0.0
       postcss: 8.5.26
-      postcss-selector-parser: 7.1.5
-      postcss-value-parser: 4.2.0
 
   postcss-html@2.0.0(postcss@8.5.26):
     dependencies:
