@@ -1,7 +1,7 @@
 /**
  * Web 控制台后端
  * @description 原生 Node http 服务（零框架）：
- * - 托管 public/ 静态页面（中文控制台界面）
+ * - 托管 web/dist 下的 Vue 控制台构建产物（前端源码见 web/，构建：pnpm -F dev-launcher-web build）
  * - JSON API：条目列表（每次请求实时重扫）、启动/停止、保存勾选
  * - 子进程日志同时输出到启动终端的控制台（带 [名称] 前缀）
  */
@@ -15,8 +15,23 @@ import { loadConfig, ProcessManager, ROOT_DIR, saveConfig, scanEntries } from '.
 /** 控制台默认端口，可用 --port 或环境变量 DEV_LAUNCHER_PORT 覆盖 */
 export const DEFAULT_PORT = 8888;
 
-/** 静态资源目录 */
-const PUBLIC_DIR = fileURLToPath(new URL('./public', import.meta.url));
+/** 静态资源目录（Vue 前端构建产物） */
+const PUBLIC_DIR = fileURLToPath(new URL('./web/dist', import.meta.url));
+
+/** 产物缺失时的提示页（引导先构建前端） */
+const BUILD_HINT_HTML = `<!doctype html>
+<html lang="zh-Hans">
+    <head>
+        <meta charset="utf-8" />
+        <title>vue-h5 开发启动器</title>
+    </head>
+    <body style="font-family: sans-serif; padding: 40px; line-height: 1.8">
+        <h1>控制台前端尚未构建</h1>
+        <p>请先在项目根目录执行：</p>
+        <pre style="background: #f5f6f8; padding: 12px 16px; border-radius: 6px">pnpm install && pnpm build:launcher</pre>
+        <p>完成后刷新本页。前端源码位于 <code>scripts/dev-launcher/web/</code>。</p>
+    </body>
+</html>`;
 
 /** 静态资源 MIME 映射 */
 const MIME_TYPES = {
@@ -60,8 +75,13 @@ const sendJson = (res, status, data) => {
     res.end(body);
 };
 
-/** 静态文件响应（仅允许 public 目录内的文件） */
+/** 静态文件响应（仅允许产物目录内的文件；入口缺失时提示先构建前端） */
 const serveStatic = (res, urlPath) => {
+    if (!existsSync(path.join(PUBLIC_DIR, 'index.html'))) {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(BUILD_HINT_HTML);
+        return;
+    }
     const filePath = path.normalize(path.join(PUBLIC_DIR, urlPath));
     if (!filePath.startsWith(PUBLIC_DIR) || !existsSync(filePath) || !statSync(filePath).isFile()) {
         sendJson(res, 404, { ok: false, message: '资源不存在' });

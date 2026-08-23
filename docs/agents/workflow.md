@@ -38,6 +38,8 @@ pnpm dev --cli
 - 特殊场景兜底：`.dev-launcher.json` 支持 `exclude`（排除条目）与 `extra`（手工登记非标准目录项目，含自定义命令）
 - 服务日志实时输出在启动器终端（带 `[名称]` 前缀），Web 控制台可展开查看最近日志
 
+控制台前端为 Vue 3 + Vite 子工程（`scripts/dev-launcher/web/`，workspace 包 `dev-launcher-web`），`pnpm dev` 前经 `predev` 自动构建，产物由 `server.mjs` 托管；产物缺失时页面会给出构建提示。迭代前端本身时：先 `pnpm dev` 起启动器，再 `pnpm -F dev-launcher-web dev`（Vite dev server :8890，`/api` 代理到启动器）。
+
 ### 1.3 直接启动（绕过启动器）
 
 ```bash
