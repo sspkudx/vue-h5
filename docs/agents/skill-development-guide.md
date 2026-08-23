@@ -188,8 +188,8 @@ cat apps/new-app/package.json
 **解决方案**:
 
 ```bash
-# 1. 分析执行时间
-time pnpm run create-app my-app
+# 1. 分析执行时间（技能本身无 CLI 命令，以真实构建命令计时为例）
+time pnpm -F example-app build
 
 # 2. 检查文件操作
 # 优化文件读写操作

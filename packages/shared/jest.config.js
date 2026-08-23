@@ -17,5 +17,15 @@ module.exports = {
         '!**/*.spec.ts',
     ],
     coverageDirectory: '<rootDir>/coverage',
+    // 守护"测试质量是仓库标杆"：shared 当前 100% 覆盖（见 TESTING.md），
+    // 新增导出必须补测试，否则 CI 失败
+    coverageThreshold: {
+        global: {
+            statements: 100,
+            branches: 100,
+            functions: 100,
+            lines: 100,
+        },
+    },
     testPathIgnorePatterns: ['/node_modules/', '/dist/'],
 };

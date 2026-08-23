@@ -62,6 +62,7 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -70,28 +71,30 @@ packages/{package-name}/
         "clean": "rimraf dist",
         "prebuild": "pnpm run clean",
         "build": "vite build && tsc -p tsconfig.build.json",
-        "dev": "vite build --watch",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:coverage": "jest --coverage"
+        "dev": "bash ../../scripts/watch-package.sh",
+        "test": "jest --config jest.config.js",
+        "test:watch": "jest --config jest.config.js --watch",
+        "test:coverage": "jest --config jest.config.js --coverage"
     },
     "keywords": [],
     "author": "",
     "license": "MIT",
     "peerDependencies": {},
     "devDependencies": {
-        "@types/jest": "^29.5.0",
+        "@types/jest": "^30.0.0",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "vite": "^8.2.1",
+        "vite": "catalog:",
         "ts-jest": "^29.4.12",
-        "typescript": "^5.9.3"
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">= 22"
+        "node": ">=22.0.0"
     }
 }
 ```
+
+> **`development` 条件必须保留**：Vite dev 默认解析 `development` 条件直接加载包源码（热更新），应用无需为 `@my-app/*` 配置 alias；生产构建解析 `import` 条件走 `dist`。版本基线：`typescript`/`vite` 走 `catalog:`（由 `pnpm-workspace.yaml` 的 `catalogs.default` 统一），Node 22 LTS。
 
 ### package.json (组件库示例)
 
@@ -104,6 +107,7 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -112,29 +116,29 @@ packages/{package-name}/
         "clean": "rimraf dist",
         "prebuild": "pnpm run clean",
         "build": "vite build && tsc -p tsconfig.build.json",
-        "dev": "vite build --watch",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:coverage": "jest --coverage"
+        "dev": "bash ../../scripts/watch-package.sh",
+        "test": "jest --config jest.config.js",
+        "test:watch": "jest --config jest.config.js --watch",
+        "test:coverage": "jest --config jest.config.js --coverage"
     },
     "keywords": [],
     "author": "",
     "license": "MIT",
     "peerDependencies": {
-        "vue": "catalog:",
-        "@vue/babel-plugin-jsx": "^1.5.0"
+        "vue": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^29.5.0",
-        "@vue/test-utils": "^2.4.0",
+        "@types/jest": "^30.0.0",
+        "@vue/test-utils": "^2.4.5",
         "jest": "^30.4.2",
+        "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
-        "vite": "^8.2.1",
+        "vite": "catalog:",
         "ts-jest": "^29.4.12",
-        "typescript": "^5.9.3"
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">= 22"
+        "node": ">=22.0.0"
     }
 }
 ```
@@ -258,9 +262,9 @@ import { login, logout } from '@my-app/auth-helpers';
 import { logPlugin } from '@my-app/vue-plugins';
 ```
 
-### 3. 确保路径映射正确
+### 3. 确认联调机制
 
-应用的 `vite.config.ts` 和 `tsconfig.json` 会自动配置包别名映射，无需手动配置。
+包 exports 的 `development` 条件让 Vite dev 直接解析包源码（热更新），应用**无需**在 `vite.config.ts` / `tsconfig.json` 中配置任何 `@my-app/*` 别名映射；生产构建走 `import` 条件解析 `dist`。
 
 ## 示例
 
@@ -509,7 +513,7 @@ pnpm i --force
 ```bash
 # 检查 TypeScript 配置
 cd packages/{package-name}
-pnpm tsc --noEmit
+pnpm exec tsc --noEmit
 ```
 
 #### 3. 构建失败

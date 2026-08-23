@@ -177,7 +177,7 @@ cat apps/{app-name}/package.json | grep dependencies
 
 #### 症状
 
-- Webpack 构建错误
+- Vite 构建错误
 - 内存溢出
 - 语法错误
 
@@ -332,12 +332,10 @@ pnpm build:{app-name}
 # 1. 检查路由配置
 # 在 src/router/index.ts 中检查路由定义
 
-# 2. 检查 History 模式配置
-# Vite dev server 默认支持 history 回退；生产部署需在网关/Nginx 配置 fallback 到 index.html
-# 在 vite.config.ts 中：
-# server: {
-#   historyApiFallback: true
-# }
+# 2. 检查路由模式
+# 示例应用使用 hash 模式（createWebHashHistory），刷新/直链无需服务端回退配置；
+# 若改用 history 模式（createWebHistory），生产部署需在网关/Nginx 配置 fallback 到 index.html
+# （Vite dev server 默认已支持 history 回退；没有 historyApiFallback 这个 Vite 选项）
 
 # 3. 检查路由守卫
 # 确保路由守卫逻辑正确
@@ -346,8 +344,8 @@ router.beforeEach((to, from, next) => {
 });
 
 # 4. 检查动态导入
-# 确保路由组件正确导入
-const HomeView = () => import('./views/HomeView.vue');
+# 确保路由组件正确导入（example-app 为路由级懒加载）
+const HomeView = () => import('./views/HomeView/index');
 
 # 5. 检查路由名称冲突
 # 确保路由名称唯一

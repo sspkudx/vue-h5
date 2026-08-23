@@ -9,7 +9,7 @@
 - **现代化技术栈**: Vue 3 + TypeScript + Vite + PNPM
 - **Monorepo 架构**: 支持多应用、多包统一管理
 - **AI 智能开发**: 内置 Skills 快速创建应用和包
-- **完整工具链**: ESLint, Stylelint, Prettier, Jest, Rollup, Husky + commitlint, GitHub Actions CI
+- **完整工具链**: ESLint, Stylelint, Prettier, Jest, Vite, Husky + commitlint, GitHub Actions CI
 
 ## ⚡ 快速开始（5 分钟上手）
 
@@ -43,6 +43,12 @@ pnpm dev:example
 
 打开浏览器访问 http://localhost:2000，查看示例应用！
 
+> 💡 **三种启动方式的衔接说明**：
+>
+> - `pnpm dev` 只启动**开发启动器控制台**（http://localhost:8888），在控制台勾选 `example-app` 并点击「启动所选」后，示例应用才会运行在 http://localhost:2000；
+> - `pnpm dev --cli` 在终端交互勾选，效果同上；
+> - 想直接启动示例应用、跳过控制台，用 `pnpm dev:example`（访问 http://localhost:2000）。
+
 ## 📚 详细指南
 
 ### 📦 环境要求
@@ -50,7 +56,7 @@ pnpm dev:example
 | 工具         | 要求     | 说明                                   |
 | ------------ | -------- | -------------------------------------- |
 | **Node.js**  | 22 LTS   | 见根目录 `.node-version`               |
-| **包管理器** | PNPM 10+ | 已锁定 `packageManager`，推荐 corepack |
+| **包管理器** | PNPM 11+ | 已锁定 `packageManager`，推荐 corepack |
 
 ```bash
 # 首次使用启用 corepack，自动对齐 packageManager 中声明的 pnpm 版本
@@ -139,17 +145,23 @@ vue-h5/
 │   └── [your-app]/         # 你的应用（通过 AI 技能创建）
 ├── packages/                # 共享包目录
 │   └── shared/             # 共享工具包示例
-├── skills/                  # AI 辅助开发技能
+├── .claude/skills/          # AI 辅助开发技能（8 个）
 │   ├── create-vue-app/     # 创建 Vue 应用技能
-│   └── create-a-package/   # 创建依赖包技能
-├── scripts/                 # 构建脚本
+│   ├── create-a-vue-page/  # 创建 Vue 页面技能
+│   ├── create-component/   # 创建 Vue 组件技能
+│   ├── create-a-package/   # 创建依赖包技能
+│   ├── design-to-code/     # 设计稿转代码技能
+│   ├── update-dependencies/# 依赖更新技能
+│   ├── create-skill/       # 创建新技能技能
+│   └── git-commit-push/    # Git 提交推送技能
+├── scripts/                 # 构建脚本与开发启动器
 ├── types/                   # TypeScript 类型定义
 └── public/                  # 静态资源
 ```
 
 ### 🤖 AI 智能开发技能
 
-本项目内置了标准的 AI Skills 格式，可以在支持技能功能的 AI 编辑器（如 Cursor、Windsurf、Trae、CatPaw 等）中使用：
+本项目内置了标准的 AI Skills 格式，可以在支持技能功能的 AI 编辑器（如 Cursor、Windsurf、Trae 等）中使用：
 
 #### 创建新 Vue 应用
 
@@ -178,7 +190,7 @@ vue-h5/
 **技能位置**: `./.claude/skills/create-a-package/SKILL.md`
 
 - ✅ 支持四种包类型：工具库、组件库、工具函数集、插件库
-- ✅ 自动配置 TypeScript + Rollup 开发环境
+- ✅ 自动配置 TypeScript + Vite（lib 模式）+ Jest 开发环境
 - ✅ 生成测试框架配置和详细文档
 
 ### 🔧 Monorepo 开发指南
@@ -311,15 +323,18 @@ pnpm i --force
 ```
 apps/example-app/
 ├── src/
-│   ├── App.tsx           # 应用入口组件
-│   ├── main.ts          # 应用入口文件
-│   ├── plugins/         # Vue 插件
-│   ├── router/          # 路由配置
-│   └── views/           # 页面组件
-├── index.html          # Vite 入口模板
+│   ├── App.vue           # 应用根组件（SFC）
+│   ├── main.ts           # 应用入口文件
+│   ├── plugins/          # Vue 插件（Pinia 等）
+│   ├── router/           # 路由配置（hash 模式 + 懒加载）
+│   ├── utils/            # 请求封装（axios 拦截器）
+│   ├── api/              # 接口层
+│   └── views/            # 页面组件（tsx / .vue 两种写法）
+├── index.html           # Vite 入口模板
+├── .postcssrc.js        # PostCSS 配置（mpx → vmin 移动端适配）
 ├── package.json         # 应用配置
-├── tsconfig.json       # TypeScript 配置
-└── vite.config.ts      # Vite 构建配置
+├── tsconfig.json        # TypeScript 配置
+└── vite.config.ts       # Vite 构建配置
 ```
 
 #### Packages 目录 (`packages/`)
@@ -329,13 +344,12 @@ apps/example-app/
 ```
 packages/shared/
 ├── src/
-│   ├── index.ts        # 包入口文件
-│   ├── __tests__/      # 测试文件
-│   └── utils/          # 工具函数
-├── dist/               # 构建输出
-├── package.json        # 包配置
-├── vite.config.ts      # Vite lib 模式构建配置
-└── tsconfig*.json     # TypeScript 配置
+│   ├── index.ts         # 包入口文件（类型守卫 + 数字工具）
+│   └── __tests__/       # Jest 测试
+├── dist/                # 构建输出（vite lib + tsc d.ts）
+├── package.json         # 包配置（exports 带 development 条件）
+├── vite.config.ts       # Vite lib 模式构建配置
+└── tsconfig*.json       # TypeScript 配置
 ```
 
 ### 📄 许可证

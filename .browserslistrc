@@ -1,5 +1,10 @@
-# 兼容性基线：Chrome 49（桌面端 + 移动端统一基线，含 Android WebView / 低端安卓机）
+# 兼容性基线：Chrome 49+（桌面端 + 移动端统一基线，含 Android WebView / 低端安卓机）
 # 兼容性由本文件显式下限 + babel 转译 + core-js polyfill 保证，与构建机 Node 版本无关。
 # 注意：不要使用 `not dead`——它会把停止更新的老 WebView/Safari 踢出目标范围。
 # Vue 3 依赖 Proxy（无法 polyfill），Chrome 49 起才支持 Proxy，故基线不得低于 49。
-chrome 49
+#
+# 语义说明：`chrome >= 49` 是范围匹配（匹配所有 >=49 的已发布 Chrome 版本）。
+# @vitejs/plugin-legacy 按"这些目标的最低公共特性集"生成 legacy 产物（ES5 + core-js polyfill，
+# 由最老的 49 决定转译与 polyfill 集合），老设备执行 legacy 产物、现代设备执行 Vite 默认
+# build.target（'baseline-widely-available'）的 modern 产物，两者互不影响。
+chrome >= 49

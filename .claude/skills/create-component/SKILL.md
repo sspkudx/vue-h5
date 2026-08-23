@@ -993,7 +993,7 @@ src/views/Dashboard/
 1. **TypeScript 配置**: 支持 tsconfig.json 中的路径映射
 2. **CSS Modules**: 自动使用项目配置的 localIdentName
 3. **代码规范**: 遵循项目的 ESLint 和 Prettier 配置
-4. **构建配置**: 使用项目的 Vue CLI 配置
+4. **构建配置**: 使用项目的 Vite 构建配置（apps：plugin-vue / plugin-vue-jsx；packages：Vite lib 模式）
 
 ---
 

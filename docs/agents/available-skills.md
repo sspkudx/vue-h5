@@ -29,7 +29,7 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 
 ### 使用方式
 
-在 AI 编辑器（如 CatPaw、Cursor、Windsurf、Trae）中直接请求：
+在 AI 编辑器（如 Cursor、Windsurf、Trae）中直接请求：
 
 ```bash
 "创建名为 my-app 的 Vue 应用"
@@ -63,7 +63,7 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 
 - **用途**: 可复用的 Vue 组件
 - **示例**: `Button`, `Modal`, `Form`
-- **依赖**: Vue 3.x + @vue/babel-plugin-jsx
+- **依赖**: Vue 3.x + @vitejs/plugin-vue-jsx
 
 #### 工具函数集 (Helper Functions)
 
@@ -91,7 +91,7 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 
 - ✅ 创建完整的 TypeScript 包结构
 - ✅ 支持四种包类型配置
-- ✅ 自动生成构建配置（Rollup、TypeScript、Jest）
+- ✅ 自动生成构建配置（Vite lib 模式、TypeScript、Jest）
 - ✅ 配置 monorepo 工作空间引用
 - ✅ 生成测试文件和文档模板
 

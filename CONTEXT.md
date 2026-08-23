@@ -18,7 +18,7 @@
 
 | 层 | 实际选型 |
 | --- | --- |
-| 框架 | Vue 3.5 + TypeScript 5.9，TSX（@vitejs/plugin-vue-jsx）与 SFC 混用 |
+| 框架 | Vue 3.5 + TypeScript 6.0，TSX（@vitejs/plugin-vue-jsx）与 SFC 混用 |
 | 构建 | **Vite 8**（apps：plugin-vue / plugin-vue-jsx / plugin-legacy；packages：Vite lib 模式） |
 | 状态 | Pinia 4 |
 | 样式 | Less + CSS Modules（`*.module.less`，kebab→camel 双导出），`ress` reset |

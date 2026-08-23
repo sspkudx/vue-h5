@@ -25,7 +25,8 @@
         "test:coverage": "jest --coverage",
         "test:shared": "pnpm -F @my-app/shared test",
         "prepare": "husky || true",
-        "lint-staged": "lint-staged"
+        "lint-staged": "lint-staged",
+        "check:docs": "node scripts/check-docs-drift.mjs"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,vue}": [

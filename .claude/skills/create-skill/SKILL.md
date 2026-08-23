@@ -1,25 +1,18 @@
 ---
 name: create-skill
-description: Guides users through creating effective Agent Skills for CatPaw. Use when the user wants to create, write, or author a new skill, or asks about skill structure, best practices, or SKILL.md format.
-
-metadata:
-    skillhub.creator: 'chenhaoling'
-    skillhub.updater: 'chenhaoling'
-    skillhub.version: 'V1'
-    skillhub.source: 'FRIDAY Skillhub'
-    skillhub.skill_id: '109'
+description: Guides users through creating effective Agent Skills for this repository (.claude/skills/, AGENTS 体系). Use when the user wants to create, write, or author a new skill, or asks about skill structure, best practices, or SKILL.md format.
 ---
 
-# Creating Skills in CatPaw
+# Creating Skills（创建技能）
 
-This skill guides you through creating effective Agent Skills for CatPaw. Skills are markdown files that teach the agent how to perform specific tasks: reviewing PRs using team standards, generating commit messages in a preferred format, querying database schemas, or any specialized workflow.
+This skill guides you through creating effective Agent Skills for this repository（`.claude/skills/`，配套 `docs/agents/skill-development-guide.md` 为仓库级技能开发指南）。Skills are markdown files that teach the agent how to perform specific tasks: reviewing PRs using team standards, generating commit messages in a preferred format, querying database schemas, or any specialized workflow.
 
 ## Before You Begin: Gather Requirements
 
 Before creating a skill, gather essential information from the user about:
 
 1. **Purpose and scope**: What specific task or workflow should this skill help with?
-2. **Target location**: Should this be a personal skill (~/.catpaw/skills/) or project skill (.claude/skills/)?
+2. **Target location**: 本仓库技能统一存放于项目级 `.claude/skills/`（唯一事实来源）；个人技能不属于本仓库范围
 3. **Trigger scenarios**: When should the agent automatically apply this skill?
 4. **Key domain knowledge**: What specialized information does the agent need that it wouldn't already know?
 5. **Output format preferences**: Are there specific templates, formats, or styles required?
@@ -35,7 +28,6 @@ If you need clarification, use the AskQuestion tool when available:
 
 ```
 Example AskQuestion usage:
-- "Where should this skill be stored?" with options like ["Personal (~/.catpaw/skills/)", "Project (.claude/skills/)"]
 - "Should this skill include executable scripts?" with options like ["Yes", "No"]
 ```
 
@@ -61,12 +53,11 @@ skill-name/
 
 ### Storage Locations
 
-| Type     | Path                         | Scope                                   |
-| -------- | ---------------------------- | --------------------------------------- |
-| Personal | ~/.catpaw/skills/skill-name/ | Available across all your projects      |
-| Project  | .claude/skills/skill-name/   | Shared with anyone using the repository |
+| Type    | Path                       | Scope                                |
+| ------- | -------------------------- | ------------------------------------ |
+| Project | .claude/skills/skill-name/ | 唯一事实来源，入库共享（本仓库约定） |
 
-**IMPORTANT**: Never create skills in `~/.catpaw/skills-catpaw/`. This directory is reserved for CatPaw's internal built-in skills and is managed automatically by the system.
+> **本仓库约定**：技能只归档于项目级 `.claude/skills/`（已入库）。其他 AI 编辑器（Cursor / Windsurf / Trae）需要时自行从 `.claude/skills/` 复制到对应镜像目录（`.cursor/skills/` 等），本地生成不入库（见 `docs/agents/usage-guidelines.md`）。创建新技能请同时阅读 `docs/agents/skill-development-guide.md`，并按 AGENTS.md 索引登记。
 
 ### SKILL.md Structure
 
@@ -392,7 +383,7 @@ When helping a user create a skill, follow this process:
 Gather information about:
 
 1. The skill's purpose and primary use case
-2. Storage location (personal vs project)
+2. Storage location（本仓库统一为项目级 `.claude/skills/`）
 3. Trigger scenarios
 4. Any specific requirements or constraints
 5. Existing examples or patterns to follow

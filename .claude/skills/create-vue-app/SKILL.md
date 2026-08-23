@@ -176,10 +176,10 @@ export default defineConfig(({ mode }) => {
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "baseUrl": ".",
+        // TS 6.0 起 types 默认为 []，需显式声明；baseUrl 已废弃移除（paths 相对本文件解析）
         "types": ["vite/client", "node"],
         "paths": {
-            "@/*": ["src/*"],
+            "@/*": ["./src/*"],
             "@my-app/shared": ["../../packages/shared/src/index.ts"]
         }
     },
@@ -197,7 +197,7 @@ export default defineConfig(({ mode }) => {
 }
 ```
 
-> **注意**：不要回退到 `moduleResolution: "node"`——Vite 8+ 的 package.json 仅提供 `exports` 字段（无顶层 `main`/`types`），旧解析算法会报 `Cannot find module 'vite'`。公共编译选项统一由根目录 `tsconfig.base.json` 维护。
+> **注意**：不要回退到 `moduleResolution: "node"`——Vite 8+ 的 package.json 仅提供 `exports` 字段（无顶层 `main`/`types`），旧解析算法会报 `Cannot find module 'vite'`。公共编译选项统一由根目录 `tsconfig.base.json` 维护。TS 6.0 起 `baseUrl` 已废弃并移除，`paths` 相对 tsconfig 文件所在目录解析。
 >
 > **paths 指向源码**：`@my-app/shared` 的 paths 指向 `src/index.ts` 而非 dist，与运行时 dev 解析（exports 的 `development` 条件）对齐——改 shared 源码后类型即时同步，且 `typecheck` 不依赖先构建 shared。
 

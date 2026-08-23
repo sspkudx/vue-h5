@@ -30,6 +30,9 @@ jobs:
             - name: Prettier 检查
               run: pnpm format:check
 
+            - name: 文档/模板漂移检查（README/docs/技能模板 vs 真实代码）
+              run: pnpm check:docs
+
             - name: 单元测试
               run: pnpm test
 

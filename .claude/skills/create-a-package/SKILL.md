@@ -112,6 +112,8 @@ packages/{package-name}/
 > **`exports` 必须保留 `"development": "./src/index.ts"` 条件**：Vite dev 默认解析 `development` 条件，应用无需为 workspace 包配置 alias 即可直接加载包源码（热更新）；生产构建解析 `import`/`require` 条件走 `dist`。该条件必须放在 `import` 之前（条件按声明顺序匹配）。
 >
 > **`dev` 脚本（watch 构建）**：模板统一带 `"dev": "bash ../../scripts/watch-package.sh"`——先完整构建一次（清空 dist），再并行 `vite build --watch`（JS）与 `tsc --watch`（d.ts），Ctrl+C 一并退出。新包会被根目录开发启动器（`pnpm dev`）自动发现，无需手工登记。
+>
+> **版本基线（必须对齐仓库，勿回退）**：`typescript` / `vite` 走 `catalog:` 引用（版本统一由 `pnpm-workspace.yaml` 的 `catalogs.default` 管理，升级只改一处）；jest / ts-jest / @types/jest / rimraf 用与根 `package.json` 一致的版本。Node 基线为 **22 LTS**（`engines.node >=22.0.0`），不要写 14/18。Vue 生态依赖（vue / pinia / vue-router）一律放 `peerDependencies`（运行时依赖由使用方应用提供，见 CONTEXT.md 架构决策 2），不要放进 `dependencies`。
 
 #### 4.1 通用配置（所有类型）
 
@@ -139,25 +141,19 @@ packages/{package-name}/
     "keywords": [],
     "author": "",
     "license": "MIT",
-    "dependencies": {
-        "vue": "catalog:",
-        "@vue/babel-plugin-jsx": "^1.5.0",
-        "pinia": "catalog:",
-        "vue-router": "catalog:",
-        "lodash-es": "^4.18.1"
+    "peerDependencies": {
+        "vue": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^29.5.14",
-        "@types/lodash-es": "^4.17.12",
+        "@types/jest": "^30.0.0",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.11",
-        "typescript": "^4.9.5",
-        "vite": "^8.2.1"
+        "ts-jest": "^29.4.12",
+        "typescript": "catalog:",
+        "vite": "catalog:"
     },
-    "peerDependencies": {},
     "engines": {
-        "node": ">= 14.18.0"
+        "node": ">=22.0.0"
     }
 }
 ```
@@ -191,15 +187,15 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "@types/jest": "^29.5.14",
+        "@types/jest": "^30.0.0",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.11",
-        "vite": "^8.2.1",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "vite": "catalog:",
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">= 14.18.0"
+        "node": ">=22.0.0"
     }
 }
 ```
@@ -241,30 +237,26 @@ packages/{package-name}/
     "peerDependencies": {
         "vue": "catalog:"
     },
-    "dependencies": {
-        "@vue/babel-plugin-jsx": "^1.5.0"
-    },
     "devDependencies": {
-        "@types/jest": "^29.5.14",
+        "@types/jest": "^30.0.0",
         "@vue/test-utils": "^2.4.5",
-        "@vue/vue3-jest": "^29.2.6",
         "jest": "^30.4.2",
         "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.11",
-        "vite": "^8.2.1",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "vite": "catalog:",
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">= 14.18.0"
+        "node": ">=22.0.0"
     }
 }
 ```
 
 **组件库特殊配置说明**：
 
-1. **组件测试依赖**: 添加了 `@vue/test-utils`, `@vue/vue3-jest`, `jest-environment-jsdom` 用于组件测试
-2. **JSX 支持**: 添加 `@vue/babel-plugin-jsx` 依赖以支持 Vue JSX 语法
+1. **组件测试依赖**: 添加了 `@vue/test-utils`、`jest-environment-jsdom` 用于组件测试（注意：仓库当前未内置组件测试能力，.vue 文件的 Jest transform 需自行确认与 jest 30 兼容）
+2. **JSX 支持**: 构建侧由 `@vitejs/plugin-vue-jsx` 提供（模板 vite.config.ts 需为组件库补充 `vue()` 与 `vueJsx()` 插件），不再需要 `@vue/babel-plugin-jsx`
 3. **Vue 依赖**: `vue` 作为 peerDependencies，避免版本冲突
 4. **额外依赖**: 可以根据需要添加 `pinia`, `vue-router` 等（用 `catalog:` 引用，版本以 `pnpm-workspace.yaml` 的 `catalogs.default` 为准），如果组件库需要使用状态管理或路由
 
@@ -299,28 +291,23 @@ packages/{package-name}/
     "peerDependencies": {
         "vue": "catalog:"
     },
-    "dependencies": {
-        "@vue/babel-plugin-jsx": "^1.5.0",
-        "lodash-es": "^4.18.1"
-    },
     "devDependencies": {
-        "@types/jest": "^29.5.14",
-        "@types/lodash-es": "^4.17.12",
+        "@types/jest": "^30.0.0",
         "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.11",
-        "vite": "^8.2.1",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "vite": "catalog:",
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">= 14.18.0"
+        "node": ">=22.0.0"
     }
 }
 ```
 
 **工具函数集配置说明**:
 
-1. **常用依赖**: 包含 Vue 和常用工具库（如 lodash-es）
+1. **常用依赖**: 按业务需要自行添加（如 `lodash-es`、`axios`，放 `dependencies`）；vue 等框架依赖必须放 `peerDependencies`
 2. **可扩展性**: 可以根据具体业务需求添加其他依赖，如：
     - `axios`: 网络请求
     - `dayjs`: 日期处理
@@ -357,33 +344,29 @@ packages/{package-name}/
     "author": "",
     "license": "MIT",
     "peerDependencies": {
-        "vue": "catalog:"
-    },
-    "dependencies": {
-        "@vue/babel-plugin-jsx": "^1.5.0",
+        "vue": "catalog:",
         "pinia": "catalog:",
         "vue-router": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^29.5.14",
+        "@types/jest": "^30.0.0",
         "@vue/test-utils": "^2.4.5",
-        "@vue/vue3-jest": "^29.2.6",
         "jest": "^30.4.2",
         "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.11",
-        "vite": "^8.2.1",
-        "typescript": "^4.9.5"
+        "ts-jest": "^29.4.12",
+        "vite": "catalog:",
+        "typescript": "catalog:"
     },
     "engines": {
-        "node": ">= 14.18.0"
+        "node": ">=22.0.0"
     }
 }
 ```
 
 **插件库配置说明**:
 
-1. **Vue 生态系统**: 包含 Vue、Pinia、Vue Router 等 Vue 生态核心依赖
+1. **Vue 生态系统**: 包含 Vue、Pinia、Vue Router 等 Vue 生态核心依赖（放 `peerDependencies`，由使用方应用提供）
 2. **插件支持**: 适用于创建 Vue 插件、路由插件、状态管理插件等
 3. **测试支持**: 包含组件测试所需的依赖
 4. **灵活性**: 可以根据具体插件需求调整依赖项
@@ -1149,7 +1132,7 @@ module.exports = {
     transform: {
         '^.+\\.ts$': 'ts-jest',
         '^.+\\.tsx$': 'ts-jest',
-        '^.+\\.vue$': '@vue/vue3-jest',
+        // .vue transform 需自行配置（仓库未内置组件测试能力，见「添加测试支持」一节）
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'vue', 'json', 'node'],
     moduleNameMapper: {
@@ -1405,7 +1388,7 @@ pnpm test:coverage
 
 - **构建工具**: Vite（lib 模式）
 - **测试框架**: Jest + Vue Test Utils（组件库）
-- **开发语言**: TypeScript 4.9+
+- **开发语言**: TypeScript 6.0+
 - **包管理**: pnpm
 
 ## 🤝 贡献
@@ -1500,7 +1483,7 @@ MIT License © 2024 My App
 
     ```typescript
     // __tests__/index.test.ts
-    import { describe, it, expect } from 'vitest';
+    // jest globals（describe/it/expect）由 ts-jest 注入，无需显式 import
     import { safeNum } from '../src';
 
     describe('utils', () => {
@@ -1528,8 +1511,7 @@ MIT License © 2024 My App
     ```json
     {
         "peerDependencies": {
-            "vue": "catalog:",
-            "@vue/babel-plugin-jsx": "^1.5.0"
+            "vue": "catalog:"
         }
     }
     ```
@@ -1736,7 +1718,7 @@ MIT License © 2024 My App
 ### 8. 测试要求
 
 - 鼓励为包添加单元测试
-- 使用 Vitest 进行测试
+- 使用 Jest 进行测试（与仓库一致，jest globals 由 ts-jest 注入）
 - 测试覆盖率建议达到 80% 以上
 - 为每个导出项提供测试用例
 
@@ -1745,7 +1727,7 @@ MIT License © 2024 My App
 - 遵循语义化版本控制（SemVer）
 - 初始版本为 1.0.0
 - 重大变更时更新主版本号
-- 保持 CHANGELOG.md 更新
+- 仓库级显著变更同步记录到根目录 `CHANGELOG.md`
 
 ### 10. 代码质量
 
@@ -1967,7 +1949,9 @@ MIT License © 2024 My App
 
 ### 添加测试支持
 
-项目使用 Jest 作为测试框架，支持 TypeScript 和 Vue 组件测试。如果需要添加测试支持，建议配置：
+项目使用 Jest 作为测试框架（ts-jest + `types: ["jest"]`，jest globals 无需显式 import）。如果添加测试支持，建议配置：
+
+> **注意**：仓库当前只内置了 packages 纯 TS 包的单测能力（见 `packages/shared` 的 jest 配置）；**Vue 组件测试尚未内置**（无 @vue/test-utils 依赖、jest 未配 .vue transform）。以下组件测试配置是组件库/插件库包的参考方向，.vue 的 Jest transform 需自行确认与 jest 30 兼容。
 
 #### 1. **安装测试依赖**
 
@@ -1976,19 +1960,13 @@ MIT License © 2024 My App
 **所有类型包的基础依赖**:
 
 ```bash
-pnpm add -D jest @types/jest ts-jest
+pnpm add -D jest @types/jest ts-jest jest-environment-jsdom
 ```
 
 **组件库额外依赖** (如果需要测试 Vue 组件):
 
 ```bash
-pnpm add -D @vue/test-utils @testing-library/vue
-```
-
-**Vue 3 项目配置**:
-
-```bash
-pnpm add -D @vue/vue3-jest
+pnpm add -D @vue/test-utils
 ```
 
 #### 2. **Jest 配置文件**
@@ -2032,7 +2010,7 @@ module.exports = {
     transform: {
         '^.+.ts$': 'ts-jest',
         '^.+.tsx$': 'ts-jest',
-        '^.+.vue$': '@vue/vue3-jest',
+        // .vue transform 需自行配置（仓库未内置，见上方注意）
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'vue', 'json', 'node'],
     moduleNameMapper: {

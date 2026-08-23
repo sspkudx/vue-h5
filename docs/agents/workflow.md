@@ -196,8 +196,8 @@ pnpm test:coverage
 # 运行特定包的测试
 pnpm -F @my-app/shared test
 
-# 运行特定应用的测试
-pnpm -F {app-name} test
+# 注意：apps 当前无 test 脚本（jest 只覆盖 packages/**，见 business-infrastructure.md 待补清单 P2）
+# pnpm -F example-app test 会失败，应用测试能力尚未内置
 ```
 
 ### 4.2 测试覆盖率
@@ -221,10 +221,16 @@ open coverage/lcov-report/index.html
 #### 单元测试
 
 ```typescript
-// 测试工具函数
-describe('formatDate', () => {
-    it('should format date correctly', () => {
-        expect(formatDate(new Date('2023-01-01'), 'YYYY-MM-DD')).toBe('2023-01-01');
+// 测试共享包中的工具函数（示例使用 @my-app/shared 实际导出的 safeNum）
+import { safeNum } from '@my-app/shared';
+
+describe('safeNum', () => {
+    it('should convert string to number', () => {
+        expect(safeNum('123')).toBe(123);
+    });
+
+    it('should fall back to 0 for invalid input', () => {
+        expect(safeNum('abc')).toBe(0);
     });
 });
 ```
@@ -378,8 +384,8 @@ server: {
 ### 8.1 应用间共享代码
 
 ```typescript
-// 在应用中使用共享包
-import { formatDate } from '@my-app/shared';
+// 在应用中使用共享包（示例使用 @my-app/shared 实际导出的 safeNum）
+import { safeNum } from '@my-app/shared';
 
 // 或者直接引用其他应用的组件
 // 注意：这需要配置路径别名
@@ -540,7 +546,7 @@ git push origin main --tags
 #### 热重载失效
 
 - 检查文件变化监听
-- 检查 Webpack 配置
+- 检查 Vite 配置（`vite.config.ts` 的 server 段、HMR 是否被关闭）
 - 尝试重启开发服务器
 
 #### 构建失败

@@ -68,7 +68,7 @@ cp -r apps/example-app apps/my-app
 2. **修改应用配置**
 
     - 更新 `apps/my-app/package.json` 中的 `name` 字段
-    - 更新 `apps/my-app/vue.config.js` 中的端口和标题配置
+    - 更新 `apps/my-app/vite.config.ts` 中的端口（`server.port`）和 `index.html` 中的标题
     - 根据需要修改路由、页面等代码
 
 3. **更新根目录脚本** 在根目录的 `package.json` 中添加对应的运行脚本：
@@ -137,22 +137,24 @@ apps/{app-name}/
 │           ├── index.tsx
 │           └── style.module.less
 ├── public/              # 静态资源
-├── index.htm           # HTML 模板
-├── favicon.ico        # 网站图标
-├── package.json        # 应用配置
-├── tsconfig.json      # TypeScript 配置
-└── vue.config.js      # Vue CLI 配置
+├── index.html           # HTML 模板
+├── favicon.ico          # 网站图标
+├── package.json         # 应用配置
+├── tsconfig.json        # TypeScript 配置
+├── .postcssrc.js        # PostCSS 配置（mpx → vmin 移动端适配）
+└── vite.config.ts       # Vite 构建配置
 ```
 
 ## ⚙️ 配置文件说明
 
-### 1. `vue.config.js`
+### 1. `vite.config.ts`
 
-每个应用都有自己的 Vue 配置，主要包括：
+每个应用都有自己的 Vite 配置，主要包括：
 
-- **开发服务器配置**：端口、代理等
-- **Webpack 配置**：别名、插件、loader 配置
-- **CSS 配置**：Less 支持、CSS Modules 配置
+- **开发服务器配置**：端口、代理（server.port / server.proxy）
+- **插件配置**：plugin-vue、plugin-vue-jsx、plugin-legacy（兼容性基线由根目录 .browserslistrc 驱动）
+- **CSS 配置**：Less 支持、CSS Modules（localsConvention: camelCase）
+- **别名**：`@` 指向 src；`@my-app/*` 无需配置（包 exports 的 development 条件直接指向源码）
 
 ### 2. `tsconfig.json`
 
@@ -260,21 +262,19 @@ const handleLogin = async () => {
 
 - ✅ **始终使用最新版本**：总是引用本地最新的代码
 - ✅ **开发时热重载**：修改包代码后，应用会自动重新构建
-- ✅ **构建时优化**：Rollup 会正确处理工作区引用
+- ✅ **构建时优化**：Vite 会正确处理工作区引用（exports development 条件 → src）
 
 ### 5. 依赖构建顺序
 
-当你修改了 packages 目录下的代码时：
+包 exports 的 `development` 条件让 Vite dev 直接加载包源码（热更新），**开发模式无需先构建包**：
 
 ```bash
-# 先构建所有包
-pnpm build:packages
-
-# 然后启动应用开发服务器
+# 开发模式：直接启动，无需构建包（走 development 条件 → src）
 pnpm dev:my-app
 
-# 或者在根目录 package.json 中配置的脚本会自动处理构建顺序
-# dev:my-app 脚本已经包含了构建包的步骤
+# 生产构建：需要先构建包（走 import 条件 → dist）
+pnpm build:packages
+pnpm build:my-app
 ```
 
 ### 6. 依赖版本冲突解决
@@ -328,27 +328,22 @@ pnpm -F my-app build
 
 ### 修改端口
 
-编辑应用的 `vue.config.js` 文件：
+编辑应用的 `vite.config.ts` 文件：
 
-```javascript
-// vue.config.js
-devServer: {
-  port: 3000, // 修改为你想要的端口
+```typescript
+// vite.config.ts
+server: {
+    port: 2000, // 修改为你想要的端口（开发启动器会自动从该配置解析）
 }
 ```
 
 ### 修改应用标题
 
-编辑应用的 `vue.config.js` 文件：
+编辑应用的 `index.html` 文件：
 
-```javascript
-// vue.config.js
-getHtmlPluginConfig: (defaultConfig = {}) => {
-    return {
-        ...defaultConfig,
-        title: '我的应用名称', // 修改应用标题
-    };
-};
+```html
+<!-- index.html -->
+<title>我的应用名称</title>
 ```
 
 ### 添加新页面
@@ -403,7 +398,7 @@ pnpm -F my-app build --report
 
 解决方案：
 
-- 修改 `vue.config.js` 中的端口号
+- 修改 `vite.config.ts` 中的端口号（`server.port`）
 - 或者停止占用该端口的进程
 
 ### 2. 依赖安装失败
@@ -438,7 +433,7 @@ npx tsc --noEmit
 - [Vue 3 官方文档](https://vuejs.org/)
 - [Vue Router](https://router.vuejs.org/)
 - [Pinia](https://pinia.vuejs.org/)
-- [Vue CLI（webpack）](https://cli.vuejs.org/)
+- [Vite 官方文档](https://vite.dev/)
 
 ### 项目内资源
 

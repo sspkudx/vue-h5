@@ -15,7 +15,7 @@
 ```
 apps/{app-name}/
 ├── src/
-│   ├── App.tsx              # 应用入口组件
+│   ├── App.vue              # 应用根组件（SFC）
 │   ├── main.ts              # 应用入口文件
 │   ├── plugins/             # Vue 插件配置
 │   │   └── index.ts
@@ -242,7 +242,7 @@ apps/user-portal/
 
 | 文件路径                    | 说明                             |
 | --------------------------- | -------------------------------- |
-| `src/App.tsx`               | 应用根组件，使用 Vue JSX 语法    |
+| `src/App.vue`               | 应用根组件（SFC）                |
 | `src/main.ts`               | 应用入口文件，初始化 Vue 应用    |
 | `src/plugins/index.ts`      | Vue 插件配置，可添加全局插件     |
 | `src/router/index.ts`       | 路由配置，定义应用路由           |

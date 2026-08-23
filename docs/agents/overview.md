@@ -23,13 +23,14 @@ vue-h5/
 │   └── [your-app]/         # 用户创建的应用
 ├── packages/                # 共享包目录
 │   └── shared/             # 共享工具包示例
-├── skills/                  # AI 技能目录（7 个技能）
+├── .claude/skills/          # AI 技能目录（8 个技能，唯一事实来源）
 │   ├── create-vue-app/     # 创建 Vue 应用技能
 │   ├── create-a-vue-page/  # 创建 Vue 页面技能
 │   ├── create-component/   # 创建 Vue 组件技能
 │   ├── create-a-package/   # 创建依赖包技能
 │   ├── design-to-code/     # 设计稿转代码技能
 │   ├── git-commit-push/    # Git 提交推送技能
+│   ├── update-dependencies/# 依赖更新技能
 │   └── create-skill/       # 创建新技能技能
 ├── types/                   # TypeScript 类型定义
 ├── scripts/                 # 构建脚本

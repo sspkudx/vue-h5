@@ -20,7 +20,7 @@ description: 在 Vue H5 应用的 views 目录下创建页面组件，支持 Typ
 
 ### 1. 获取页面信息
 
-在创 �� 页面前，需要从用户处获取以下信息：
+在创建页面前，需要从用户处获取以下信息：
 
 - **页面名称** (必需): 页面的名称，将用于组件名称和目录名称
 - **目标应用** (可选): 指定在哪个应用中创建页面，默认为 example-app
@@ -87,7 +87,7 @@ views/{PageName}/
 import { defineComponent } from 'vue';
 import styles from './style.module.less';
 
-const { PageName } = defineComponent({
+const PageName = defineComponent({
     name: '{PageName}',
     setup() {
         const render = () => {
@@ -102,7 +102,7 @@ const { PageName } = defineComponent({
     },
 });
 
-export default { PageName };
+export default PageName;
 ```
 
 ### Vue 页面模板
@@ -273,7 +273,7 @@ const welcomeMessage = ref(`Welcome to the {PageName} page!`);
 4. **命名一致**: 保持页面名称、路由名称的一致性
 5. **测试路由**: 创建后建议测试路由是否正常工作
 
-**重要**: 创建页面后，可以直接通过 `pnpm run dev:app-name` 启动应用，然后访问新页面来验证功能。
+**重要**: 创建页面后，可通过 `pnpm dev`（开发启动器，自动发现应用）或 `pnpm -F {app-name} dev` 启动目标应用，然后访问新页面来验证功能。
 
 ## 关联技能
 
