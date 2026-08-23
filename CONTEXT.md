@@ -26,7 +26,7 @@
 | 包管理 | pnpm 11 workspace（`apps/*` + `packages/*`），registry 指华为云镜像 + `shamefully-hoist`（配置在 `pnpm-workspace.yaml`）；高频共享依赖由 `catalogs.default` 统一版本（`catalog:` 协议） |
 | 测试 | Jest 30 + ts-jest，根配置只覆盖 `packages/**` |
 | 规范 | ESLint 10（flat config）+ Prettier 3 + stylelint 17（BEM 类名约束 + 属性排序） |
-| 构建编排 | `scripts/build.sh` / `build-packages.sh`（先 packages 后 apps，支持并行） |
+| 构建编排 | `scripts/build.sh` 薄壳委托 `pnpm -r run build`（拓扑排序：先 packages 后 apps，默认 4 并行） |
 
 ## 结构
 
@@ -34,7 +34,7 @@
 - `packages/shared`（`@my-app/shared`）：纯工具库（类型守卫 + 数字工具），Vite lib 模式出 ESM + tsc 出 d.ts，测试质量是仓库标杆。
 - `.claude/skills/`：8 个 AI 技能（唯一事实来源，已入库）。
 - `docs/agents/`：模块化文档（AGENTS.md 是索引）。
-- `scripts/`：构建编排（build.sh / build-packages.sh / watch-package.sh）与**开发启动器**（`dev-launcher/`，Web 控制台 + CLI 双形态，见架构决策 5）。
+- `scripts/`：构建编排（`build.sh` 薄壳：委托 `pnpm -r run build`，保留旧 CLI 参数兼容；`watch-package.sh` 包 watch 构建）与**开发启动器**（`dev-launcher/`，Web 控制台 + CLI 双形态，见架构决策 5）。
 - `types/`：css/img/vue 的 d.ts shim，由各子项目 tsconfig 引用；根目录 `tsconfig.base.json` 是公共 TS 编译配置（`moduleResolution: "bundler"`），apps/packages 的 tsconfig 均 extends 它。
 
 ## 关键架构决策

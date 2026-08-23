@@ -143,6 +143,7 @@ function checkCommands(file, lines, errors) {
                 const command = stripToken(words[j + 2] ?? '');
                 if (!filter || !command) continue;
                 if (filter.includes('{') || command.includes('{')) continue; // 占位符示例
+                if (filter.startsWith('.') || filter.startsWith('/')) continue; // 路径过滤（--filter ./packages/**）
                 if (/^[a-z-]*app-?name$/i.test(filter)) continue; // app-name / appName 占位符示例
                 if (ALLOWED_APP_SCRIPT_NAMES.has(filter)) continue; // 技能文档中假设的应用
                 if (PNPM_BUILTINS.has(command)) continue;

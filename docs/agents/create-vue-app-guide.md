@@ -216,7 +216,7 @@ apps/user-portal/
 ```json
 {
     "scripts": {
-        "dev:user-portal": "./scripts/build-packages.sh --skip-clean && pnpm -F user-portal dev",
+        "dev:user-portal": "pnpm -F user-portal dev",
         "build:user-portal": "pnpm -F user-portal build",
         "lint:user-portal": "pnpm -F user-portal lint"
     }

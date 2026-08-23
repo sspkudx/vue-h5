@@ -36,7 +36,7 @@ packages/{package-name}/
 
 - **开发**：Vite dev 默认解析 `development` 条件 → 直接加载包源码，应用无需配置 `@my-app/*` alias 即可热更新（见 `apps/example-app/vite.config.ts` 注释）。
 - **生产**：构建解析 `import` 条件 → `dist` 产物，顺带校验 exports 配置正确性。
-- 类型声明走 `types` 条件；构建顺序由 `scripts/build.sh` 保证（先 packages 后 apps）。
+- 类型声明走 `types` 条件；构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps）。
 
 ## 快速开始
 

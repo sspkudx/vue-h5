@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
                 // 各包 package.json 的 exports 带 "development" 条件指向 src，
                 // Vite dev 默认解析 development 条件（源码热更新），
                 // 生产构建解析 import 条件（exports -> dist），
-                // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
+                // 可顺带验证 exports 配置的正确性；构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps）
             },
         },
         server: {

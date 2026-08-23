@@ -258,7 +258,7 @@ describe('MyComponent', () => {
 pnpm -F {app-name} build
 
 # 构建所有应用（不含 packages）
-sh ./scripts/build.sh --apps-only
+pnpm -r --filter "./apps/**" run build
 
 # 构建并分析包大小
 pnpm -F {app-name} build -- --report
@@ -283,11 +283,10 @@ pnpm build
 # 完整构建（所有应用和包）
 pnpm build
 
-# 构建流程：
-# 1. 清理构建目录
-# 2. 构建所有包
-# 3. 构建所有应用
-# 4. 生成构建报告
+# 构建流程（委托 pnpm 原生能力，见 scripts/build.sh 薄壳）：
+# 1. pnpm -r run build：按依赖拓扑排序构建全部 workspace 成员（先 packages 后 apps）
+# 2. 各包构建前由 Vite emptyOutDir 自动清理 dist
+# 3. workspace-concurrency 默认 4 并行
 ```
 
 ## 6. 部署

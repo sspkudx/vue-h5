@@ -140,7 +140,7 @@ export default defineConfig(({ mode }) => {
                 // 各包 package.json 的 exports 带 "development" 条件指向 src，
                 // Vite dev 默认解析 development 条件（源码热更新），
                 // 生产构建解析 import 条件（exports -> dist），
-                // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
+                // 可顺带验证 exports 配置的正确性；构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps）
             },
         },
         server: {
@@ -591,7 +591,7 @@ if (!rootPackageJson.scripts) {
 
 // 添加新应用的脚本
 const appName = 'your-app-name'; // 替换为实际应用名称
-rootPackageJson.scripts[`dev:${appName}`] = `./scripts/build-packages.sh --skip-clean && pnpm -F ${appName} dev`;
+rootPackageJson.scripts[`dev:${appName}`] = `pnpm -F ${appName} dev`;
 rootPackageJson.scripts[`build:${appName}`] = `pnpm -F ${appName} build`;
 rootPackageJson.scripts[`lint:${appName}`] = `pnpm -F ${appName} lint`;
 
@@ -603,11 +603,11 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 ```json
 "scripts": {
-    "dev:example": "./scripts/build-packages.sh --skip-clean && pnpm -F example-app dev",
+    "dev:example": "pnpm -F example-app dev",
     "build:example": "pnpm -F example-app build",
     "build:shared": "pnpm -F @my-app/shared build",
     "lint:example": "pnpm -F example-app lint",
-    "dev:{app-name}": "./scripts/build-packages.sh --skip-clean && pnpm -F {app-name} dev",
+    "dev:{app-name}": "pnpm -F {app-name} dev",
     "build:{app-name}": "pnpm -F {app-name} build",
     "lint:{app-name}": "pnpm -F {app-name} lint"
 }
@@ -639,7 +639,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 4. 设置 package.json 的 name 为"my-app"
 5. 设置 vite.config.ts 的端口为 3000，index.html 的标题为"my-app"
 6. **更新根目录 package.json 的 scripts**，添加：
-    - `"dev:my-app": "./scripts/build-packages.sh --skip-clean && pnpm -F my-app dev"`
+    - `"dev:my-app": "pnpm -F my-app dev"`
     - `"build:my-app": "pnpm -F my-app build"`
     - `"lint:my-app": "pnpm -F my-app lint"`
 
@@ -656,7 +656,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 5. 设置 package.json 的 name 为"admin-panel"
 6. 设置 vite.config.ts 的端口为 8080，index.html 的标题为"admin-panel"
 7. **更新根目录 package.json 的 scripts**，添加：
-    - `"dev:admin-panel": "./scripts/build-packages.sh --skip-clean && pnpm -F admin-panel dev"`
+    - `"dev:admin-panel": "pnpm -F admin-panel dev"`
     - `"build:admin-panel": "pnpm -F admin-panel build"`
     - `"lint:admin-panel": "pnpm -F admin-panel lint"`
 
@@ -664,7 +664,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
-3. **路径映射**: workspace 包（`@my-app/*`）无需在 vite.config 中配置 alias——各包 `package.json` 的 `exports` 带 `"development"` 条件指向 `src`，Vite dev 默认解析该条件（源码热更新）；生产构建解析 `import` 条件（`exports` → `dist`），构建顺序由 `scripts/build.sh` 保证（先 packages 后 apps）。tsconfig 的 paths 指向 `src/index.ts` 与 dev 运行时对齐
+3. **路径映射**: workspace 包（`@my-app/*`）无需在 vite.config 中配置 alias——各包 `package.json` 的 `exports` 带 `"development"` 条件指向 `src`，Vite dev 默认解析该条件（源码热更新）；生产构建解析 `import` 条件（`exports` → `dist`），构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps；根 `pnpm build` 走 `scripts/build.sh` 薄壳）。tsconfig 的 paths 指向 `src/index.ts` 与 dev 运行时对齐
 4. **依赖管理**: 应用依赖通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（axios/pinia/ress/vue/vue-router），新应用版本自动与 example-app 保持一致；`@my-app/shared` 使用 `workspace:*` 引用本地包。构建工具链（vite、less、postcss-px-to-viewport、postcss-calc 等）统一位于根 devDependencies，经 `shamefullyHoist` 提升后各应用直接可用，应用自身 package.json 只声明运行时依赖
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
