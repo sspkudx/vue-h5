@@ -86,7 +86,7 @@ apps/{app-name}/
         "dev": "vite",
         "build": "vue-tsc --noEmit && vite build",
         "typecheck": "vue-tsc --noEmit",
-        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,vue}\" --fix"
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,vue}\""
     },
     "dependencies": {
         "@my-app/shared": "workspace:*",

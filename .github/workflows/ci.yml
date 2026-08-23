@@ -14,6 +14,7 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   node-version-file: .node-version
+                  cache: pnpm
 
             - name: 启用 corepack（对齐 packageManager 声明的 pnpm 版本）
               run: corepack enable

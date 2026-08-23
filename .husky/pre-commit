@@ -1,1 +1,4 @@
 pnpm exec lint-staged
+# 追加质量门禁：类型检查 + 单元测试（lint-staged 只覆盖改动文件的 format/lint）
+pnpm -F example-app typecheck
+pnpm test

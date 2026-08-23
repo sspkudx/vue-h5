@@ -78,8 +78,11 @@ module.exports = defineConfigWithVueTs(
             '**/*.config.cjs',
             '**/.postcssrc.js',
             '**/.postcssrc.cjs',
-            'scripts/**',
+            // 纯 shell/mjs 工具脚本（.mjs 不在 eslint files 模式内，本行兜底）与技能自带脚本
+            'scripts/**/*.mjs',
             '.claude/skills/**/scripts/**',
+            // 注意：scripts/dev-launcher/web/**（启动器控制台前端）是 Vue 子工程，
+            // 必须纳入 lint/format（见根 package.json 的 lint/format globs），不要整体忽略 scripts/**
         ],
     },
     eslintConfigPrettier
