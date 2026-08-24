@@ -24,6 +24,7 @@
 - **`packages/shared/jest.config.js`**：新增 `coverageThreshold`（100%），强制守护测试质量宣称。
 - **构建编排收敛**：删除自研 `scripts/build-packages.sh`（约 300 行）；`scripts/build.sh` 改为薄壳委托 `pnpm -r run build`（拓扑排序、默认 4 并行、Vite emptyOutDir 清理 dist），保留旧 CLI 参数兼容（`--packages-only` / `--apps-only` / `--clean-only` 等）；`dev:example` 去掉冗余的包预构建（exports `development` 条件下 dev 无需 dist）。
 - **质量门禁强化**：pre-commit 追加 example-app 类型检查与单元测试（lint-staged 只覆盖改动文件）；example-app `lint` 移除 `--fix`（lint 只读）；`scripts/dev-launcher/web` 控制台前端纳入 eslint/prettier 覆盖（此前完全逃过）；CI 的 setup-node 启用 pnpm store 缓存。
+- **解析链路收敛（customConditions）**：包 `exports` 的 `development` 条件改为嵌套形态（自含 `types`+`default` 指向 src，置于 `types`/`import` 之前）；`tsconfig.base.json` 新增 `customConditions: ["development"]`，TS 类型层与 Vite dev 命中同一 `development` 条件 → 源码直读、typecheck 不再依赖先构建 dist；应用 tsconfig 移除硬编码 `@my-app/*` paths（保留 `@/*`）。生产构建仍解析 `types`/`import` → dist。技能模板与全部文档、漂移检查器同步。
 
 ## [0.1.0] - 2026-08
 

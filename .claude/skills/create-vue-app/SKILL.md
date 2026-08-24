@@ -177,10 +177,11 @@ export default defineConfig(({ mode }) => {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         // TS 6.0 起 types 默认为 []，需显式声明；baseUrl 已废弃移除（paths 相对本文件解析）
+        // @my-app/* 无需 paths：tsconfig.base.json 的 customConditions: ["development"]
+        // 让 TS 命中包 exports 的 development 条件（src），与 Vite dev 同源解析
         "types": ["vite/client", "node"],
         "paths": {
-            "@/*": ["./src/*"],
-            "@my-app/shared": ["../../packages/shared/src/index.ts"]
+            "@/*": ["./src/*"]
         }
     },
     "include": [
@@ -199,7 +200,7 @@ export default defineConfig(({ mode }) => {
 
 > **注意**：不要回退到 `moduleResolution: "node"`——Vite 8+ 的 package.json 仅提供 `exports` 字段（无顶层 `main`/`types`），旧解析算法会报 `Cannot find module 'vite'`。公共编译选项统一由根目录 `tsconfig.base.json` 维护。TS 6.0 起 `baseUrl` 已废弃并移除，`paths` 相对 tsconfig 文件所在目录解析。
 >
-> **paths 指向源码**：`@my-app/shared` 的 paths 指向 `src/index.ts` 而非 dist，与运行时 dev 解析（exports 的 `development` 条件）对齐——改 shared 源码后类型即时同步，且 `typecheck` 不依赖先构建 shared。
+> **workspace 包类型解析（customConditions）**：`@my-app/*` 不在 tsconfig 配置 paths——`tsconfig.base.json` 的 `customConditions: ["development"]` 让 TS 命中包 `exports` 的 `development` 条件（自含 `types` → `src/index.ts`），与 Vite dev 运行时同源：改包源码后类型即时同步，且 `typecheck` 不依赖先构建 dist。生产构建（无 development 条件）落 `types` → dist 声明。
 
 ### 7. 创建源码文件
 
@@ -664,7 +665,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
-3. **路径映射**: workspace 包（`@my-app/*`）无需在 vite.config 中配置 alias——各包 `package.json` 的 `exports` 带 `"development"` 条件指向 `src`，Vite dev 默认解析该条件（源码热更新）；生产构建解析 `import` 条件（`exports` → `dist`），构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps；根 `pnpm build` 走 `scripts/build.sh` 薄壳）。tsconfig 的 paths 指向 `src/index.ts` 与 dev 运行时对齐
+3. **路径映射**: workspace 包（`@my-app/*`）无需在 vite.config 配置 alias、也无需在 tsconfig 配置 paths——各包 `package.json` 的 `exports` 带 `"development"` 条件（自含 `types`+`default` 指向 `src`），Vite dev 与 TS 类型层（`tsconfig.base.json` 的 `customConditions: ["development"]`）均命中该条件（源码热更新 + 类型即时同步）；生产构建解析 `types`/`import` 条件（`exports` → `dist`），构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps；根 `pnpm build` 走 `scripts/build.sh` 薄壳）
 4. **依赖管理**: 应用依赖通过 `catalog:` 引用 `pnpm-workspace.yaml` 的 `catalogs.default` 统一版本（axios/pinia/ress/vue/vue-router），新应用版本自动与 example-app 保持一致；`@my-app/shared` 使用 `workspace:*` 引用本地包。构建工具链（vite、less、postcss-px-to-viewport、postcss-calc 等）统一位于根 devDependencies，经 `shamefullyHoist` 提升后各应用直接可用，应用自身 package.json 只声明运行时依赖
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本

@@ -35,11 +35,11 @@
 - `.claude/skills/`：8 个 AI 技能（唯一事实来源，已入库）。
 - `docs/agents/`：模块化文档（AGENTS.md 是索引）。
 - `scripts/`：构建编排（`build.sh` 薄壳：委托 `pnpm -r run build`，保留旧 CLI 参数兼容；`watch-package.sh` 包 watch 构建）与**开发启动器**（`dev-launcher/`，Web 控制台 + CLI 双形态，见架构决策 5）。
-- `types/`：css/img/vue 的 d.ts shim，由各子项目 tsconfig 引用；根目录 `tsconfig.base.json` 是公共 TS 编译配置（`moduleResolution: "bundler"`），apps/packages 的 tsconfig 均 extends 它。
+- `types/`：css/img/vue 的 d.ts shim，由各子项目 tsconfig 引用；根目录 `tsconfig.base.json` 是公共 TS 编译配置（`moduleResolution: "bundler"` + `customConditions: ["development"]`），apps/packages 的 tsconfig 均 extends 它。
 
 ## 关键架构决策
 
-1. **monorepo 源码联调**：各包 `package.json` 的 `exports` 带 `"development": "./src/index.ts"` 条件（置于 `import` 之前）。Vite dev 默认解析该条件 → 包源码热更新，应用无需为 `@my-app/*` 配置 alias；生产构建解析 `import` 条件 → dist。这是仓库核心工程价值，新增包必须保留该条件（create-a-package 模板已内置）。
+1. **monorepo 源码联调**：各包 `package.json` 的 `exports` 带 `"development"` 条件（置于 `types`/`import` 之前，自含 `types`+`default` 指向 `src`）。Vite dev 默认解析该条件 → 包源码热更新；TS 类型层由 `tsconfig.base.json` 的 `customConditions: ["development"]` 命中同一条件 → 类型同步且 typecheck 不依赖先构建 dist。应用无需为 `@my-app/*` 配置 alias 或 tsconfig paths。生产构建解析 `types`/`import` 条件 → dist。这是仓库核心工程价值，新增包必须保留该条件（create-a-package 模板已内置）。
 2. **运行时依赖归各 app 自管**，根 package.json 只放工具链（原先把 vue/pinia 等装在根上 + hoist 兜底，已纠正）。
 3. **catalog 统一版本**：高频共享依赖（vue/vue-router/pinia/axios/ress）在 `pnpm-workspace.yaml` 的 `catalogs.default` 定义版本，各 app/包用 `catalog:` 引用，升级只改一处、全仓一致（2026-08 起）。
 4. **依赖解析**：根 `jest.config.js` 的 moduleNameMapper 用通配规则 `^@my-app/(.*)$` → `packages/$1/src`（新增包自动覆盖）；运行时解析见第 1 条（exports `development` 条件），两处互不依赖。

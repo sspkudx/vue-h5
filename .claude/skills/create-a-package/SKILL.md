@@ -109,7 +109,7 @@ packages/{package-name}/
 
 根据用户选择的包类型，创建不同的 `package.json` 配置：
 
-> **`exports` 必须保留 `"development": "./src/index.ts"` 条件**：Vite dev 默认解析 `development` 条件，应用无需为 workspace 包配置 alias 即可直接加载包源码（热更新）；生产构建解析 `import`/`require` 条件走 `dist`。该条件必须放在 `import` 之前（条件按声明顺序匹配）。
+> **`exports` 必须保留 `development` 条件（置于 `types`/`import` 之前，指向 src 且自含 `types`+`default`）**：Vite dev 与 TS 类型层（`tsconfig.base.json` 的 `customConditions: ["development"]`）都命中该条件 → 源码直读、热更新、typecheck 无需先构建 dist；生产构建（无 development 条件）依次落 `types` → dist 声明、`import` → dist 产物。应用无需为 workspace 包配置 alias 或 tsconfig paths。
 >
 > **`dev` 脚本（watch 构建）**：模板统一带 `"dev": "bash ../../scripts/watch-package.sh"`——先完整构建一次（清空 dist），再并行 `vite build --watch`（JS）与 `tsc --watch`（d.ts），Ctrl+C 一并退出。新包会被根目录开发启动器（`pnpm dev`）自动发现，无需手工登记。
 >
@@ -126,9 +126,12 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
@@ -171,9 +174,12 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
@@ -219,9 +225,12 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
@@ -273,9 +282,12 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
@@ -328,9 +340,12 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {

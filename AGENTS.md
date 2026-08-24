@@ -122,6 +122,7 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 
 | 版本 | 日期 | 更新内容 |
 | --- | --- | --- |
+| v3.8 | 2026-08-23 | 解析链路收敛：包 exports 的 development 条件改嵌套形态（自含 types+default）；tsconfig.base.json 加 customConditions ["development"]，TS 类型层与 Vite dev 同源解析 src（typecheck 免构建）；移除应用 tsconfig 的 @my-app/* 硬编码 paths；技能模板/文档/漂移检查器同步 |
 | v3.7 | 2026-08-23 | 构建编排收敛：删除自研 build-packages.sh（~300 行），build.sh 改薄壳委托 `pnpm -r run build`（拓扑排序/并行/emptyOutDir 清理）；dev:example 去掉冗余预构建；质量门禁强化（pre-commit 补类型检查与测试、launcher-web 纳入 lint/format、CI 加 pnpm 缓存） |
 | v3.6 | 2026-08-23 | 文档漂移大修缮 + 机器校验兜底：新增 `pnpm check:docs`（scripts/check-docs-drift.mjs，比对 README/docs/技能模板与真实 scripts/版本基线，接入 CI）；重写 packages/README.md；create-a-package 模板基线对齐（catalog/TS6/Jest30/Node22/peerDeps）；create-a-vue-page 模板语法修复；create-skill 去 CatPaw 化；清理 Rollup/Webpack/vue.config.js 残留；.browserslistrc 改 `chrome >= 49`；新增根 CHANGELOG.md |
 | v3.5 | 2026-08-21 | monorepo 联调改为 exports `development` 条件方案：包 exports 指向 src，Vite dev 自动解析（热更新），应用不再配置 `@my-app/*` alias；create-a-package / create-vue-app 模板与 CONTEXT.md、troubleshooting 同步 |

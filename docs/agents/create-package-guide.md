@@ -62,9 +62,12 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
@@ -94,7 +97,7 @@ packages/{package-name}/
 }
 ```
 
-> **`development` 条件必须保留**：Vite dev 默认解析 `development` 条件直接加载包源码（热更新），应用无需为 `@my-app/*` 配置 alias；生产构建解析 `import` 条件走 `dist`。版本基线：`typescript`/`vite` 走 `catalog:`（由 `pnpm-workspace.yaml` 的 `catalogs.default` 统一），Node 22 LTS。
+> **`development` 条件必须保留（置于 `types`/`import` 之前，自含 `types`+`default`）**：Vite dev 与 TS 类型层（`tsconfig.base.json` 的 `customConditions: ["development"]`）都命中该条件 → 源码直读，应用无需为 `@my-app/*` 配置 alias 或 tsconfig paths；生产构建解析 `types` → dist 声明、`import` → dist 产物。版本基线：`typescript`/`vite` 走 `catalog:`（由 `pnpm-workspace.yaml` 的 `catalogs.default` 统一），Node 22 LTS。
 
 ### package.json (组件库示例)
 
@@ -107,9 +110,12 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.js"
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {

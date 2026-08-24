@@ -219,6 +219,10 @@ const STALE_TERMS = [
         re: /"dev": "vite build --watch"/,
         msg: '包 dev 脚本应为 bash ../../scripts/watch-package.sh（先完整构建再并行 watch）',
     },
+    {
+        re: /"@my-app\/[^"]+":\s*\[/,
+        msg: 'tsconfig 不应硬编码 @my-app/* 的 paths——用 tsconfig.base.json 的 customConditions: ["development"] 走包 exports 的 development 条件',
+    },
 ];
 
 function checkStaleTerms(file, lines, errors) {
@@ -241,7 +245,9 @@ function checkSkillBaselines(errors) {
     const pkgSkill = join(ROOT, '.claude/skills/create-a-package/SKILL.md');
     if (existsSync(pkgSkill)) {
         const text = readFileSync(pkgSkill, 'utf8');
-        if (!/["']development["']\s*:\s*["']\.\/src\/index\.ts["']/.test(text)) {
+        // development 条件：兼容直接字符串（"development": "./src/index.ts"）与
+        // 嵌套形态（"development": { "types": "./src/index.ts", "default": ... }）
+        if (!/["']development["']\s*:\s*(\{|["'])[^}]{0,200}\.\/src\/index\.ts/.test(text)) {
             errors.push(
                 '.claude/skills/create-a-package/SKILL.md：模板必须保留 exports 的 development 条件（指向 src）'
             );

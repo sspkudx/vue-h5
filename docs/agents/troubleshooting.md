@@ -60,22 +60,23 @@ pnpm build:packages
 # 2. 重新链接依赖
 pnpm i --force
 
-# 3. 检查包的 exports 是否带 development 条件
-# dev 环境 Vite 默认解析 "development" 条件 -> 包源码（热更新），无需 alias；
-# 生产构建解析 "import" 条件 -> dist：
+# 3. 检查包的 exports 是否带 development 条件（置于 types/import 之前，自含 types+default 指向 src）
+# dev 环境 Vite 默认解析 "development" 条件 -> 包源码（热更新）；TS 类型层由
+# tsconfig.base.json 的 customConditions: ["development"] 命中同一条件 -> src，无需构建 dist；
+# 生产构建解析 "types"/"import" 条件 -> dist：
 # packages/<pkg>/package.json:
 #   "exports": {
 #     ".": {
+#       "development": {
+#         "types": "./src/index.ts",
+#         "default": "./src/index.ts"
+#       },
 #       "types": "./dist/index.d.ts",
-#       "development": "./src/index.ts",
 #       "import": "./dist/index.js"
 #     }
 #   }
 
-# 4. 检查 tsconfig.json 中的路径映射
-# "paths": {
-#   "@my-app/shared": ["../../packages/shared/src/index.ts"]
-# }
+# 4. 确认 tsconfig.base.json 的 customConditions 含 "development"（类型层走包 exports，无需在应用 tsconfig 配 paths）
 
 # 5. 验证包是否存在
 ls -la packages/shared/dist/

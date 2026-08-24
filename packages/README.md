@@ -22,21 +22,24 @@ packages/{package-name}/
 
 ## 核心机制：exports `development` 条件联调
 
-`package.json` 的 `exports` 必须保留 `development` 条件并置于 `import` 之前：
+`package.json` 的 `exports` 必须保留 `development` 条件（置于 `types`/`import` 之前，自含 `types`+`default` 指向 src）：
 
 ```json
 "exports": {
     ".": {
+        "development": {
+            "types": "./src/index.ts",
+            "default": "./src/index.ts"
+        },
         "types": "./dist/index.d.ts",
-        "development": "./src/index.ts",
         "import": "./dist/index.js"
     }
 }
 ```
 
-- **开发**：Vite dev 默认解析 `development` 条件 → 直接加载包源码，应用无需配置 `@my-app/*` alias 即可热更新（见 `apps/example-app/vite.config.ts` 注释）。
-- **生产**：构建解析 `import` 条件 → `dist` 产物，顺带校验 exports 配置正确性。
-- 类型声明走 `types` 条件；构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps）。
+- **开发（dev + 类型层）**：Vite dev 默认解析 `development` 条件 → 源码直读、热更新；TS 类型层由 `tsconfig.base.json` 的 `customConditions: ["development"]` 命中同一条件 → 类型同步且 `typecheck` 不依赖先构建 dist。应用**无需**为 `@my-app/*` 配置 alias 或 tsconfig paths（见 `apps/example-app/tsconfig.json` 注释）。
+- **生产**：构建解析 `types` → dist 声明、`import` → dist 产物，顺带校验 exports 配置正确性。
+- 构建顺序由 `pnpm -r run build` 保证（拓扑排序，先 packages 后 apps）。
 
 ## 快速开始
 

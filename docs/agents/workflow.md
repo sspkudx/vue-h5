@@ -386,8 +386,7 @@ server: {
 // 在应用中使用共享包（示例使用 @my-app/shared 实际导出的 safeNum）
 import { safeNum } from '@my-app/shared';
 
-// 或者直接引用其他应用的组件
-// 注意：这需要配置路径别名
+// 直接引用其他应用的组件（应用间共享应提取为 packages 包，跨 app 组件引用需自行评估）
 import { MyComponent } from '@my-app/other-app/components';
 ```
 
@@ -556,8 +555,8 @@ git push origin main --tags
 
 #### 包引用错误
 
-- 确保包已构建
-- 检查路径别名配置
+- 确保包已构建（生产构建需要 dist；dev/类型层走 development 条件无需构建）
+- 确认包 `exports` 保留 `development` 条件、tsconfig.base.json 的 `customConditions` 含 `"development"`（类型层走 src，无需配置 paths）
 - 重新安装依赖
 
 ### 调试命令
