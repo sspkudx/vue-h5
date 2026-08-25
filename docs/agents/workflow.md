@@ -201,7 +201,26 @@ pnpm -F @my-app/shared test
 # 无需 per-app test 脚本；组件测试示例见 apps/example-app（business-infrastructure.md"应用级测试"）
 ```
 
-### 4.2 测试覆盖率
+### 4.2 E2E 测试（Playwright）
+
+应用级冒烟测试（`e2e/example-app.spec.ts`，移动端 viewport 390×844）：
+
+```bash
+# 首次安装 Playwright 浏览器（chromium）
+pnpm exec playwright install chromium
+
+# 运行 E2E（webServer 自动拉起 example-app dev server）
+pnpm test:e2e
+
+# 只看某个浏览器/文件
+pnpm test:e2e --project=mobile-chrome e2e/example-app.spec.ts
+```
+
+- 配置：`playwright.config.ts`（testDir `e2e/`，`baseURL` http://localhost:2000，H5 移动端视口，CI 自动重试 2 次）
+- CI：独立 `e2e` job 与主链并行（`playwright install --with-deps chromium` + `pnpm test:e2e`），失败自动上传 `playwright-report/` 工件
+- 新增用例：在 `e2e/` 下按 `*.spec.ts` 命名即可
+
+### 4.3 测试覆盖率
 
 测试覆盖率报告包含：
 
@@ -217,7 +236,7 @@ pnpm -F @my-app/shared test
 open coverage/lcov-report/index.html
 ```
 
-### 4.3 测试最佳实践
+### 4.4 测试最佳实践
 
 #### 单元测试
 

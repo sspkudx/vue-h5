@@ -27,6 +27,8 @@ catalogs:
         # 应用级组件测试（P2 应用级测试，2026-08 落地）
         '@vue/test-utils': ^2.4.11
         jsdom: ^30.0.1
+        # E2E（Playwright，2026-08 落地）
+        '@playwright/test': ^1.62.1
         # dev-launcher-web 构建链（与根 devDependencies 同版本）
         '@vitejs/plugin-vue': ^6.0.8
         '@vitejs/plugin-vue-jsx': ^5.1.6

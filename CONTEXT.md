@@ -24,7 +24,7 @@
 | 样式 | Less + CSS Modules（`*.module.less`，kebab→camel 双导出），`ress` reset |
 | 移动端适配 | postcss-px-to-viewport，自定义单位 `mpx` → `vmin`（viewportWidth 390；横竖屏切换尺寸会变，双刃剑，已知晓） |
 | 包管理 | pnpm 11 workspace（`apps/*` + `packages/*`），registry 指华为云镜像 + `shamefully-hoist`（配置在 `pnpm-workspace.yaml`）；高频共享依赖由 `catalogs.default` 统一版本（`catalog:` 协议） |
-| 测试 | Vitest 4（v8 覆盖率，阈值 100% 仅限 `packages/**`），根 `vitest.config.mts` 覆盖 `packages/**` 纯 TS 单测 + `apps/**` 组件测试（@vue/test-utils + jsdom） |
+| 测试 | Vitest 4（v8 覆盖率，阈值 100% 仅限 `packages/**`），根 `vitest.config.mts` 覆盖 `packages/**` 纯 TS 单测 + `apps/**` 组件测试（@vue/test-utils + jsdom）；E2E 用 Playwright（`e2e/`，chromium 移动端视口） |
 | 规范 | ESLint 10（flat config）+ Prettier 3 + stylelint 17（BEM 类名约束 + 属性排序） |
 | 构建编排 | `scripts/build.sh` 薄壳委托 `pnpm -r run build`（拓扑排序：先 packages 后 apps，默认 4 并行） |
 

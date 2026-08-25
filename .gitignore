@@ -31,6 +31,11 @@ pnpm-debug.log*
 # Unit test
 coverage
 
+# E2E（Playwright 产物与浏览器缓存）
+test-results
+playwright-report
+playwright/.cache
+
 # 开发启动器本地配置（勾选记忆 + 手工兜底条目）
 .dev-launcher.json
 

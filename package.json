@@ -24,6 +24,7 @@
         "test:watch": "vitest",
         "test:coverage": "vitest run --coverage",
         "test:shared": "pnpm -F @my-app/shared test",
+        "test:e2e": "playwright test",
         "prepare": "husky || true",
         "lint-staged": "lint-staged",
         "check:docs": "node scripts/check-docs-drift.mjs"
@@ -44,6 +45,7 @@
         "@commitlint/cli": "^21.2.2",
         "@commitlint/config-conventional": "^21.2.2",
         "@mdi/font": "^7.4.47",
+        "@playwright/test": "catalog:",
         "@typescript-eslint/eslint-plugin": "^8.67.0",
         "@typescript-eslint/parser": "^8.67.0",
         "@vitejs/plugin-legacy": "^8.2.3",

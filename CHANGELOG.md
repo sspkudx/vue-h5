@@ -27,6 +27,7 @@
 - **解析链路收敛（customConditions）**：包 `exports` 的 `development` 条件改为嵌套形态（自含 `types`+`default` 指向 src，置于 `types`/`import` 之前）；`tsconfig.base.json` 新增 `customConditions: ["development"]`，TS 类型层与 Vite dev 命中同一 `development` 条件 → 源码直读、typecheck 不再依赖先构建 dist；应用 tsconfig 移除硬编码 `@my-app/*` paths（保留 `@/*`）。生产构建仍解析 `types`/`import` → dist。技能模板与全部文档、漂移检查器同步。
 - **测试框架迁移 Jest → Vitest 4**：新增根 `vitest.config.mts`（v8 覆盖率、阈值 100% 守护，include 覆盖 `packages/**`），删除 `jest.config.js`（根 + shared）；根与 shared 的 test 脚本改 `vitest run`；测试文件显式 `import ... from 'vitest'`（tsconfig `types` 简化为 `["node"]`）；依赖移除 jest/ts-jest/@types/jest/jest-environment-jsdom，vitest/@vitest/coverage-v8 进 `catalog:`；workspace 包在测试中走 Vite dev 解析（exports `development` 条件 → src，无需 moduleNameMapper）；eslint 测试块去掉 jest globals；技能模板（create-a-package 五个模板与测试章节）、全部文档、漂移检查器同步（jest 禁词化）。
 - **P2 应用级测试落地**：`vitest.config.mts` 增加 `vue()` + `vueJsx()` 插件、`include` 覆盖 `apps/**`；新增 `@vue/test-utils` + `jsdom` 依赖（进 `catalog:`）；example-app 内置 3 个示例测试（PlaygroundPage SFC 交互、HomeView TSX + vue-router mock + workspace 包联调、request 拦截器错误映射）；`request.ts` 具名导出 `createRequest` 便于注入自定义 adapter；覆盖率门槛保持仅限 `packages/**`；eslint 测试块扩展 tsx；业务文档/工作流/README 同步。
+- **E2E 测试落地（Playwright）**：新增 `@playwright/test`（进 `catalog:`）与 `playwright.config.ts`（testDir `e2e/`、webServer 自动拉起 example-app、移动端 viewport 390×844、CI 重试）；`e2e/example-app.spec.ts` 3 个冒烟用例（首页渲染 + shared 联调、hash 路由导航 ×2、计数器交互）；根脚本 `test:e2e`；CI 新增独立 `e2e` job（`--with-deps chromium` + 失败上传报告）；.gitignore 加 Playwright 产物。
 
 ## [0.1.0] - 2026-08
 
