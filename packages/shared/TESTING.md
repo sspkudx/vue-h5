@@ -2,49 +2,20 @@
 
 ## 测试框架
 
-本项目使用 [Jest](https://jestjs.io/) 作为测试框架，配合 [ts-jest](https://kulshekhar.github.io/ts-jest/) 支持 TypeScript。
+本项目使用 [Vitest](https://vitest.dev/) 作为测试框架（v8 覆盖率），配置复用根目录 `vitest.config.mts`（`include` 覆盖 `packages/**`，阈值 100% 强制守护）。
 
-## 安装和配置
+## 配置与运行
 
-测试配置已经集成到项目中。主要文件包括：
-
-1. **根目录 Jest 配置** - `/jest.config.js`
-2. **Shared 包 Jest 配置** - `/packages/shared/jest.config.js`
-3. **测试脚本** - 已在 `package.json` 中添加
-
-## 运行测试
-
-### 在根目录运行所有测试
+测试无需包级配置文件——根 `vitest.config.mts` 统一驱动；workspace 包（`@my-app/*`）在测试中走 Vite dev 解析 → 包 `exports` 的 `development` 条件 → src，与开发期一致。
 
 ```bash
+# 根目录运行全部测试（只覆盖 packages/**）
 pnpm test
-```
 
-### 运行 shared 包的测试
-
-```bash
-pnpm test:shared
-```
-
-### 在 shared 包目录内运行测试
-
-```bash
-cd packages/shared
-pnpm test
-```
-
-### 运行测试并生成覆盖率报告
-
-```bash
-cd packages/shared
-pnpm test:coverage
-```
-
-### 监视模式（文件变化时自动重新运行测试）
-
-```bash
-cd packages/shared
-pnpm test:watch
+# 运行 shared 包的测试 / 覆盖率 / watch
+pnpm -F @my-app/shared test
+pnpm -F @my-app/shared test:coverage
+cd packages/shared && pnpm test:watch
 ```
 
 ## Node 版本
@@ -75,11 +46,10 @@ packages/shared/src/
 
 ## 编写测试
 
-测试文件应放置在 `src/__tests__/` 目录中，命名格式为 `*.test.ts` 或 `*.spec.ts`。
-
-### 示例测试
+测试文件应放置在 `src/__tests__/` 目录中，命名格式为 `*.test.ts` 或 `*.spec.ts`；测试 API 显式从 `vitest` 导入（不使用全局）：
 
 ```typescript
+import { describe, expect, test } from 'vitest';
 import { safeNum } from '../index';
 
 describe('safeNum', () => {
@@ -95,12 +65,7 @@ describe('safeNum', () => {
 
 ## 测试覆盖率
 
-当前测试覆盖率为 100%：
-
-- Statements: 100%
-- Branches: 100%
-- Functions: 100%
-- Lines: 100%
+当前测试覆盖率为 100%（Statements / Branches / Functions / Lines 全 100%），由根 `vitest.config.mts` 的 `coverage.thresholds` 强制守护——新增导出必须补测试，否则 `pnpm test:coverage` 失败。
 
 ## 测试用例详情
 
@@ -150,9 +115,9 @@ describe('safeNum', () => {
     - 极值处理
     - 边界情况四舍五入
 
-## CI/CD 集成建议
+## CI/CD 集成
 
-仓库已提供 GitHub Actions（`.github/workflows/ci.yml`），包含 lint、测试与构建。如需单独运行测试：
+仓库已提供 GitHub Actions（`.github/workflows/ci.yml`），包含 lint、测试、漂移检查与构建。如需单独运行测试：
 
 ```yaml
 steps:
@@ -169,13 +134,13 @@ steps:
 
 ## 故障排除
 
-### Jest 找不到测试文件
+### Vitest 找不到测试文件
 
-确保测试文件命名正确且位于 `__tests__` 目录中，或者文件名以 `.test.ts` 或 `.spec.ts` 结尾。
+确保测试文件命名正确（`*.test.ts` / `*.spec.ts`）且位于 `packages/**` 下（根配置的 `include` 范围）。
 
 ### TypeScript 编译错误
 
-确保所有测试文件的导入路径正确，并且类型定义完整。
+确保所有测试文件已 `import { describe, expect, test } from 'vitest'`，导入路径正确，类型定义完整。
 
 ### Node 版本问题
 
@@ -198,13 +163,13 @@ pnpm install
 要添加新测试：
 
 1. 在 `src/__tests__/` 目录中创建新的测试文件
-2. 使用 `describe` 和 `test`（或 `it`）编写测试用例
+2. 从 `vitest` 显式导入测试 API（`describe` / `test` / `it` / `expect` / `vi`）
 3. 确保每个函数都有对应的测试
 4. 考虑边界情况和错误处理
 
 ## 参考链接
 
-- [Jest 文档](https://jestjs.io/docs/getting-started)
-- [ts-jest 文档](https://kulshekhar.github.io/ts-jest/)
+- [Vitest 文档](https://vitest.dev/guide/)
+- [Vitest 覆盖率（v8）](https://vitest.dev/guide/coverage)
 - [Node.js LTS 版本](https://nodejs.org/en/about/previous-releases)
 - [fnm 文档](https://github.com/Schniz/fnm)

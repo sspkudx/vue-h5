@@ -36,7 +36,7 @@
 - **命名规则**: 使用 kebab-case
 - **示例**:
     - `vite.config.ts`
-    - `jest.config.js`
+    - `vitest.config.mts`
     - `tsconfig.json`
 - **说明**: 遵循工具的标准命名约定
 
@@ -579,7 +579,7 @@ refactor/improve-performance # 代码重构
     - 代码风格：`semi: always`、`quotes: single`、`prefer-const`、`no-var`、`eqeqeq`
     - TypeScript：`@typescript-eslint/no-explicit-any: warn`、`@typescript-eslint/no-unused-vars`（`_` 前缀豁免）
     - Vue：`vue/multi-word-component-names: off`、`vue/require-default-prop: off`、`vue/require-prop-types: off`、`vue/no-unused-vars`（`_` 前缀豁免）
-- **测试文件**（`__tests__` / `*.test.*` / `*.spec.*`）：注入 jest 全局变量，放宽 `no-empty-function`、`no-explicit-any` 等
+- **测试文件**（`__tests__` / `*.test.*` / `*.spec.*`）：测试 API 显式 `import ... from 'vitest'`，放宽 `no-empty-function`、`no-explicit-any` 等
 - **ignores**：构建产物与 CJS 工具配置（`**/*.config.js`、`**/*.config.cjs`、`**/.postcssrc.js`、`**/.postcssrc.cjs`、`scripts/**` 等）——这类文件允许 `require()` 写法，不受 `@typescript-eslint/no-require-imports` 约束；新增同类 CJS 配置文件时应同步补充 ignores
 
 ### 2. Prettier 配置

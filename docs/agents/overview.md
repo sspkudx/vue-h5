@@ -12,7 +12,7 @@ vue-h5 是一个基于 Vue 3 + TypeScript + PNPM Workspaces 的现代化 H5 项�
 - **状态管理**: Pinia
 - **路由**: Vue Router
 - **开发工具**: ESLint + Prettier + Stylelint
-- **测试框架**: Jest
+- **测试框架**: Vitest
 
 ## 项目结构
 
@@ -110,7 +110,7 @@ pnpm dev:example
 
 - 在 `packages` 目录下创建新的依赖包
 - 支持四种包类型：工具库、组件库、工具函数集、插件库
-- 自动配置 TypeScript、Vite、Jest 等
+- 自动配置 TypeScript、Vite、Vitest 等
 
 ### 工程效率技能
 

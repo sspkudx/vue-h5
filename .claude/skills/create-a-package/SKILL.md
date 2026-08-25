@@ -99,7 +99,6 @@ packages/{package-name}/
 │   └── index.test.ts    # 测试文件
 ├── README.md            # 包的说明文档
 ├── package.json         # 包配置文件
-├── jest.config.js       # Jest测试配置（如果添加测试）
 ├── tsconfig.json        # TypeScript配置文件
 ├── tsconfig.build.json  # TypeScript构建配置
 └── vite.config.ts      # Vite 构建配置
@@ -113,7 +112,7 @@ packages/{package-name}/
 >
 > **`dev` 脚本（watch 构建）**：模板统一带 `"dev": "bash ../../scripts/watch-package.sh"`——先完整构建一次（清空 dist），再并行 `vite build --watch`（JS）与 `tsc --watch`（d.ts），Ctrl+C 一并退出。新包会被根目录开发启动器（`pnpm dev`）自动发现，无需手工登记。
 >
-> **版本基线（必须对齐仓库，勿回退）**：`typescript` / `vite` 走 `catalog:` 引用（版本统一由 `pnpm-workspace.yaml` 的 `catalogs.default` 管理，升级只改一处）；jest / ts-jest / @types/jest / rimraf 用与根 `package.json` 一致的版本。Node 基线为 **22 LTS**（`engines.node >=22.0.0`），不要写 14/18。Vue 生态依赖（vue / pinia / vue-router）一律放 `peerDependencies`（运行时依赖由使用方应用提供，见 CONTEXT.md 架构决策 2），不要放进 `dependencies`。
+> **版本基线（必须对齐仓库，勿回退）**：`typescript` / `vite` / `vitest` / `@vitest/coverage-v8` 走 `catalog:` 引用（版本统一由 `pnpm-workspace.yaml` 的 `catalogs.default` 管理，升级只改一处）；rimraf 用与根 `package.json` 一致的版本。Node 基线为 **22 LTS**（`engines.node >=22.0.0`），不要写 14/18。Vue 生态依赖（vue / pinia / vue-router）一律放 `peerDependencies`（运行时依赖由使用方应用提供，见 CONTEXT.md 架构决策 2），不要放进 `dependencies`。
 
 #### 4.1 通用配置（所有类型）
 
@@ -137,9 +136,9 @@ packages/{package-name}/
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
         "dev": "bash ../../scripts/watch-package.sh",
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": [],
     "author": "",
@@ -148,10 +147,9 @@ packages/{package-name}/
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^30.0.0",
-        "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.12",
+        "vitest": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "typescript": "catalog:",
         "vite": "catalog:"
     },
@@ -185,18 +183,17 @@ packages/{package-name}/
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
         "dev": "bash ../../scripts/watch-package.sh",
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": ["utilities", "tools", "helpers"],
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "@types/jest": "^30.0.0",
-        "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.12",
+        "vitest": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "vite": "catalog:",
         "typescript": "catalog:"
     },
@@ -236,9 +233,9 @@ packages/{package-name}/
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
         "dev": "bash ../../scripts/watch-package.sh",
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": ["vue", "components", "ui"],
     "author": "",
@@ -247,12 +244,10 @@ packages/{package-name}/
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^30.0.0",
         "@vue/test-utils": "^2.4.5",
-        "jest": "^30.4.2",
-        "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.12",
+        "vitest": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "vite": "catalog:",
         "typescript": "catalog:"
     },
@@ -264,7 +259,7 @@ packages/{package-name}/
 
 **组件库特殊配置说明**：
 
-1. **组件测试依赖**: 添加了 `@vue/test-utils`、`jest-environment-jsdom` 用于组件测试（注意：仓库当前未内置组件测试能力，.vue 文件的 Jest transform 需自行确认与 jest 30 兼容）
+1. **组件测试依赖**: 添加了 `@vue/test-utils` 用于组件测试（注意：仓库当前未内置组件测试能力；.vue 组件测试可在测试文件顶部用 `// @vitest-environment jsdom` 标注 DOM 环境）
 2. **JSX 支持**: 构建侧由 `@vitejs/plugin-vue-jsx` 提供（模板 vite.config.ts 需为组件库补充 `vue()` 与 `vueJsx()` 插件），不再需要 `@vue/babel-plugin-jsx`
 3. **Vue 依赖**: `vue` 作为 peerDependencies，避免版本冲突
 4. **额外依赖**: 可以根据需要添加 `pinia`, `vue-router` 等（用 `catalog:` 引用，版本以 `pnpm-workspace.yaml` 的 `catalogs.default` 为准），如果组件库需要使用状态管理或路由
@@ -293,9 +288,9 @@ packages/{package-name}/
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
         "dev": "bash ../../scripts/watch-package.sh",
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": ["utils", "helpers", "functions"],
     "author": "",
@@ -304,10 +299,9 @@ packages/{package-name}/
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^30.0.0",
-        "jest": "^30.4.2",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.12",
+        "vitest": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "vite": "catalog:",
         "typescript": "catalog:"
     },
@@ -351,9 +345,9 @@ packages/{package-name}/
     "scripts": {
         "build": "vite build && tsc -p tsconfig.build.json",
         "dev": "bash ../../scripts/watch-package.sh",
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": ["vue", "plugin", "extension"],
     "author": "",
@@ -364,12 +358,10 @@ packages/{package-name}/
         "vue-router": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^30.0.0",
         "@vue/test-utils": "^2.4.5",
-        "jest": "^30.4.2",
-        "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
-        "ts-jest": "^29.4.12",
+        "vitest": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "vite": "catalog:",
         "typescript": "catalog:"
     },
@@ -427,8 +419,8 @@ export default defineConfig({
     "compilerOptions": {
         "jsxFactory": "h",
         "jsxFragmentFactory": "Fragment",
-        // TS 6.0 起 types 默认为 []，jest 全局与 node 类型需显式声明
-        "types": ["jest", "node"]
+        // TS 6.0 起 types 默认为 []，node 类型需显式声明；测试 API 显式 import 'vitest'
+        "types": ["node"]
     },
     "include": [
         "src/**/*.ts",
@@ -1047,7 +1039,7 @@ describe('Button组件', () => {
     });
 
     test('点击事件', async () => {
-        const handleClick = jest.fn();
+        const handleClick = vi.fn();
         const wrapper = mount(Button, {
             props: {
                 onClick: handleClick,
@@ -1108,100 +1100,20 @@ export class MockLocalStorage {
 }
 ```
 
-##### Jest 配置文件（基于 shared 包的实际配置）
+##### 测试配置（Vitest，复用根目录 vitest.config.mts，无需每包自建配置）
 
-```javascript
-// jest.config.js
-module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'node',
-    roots: ['<rootDir>/src'],
-    testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
-    transform: {
-        '^.+\\.ts$': 'ts-jest',
-    },
-    moduleFileExtensions: ['ts', 'js', 'json', 'node'],
-    collectCoverageFrom: [
-        'src/**/*.ts',
-        '!src/**/*.d.ts',
-        '!**/node_modules/**',
-        '!**/dist/**',
-        '!**/__tests__/**',
-        '!**/*.test.ts',
-        '!**/*.spec.ts',
-    ],
-    coverageDirectory: '<rootDir>/coverage',
-    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-};
-```
+单测由根目录 `vitest.config.mts` 统一驱动（`include` 覆盖 `packages/**`）：
 
-**组件库的 Jest 配置**（如果包类型为组件库）：
+- **纯 TS 包**：`environment: 'node'`；测试 API 显式 `import { describe, it, expect, vi } from 'vitest'`（tsconfig 的 `types` 只需 `["node"]`）。
+- **组件库**：测试文件顶部 `// @vitest-environment jsdom` 标注 DOM 环境 + `@vue/test-utils`（仓库尚未内置组件测试，见「添加测试支持」）。
+- **覆盖率**：`pnpm test:coverage`（v8 provider，阈值 100%，见根配置）。
+- **workspace 包解析**：`@my-app/*` 在测试中走 Vite dev 解析 → 包 exports 的 `development` 条件 → src，无需 moduleNameMapper。
 
-```javascript
-// jest.config.js - 组件库专用
-module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'jsdom',
-    roots: ['<rootDir>/src'],
-    testMatch: ['**/__tests__/**/*.ts', '**/__tests__/**/*.tsx', '**/?(*.)+(spec|test).ts', '**/?(*.)+(spec|test).tsx'],
-    transform: {
-        '^.+\\.ts$': 'ts-jest',
-        '^.+\\.tsx$': 'ts-jest',
-        // .vue transform 需自行配置（仓库未内置组件测试能力，见「添加测试支持」一节）
-    },
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'vue', 'json', 'node'],
-    moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1',
-        '^\\.(css|less|scss)$': 'identity-obj-proxy',
-    },
-    collectCoverageFrom: [
-        'src/**/*.{ts,tsx,vue}',
-        '!src/**/*.d.ts',
-        '!**/node_modules/**',
-        '!**/dist/**',
-        '!**/__tests__/**',
-        '!**/*.test.{ts,tsx}',
-        '!**/*.spec.{ts,tsx}',
-    ],
-    coverageDirectory: '<rootDir>/coverage',
-    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-    globals: {
-        'ts-jest': {
-            tsconfig: './tsconfig.json',
-        },
-        'vue-jest': {
-            compilerOptions: {
-                isCustomElement: tag => tag.includes('-'),
-            },
-        },
-    },
-    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-};
-```
-
-```javascript
-// jest.setup.js - 组件库测试设置
-import '@testing-library/jest-dom';
-import { config } from '@vue/test-utils';
-
-// 配置全局的 Vue Test Utils 设置
-config.global.stubs = {
-    Transition: true,
-    TransitionGroup: true,
-};
-
-// 全局测试设置
-beforeEach(() => {
-    // 清理 localStorage
-    localStorage.clear();
-    // 重置所有 mock
-    jest.clearAllMocks();
-});
-
-afterEach(() => {
-    // 清理 DOM
-    document.body.innerHTML = '';
-});
+```bash
+# 运行测试 / watch / 覆盖率
+pnpm test
+pnpm test:watch
+pnpm test:coverage
 ```
 
 ### 9. 创建其他文件
@@ -1402,7 +1314,7 @@ pnpm test:coverage
 ## 🔧 技术栈
 
 - **构建工具**: Vite（lib 模式）
-- **测试框架**: Jest + Vue Test Utils（组件库）
+- **测试框架**: Vitest + Vue Test Utils（组件库）
 - **开发语言**: TypeScript 6.0+
 - **包管理**: pnpm
 
@@ -1498,7 +1410,8 @@ MIT License © 2024 My App
 
     ```typescript
     // __tests__/index.test.ts
-    // jest globals（describe/it/expect）由 ts-jest 注入，无需显式 import
+    // 显式导入 vitest 测试 API（与仓库一致，不使用全局）
+    import { describe, it, expect } from 'vitest';
     import { safeNum } from '../src';
 
     describe('utils', () => {
@@ -1688,10 +1601,10 @@ MIT License © 2024 My App
 ### 2. 目录结构规范
 
 - 所有源码放在 `src/` 目录下
-- 测试文件放在 `__tests__/` 目录下，遵循 Jest 约定
+- 测试文件放在 `__tests__/` 目录下（与 src 平级），遵循 Vitest 约定（`*.test.ts` 自动发现）
 - 类型定义放在 `types/` 目录下（如果需要）
 - 构建产物放在 `dist/` 目录下
-- 配置文件放在包根目录，包括 `jest.config.js`（测试配置）
+- 测试配置由根目录 `vitest.config.mts` 统一管理（无需包级配置文件）
 
 ### 3. 导入导出规范
 
@@ -1733,7 +1646,7 @@ MIT License © 2024 My App
 ### 8. 测试要求
 
 - 鼓励为包添加单元测试
-- 使用 Jest 进行测试（与仓库一致，jest globals 由 ts-jest 注入）
+- 使用 Vitest 进行测试（与仓库一致，测试 API 显式 `import ... from 'vitest'`）
 - 测试覆盖率建议达到 80% 以上
 - 为每个导出项提供测试用例
 
@@ -1964,9 +1877,9 @@ MIT License © 2024 My App
 
 ### 添加测试支持
 
-项目使用 Jest 作为测试框架（ts-jest + `types: ["jest"]`，jest globals 无需显式 import）。如果添加测试支持，建议配置：
+项目使用 **Vitest** 作为测试框架（复用根目录 `vitest.config.mts`，测试 API 显式 `import ... from 'vitest'`）。添加测试支持的步骤：
 
-> **注意**：仓库当前只内置了 packages 纯 TS 包的单测能力（见 `packages/shared` 的 jest 配置）；**Vue 组件测试尚未内置**（无 @vue/test-utils 依赖、jest 未配 .vue transform）。以下组件测试配置是组件库/插件库包的参考方向，.vue 的 Jest transform 需自行确认与 jest 30 兼容。
+> **注意**：仓库当前内置了 packages 纯 TS 包的单测能力（`vitest.config.mts` 的 include 覆盖 `packages/**`，见 `packages/shared`）；**Vue 组件测试尚未内置**（无 @vue/test-utils 依赖）。组件库/插件库如需组件测试，参考下方说明自行补充。
 
 #### 1. **安装测试依赖**
 
@@ -1975,7 +1888,7 @@ MIT License © 2024 My App
 **所有类型包的基础依赖**:
 
 ```bash
-pnpm add -D jest @types/jest ts-jest jest-environment-jsdom
+pnpm add -D vitest @vitest/coverage-v8
 ```
 
 **组件库额外依赖** (如果需要测试 Vue 组件):
@@ -1984,85 +1897,23 @@ pnpm add -D jest @types/jest ts-jest jest-environment-jsdom
 pnpm add -D @vue/test-utils
 ```
 
-#### 2. **Jest 配置文件**
+#### 2. **测试配置（复用根配置，无需包级配置文件）**
 
-创建 `jest.config.js` 文件：
+单测统一由根目录 `vitest.config.mts` 驱动：
 
-**基础工具库配置**:
-
-```javascript
-module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'node',
-    roots: ['<rootDir>/src'],
-    testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
-    transform: {
-        '^.+.ts$': 'ts-jest',
-    },
-    moduleFileExtensions: ['ts', 'js', 'json', 'node'],
-    collectCoverageFrom: [
-        'src/**/*.ts',
-        '!src/**/*.d.ts',
-        '!**/node_modules/**',
-        '!**/dist/**',
-        '!**/__tests__/**',
-        '!**/*.test.ts',
-        '!**/*.spec.ts',
-    ],
-    coverageDirectory: '<rootDir>/coverage',
-    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-};
-```
-
-**Vue 组件库配置**:
-
-```javascript
-module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'jsdom',
-    roots: ['<rootDir>/src'],
-    testMatch: ['**/__tests__/**/*.ts', '**/__tests__/**/*.tsx', '**/?(*.)+(spec|test).ts', '**/?(*.)+(spec|test).tsx'],
-    transform: {
-        '^.+.ts$': 'ts-jest',
-        '^.+.tsx$': 'ts-jest',
-        // .vue transform 需自行配置（仓库未内置，见上方注意）
-    },
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'vue', 'json', 'node'],
-    moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1',
-    },
-    collectCoverageFrom: [
-        'src/**/*.{ts,tsx,vue}',
-        '!src/**/*.d.ts',
-        '!**/node_modules/**',
-        '!**/dist/**',
-        '!**/__tests__/**',
-        '!**/*.test.{ts,tsx}',
-        '!**/*.spec.{ts,tsx}',
-    ],
-    coverageDirectory: '<rootDir>/coverage',
-    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-    globals: {
-        'ts-jest': {
-            tsconfig: './tsconfig.json',
-        },
-        'vue-jest': {
-            compilerOptions: {
-                isCustomElement: tag => tag.includes('-'),
-            },
-        },
-    },
-};
-```
+- **纯 TS 包**：`environment: 'node'`，直接运行即可。
+- **组件库**：测试文件顶部加 `// @vitest-environment jsdom` 标注 DOM 环境；`.vue`/`.tsx` 由 Vitest + Vite 原生支持（无需额外 transform）。
+- **workspace 包解析**：`@my-app/*` 走 Vite dev 解析 → 包 exports 的 `development` 条件 → src（与开发期一致，无需 moduleNameMapper）。
+- **覆盖率**：`coverage` 阈值在根 `vitest.config.mts` 的 `coverage.thresholds` 配置（当前 100%）。
 
 #### 3. **TypeScript 测试配置**
 
-在 `tsconfig.json` 中添加测试文件支持：
+测试 API 显式导入即可，tsconfig 的 `types` 无需声明测试框架（保持 `["node"]`）：
 
 ```json
 {
     "compilerOptions": {
-        "types": ["jest", "node"]
+        "types": ["node"]
     },
     "include": [
         "src/**/*.ts",
@@ -2083,9 +1934,9 @@ module.exports = {
 ```json
 {
     "scripts": {
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     }
 }
 ```
@@ -2143,7 +1994,7 @@ packages/{package-name}/
 - **函数覆盖率 (Functions)**: ≥ 80%
 - **行覆盖率 (Lines)**: ≥ 80%
 
-在 `jest.config.js` 中配置覆盖率阈值：
+在根 `vitest.config.mts` 的 `coverage.thresholds` 中配置覆盖率阈值：
 
 ```javascript
 module.exports = {
@@ -2243,7 +2094,7 @@ it('接收并渲染 props', () => {
 
 ```typescript
 it('触发点击事件', async () => {
-    const handleClick = jest.fn();
+    const handleClick = vi.fn();
     const wrapper = mount(Button, {
         props: {
             onClick: handleClick,
@@ -2270,18 +2121,18 @@ test('异步函数返回正确结果', async () => {
 
 ```typescript
 test('延迟执行函数', () => {
-    jest.useFakeTimers();
-    const callback = jest.fn();
+    vi.useFakeTimers();
+    const callback = vi.fn();
 
     setTimeout(callback, 1000);
 
     // 快进时间
-    jest.advanceTimersByTime(1000);
+    vi.advanceTimersByTime(1000);
 
     expect(callback).toHaveBeenCalled();
 
     // 恢复真实定时器
-    jest.useRealTimers();
+    vi.useRealTimers();
 });
 ```
 
@@ -2291,8 +2142,8 @@ test('延迟执行函数', () => {
 
 ```typescript
 // Mock 外部依赖
-jest.mock('../api', () => ({
-    fetchUser: jest.fn().mockResolvedValue({ id: 1, name: '张三' }),
+vi.mock('../api', () => ({
+    fetchUser: vi.fn().mockResolvedValue({ id: 1, name: '张三' }),
 }));
 ```
 
@@ -2300,43 +2151,41 @@ jest.mock('../api', () => ({
 
 ```typescript
 // 部分 Mock
-jest.mock('axios', () => ({
-    get: jest.fn(),
-    post: jest.fn(),
+vi.mock('axios', () => ({
+    get: vi.fn(),
+    post: vi.fn(),
 }));
 ```
 
 #### 7. **测试配置建议**
 
-##### 7.1 **Jest 配置文件优化**
+##### 7.1 **Vitest 配置优化**
 
-```javascript
-module.exports = {
-    // 测试前执行的脚本
-    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+在根 `vitest.config.mts` 的 `test` 段按需调整：
 
-    // 覆盖率报告格式
-    coverageReporters: ['text', 'lcov', 'html'],
+```typescript
+import { defineConfig } from 'vitest/config';
 
-    // 收集覆盖率的目录
-    collectCoverageFrom: [
-        'src/**/*.{ts,tsx,vue}',
-        '!src/**/*.d.ts',
-        '!src/**/index.ts', // 排除索引文件
-        '!src/**/*.stories.tsx', // 排除 Storybook 文件
-    ],
-
-    // 测试超时时间
-    testTimeout: 10000,
-};
+export default defineConfig({
+    test: {
+        // 测试超时时间
+        testTimeout: 10000,
+        // 覆盖率报告格式
+        coverage: {
+            provider: 'v8',
+            reporter: ['text', 'html'],
+        },
+    },
+});
 ```
 
 ##### 7.2 **全局测试设置**
 
-创建 `jest.setup.js` 文件：
+如需要全局 setup（mock 清理、@vue/test-utils 全局配置），在根 `vitest.config.mts` 的 `test.setupFiles` 指向一个 setup 文件：
 
-```javascript
-import '@testing-library/jest-dom';
+```typescript
+// vitest.setup.ts
+import { beforeEach, afterEach, vi } from 'vitest';
 import { config } from '@vue/test-utils';
 
 // 配置全局的 Vue Test Utils 设置
@@ -2345,17 +2194,13 @@ config.global.stubs = {
     TransitionGroup: true,
 };
 
-// 全局的 beforeEach/afterEach
 beforeEach(() => {
-    // 清理 localStorage
     localStorage.clear();
-
     // 重置所有 mock
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 });
 
 afterEach(() => {
-    // 清理 DOM
     document.body.innerHTML = '';
 });
 ```
@@ -2396,7 +2241,7 @@ jobs:
 
 ##### 8.2 **测试性能优化**
 
-- 使用 `jest --maxWorkers=4` 并行运行测试
+- 使用 `vitest run --maxWorkers=4` 控制并行度（默认按 CPU 核数）
 - 避免在测试中执行真实的 API 调用
 - 使用内存数据库替代真实数据库
 - 配置测试缓存提高重复运行速度

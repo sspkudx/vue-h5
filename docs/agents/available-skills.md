@@ -91,7 +91,7 @@ vue-h5 项目提供了以下 AI 智能开发技能，帮助开发者快速创建
 
 - ✅ 创建完整的 TypeScript 包结构
 - ✅ 支持四种包类型配置
-- ✅ 自动生成构建配置（Vite lib 模式、TypeScript、Jest）
+- ✅ 自动生成构建配置（Vite lib 模式、TypeScript、Vitest）
 - ✅ 配置 monorepo 工作空间引用
 - ✅ 生成测试文件和文档模板
 

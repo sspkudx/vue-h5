@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { isNumber, isString, isObject, isEmpty, formatNumber } from '../index';
 
 describe('isNumber', () => {

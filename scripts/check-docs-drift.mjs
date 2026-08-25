@@ -207,12 +207,16 @@ const STALE_TERMS = [
     { re: /TypeScript 4\.\d/, msg: 'TypeScript 基线为 6.0' },
     { re: /Webpack 构建错误|检查 Webpack|Webpack 配置/, msg: '构建工具为 Vite，不应再出现 Webpack' },
     { re: /Vue CLI/, msg: '已迁移 Vite，勿再提 Vue CLI（CONTEXT.md 迁移记录除外）', except: ['CONTEXT.md'] },
-    { re: /from 'vitest'|使用 Vitest|Vitest 进行/, msg: '全仓测试统一 Jest' },
+    // 2026-08 起测试框架统一 Vitest；历史变更记录允许提及旧框架名
+    {
+        re: /jest\.config\.js|preset: 'ts-jest'|ts-jest|@types\/jest|"test": "jest|types": \["jest"|使用 Jest 进行|测试框架.: Jest|Jest 30/,
+        msg: '测试框架已统一为 Vitest，不应再出现 jest/ts-jest 引用',
+        except: ['AGENTS.md', 'CONTEXT.md', 'CHANGELOG.md'],
+    },
     { re: /App\.tsx/, msg: '应用根组件为 App.vue' },
     { re: /baseUrl\s*:/, msg: 'TS 6.0 已废弃移除 baseUrl（paths 相对 tsconfig 解析）' },
     { re: /PNPM 10/, msg: 'pnpm 基线为 11' },
     { re: /^[├└]──\s+skills\//m, msg: '技能目录应为 .claude/skills/（树状图中不要写裸 skills/）' },
-    { re: /"@types\/jest": "\^29/, msg: '@types/jest 基线为 ^30' },
     { re: /"typescript": "\^[45]\./, msg: 'typescript 模板应走 catalog:（当前 ^6.0.3）' },
     { re: /"node": ">= ?14/, msg: 'Node 基线为 22 LTS' },
     {
@@ -253,16 +257,15 @@ function checkSkillBaselines(errors) {
             );
         }
         for (const [re, msg] of [
-            [/vitest/i, '不应出现 vitest（全仓统一 Jest）'],
+            [/\bjest\b/i, '不应再出现 jest（2026-08 起全仓统一 Vitest）'],
             [/"typescript": "\^4\./, 'typescript 版本回退到 4.x'],
             [/"typescript": "\^5\./, 'typescript 版本回退到 5.x（应为 catalog: 或 ^6）'],
-            [/"@types\/jest": "\^29/, '@types/jest 回退到 ^29（应为 ^30）'],
             [/"node": ">= ?14/, 'engines.node 回退到 14（应为 >=22.0.0）'],
             [
                 /["']@vue\/babel-plugin-jsx["']\s*:/,
                 '不应作为依赖出现 @vue/babel-plugin-jsx（Vite 用 @vitejs/plugin-vue-jsx）',
             ],
-            [/@vue\/vue3-jest/, '不应出现 @vue/vue3-jest（仓库未内置组件测试）'],
+            [/@vue\/vue3-jest/, '不应出现 @vue/vue3-jest（测试框架已统一 Vitest）'],
         ]) {
             const m = text.match(re);
             if (m) errors.push(`.claude/skills/create-a-package/SKILL.md：${msg}（命中：${m[0]}）`);

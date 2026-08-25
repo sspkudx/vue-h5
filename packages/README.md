@@ -12,12 +12,11 @@
 packages/{package-name}/
 ├── src/
 │   ├── index.ts          # 包入口，导出全部公共 API
-│   └── __tests__/        # Jest 测试（与 src 平级，见 jest.config.js 的 roots）
+│   └── __tests__/        # Vitest 测试（与 src 平级，根 vitest.config.mts 自动发现）
 ├── package.json          # exports 必须带 development 条件（见下）
 ├── vite.config.ts        # Vite lib 模式：ESM 产物 → dist/index.js
-├── tsconfig.json         # 继承 ../../tsconfig.base.json，types 显式声明 ["jest", "node"]
-├── tsconfig.build.json   # tsc 只发 .d.ts → dist/index.d.ts
-└── jest.config.js        # ts-jest + node 环境（纯 TS 包）
+├── tsconfig.json         # 继承 ../../tsconfig.base.json，types 显式声明 ["node"]
+└── tsconfig.build.json   # tsc 只发 .d.ts → dist/index.d.ts
 ```
 
 ## 核心机制：exports `development` 条件联调
@@ -50,8 +49,8 @@ pnpm build:packages
 # 构建单个包
 pnpm -F @my-app/shared build
 
-# 运行测试
-pnpm test              # 根 jest 配置，只覆盖 packages/**
+# 运行测试（Vitest，复用根 vitest.config.mts）
+pnpm test              # 只覆盖 packages/**
 pnpm -F @my-app/shared test
 pnpm -F @my-app/shared test:coverage
 
@@ -83,16 +82,16 @@ import { safeNum, formatNumber } from '@my-app/shared';
 ## 创建新包
 
 1. **推荐**：使用 AI 技能 `create-a-package`（`/.claude/skills/create-a-package/SKILL.md`），支持工具库 / 组件库 / 工具函数集 / 插件库四种类型，自动生成符合本仓库规范的完整结构。
-2. **手动**：参考 `shared` 包的 `package.json` / `vite.config.ts` / `tsconfig*.json` / `jest.config.js` 复制改造。
+2. **手动**：参考 `shared` 包的 `package.json` / `vite.config.ts` / `tsconfig*.json` 复制改造。
 
 创建后验证：`pnpm build` 通过、`pnpm test` 通过、`pnpm lint` 通过。
 
 ## 测试
 
-- 框架：Jest 30 + ts-jest，`testEnvironment: 'node'`，jest globals 由 `types: ["jest"]` 注入（无需显式 import）。
-- 范围：根 `jest.config.js` 的 `roots` 仅覆盖 `packages/**`；**apps 暂无测试**（见 `docs/agents/business-infrastructure.md` 待补清单 P2）。
-- 现状：`shared` 包 2 个测试文件覆盖全部导出函数（含边界用例），`TESTING.md` 声明 100% 覆盖率。
-- 注意：仓库**未内置 Vue 组件测试能力**（无 @vue/test-utils 依赖、jest 未配置 .vue transform）；组件库包如需组件测试需自行补充。
+- 框架：**Vitest 4**（复用根目录 `vitest.config.mts`，`environment: 'node'`），测试 API 显式 `import { describe, it, expect, vi } from 'vitest'`（tsconfig `types` 无需声明测试框架）。
+- 范围：根 `vitest.config.mts` 的 `include` 仅覆盖 `packages/**`；**apps 暂无测试**（见 `docs/agents/business-infrastructure.md` 待补清单 P2）。
+- 现状：`shared` 包 2 个测试文件覆盖全部导出函数（含边界用例），`TESTING.md` 声明 100% 覆盖率，由 `coverage.thresholds` 强制守护。
+- 注意：仓库**未内置 Vue 组件测试能力**（无 @vue/test-utils 依赖）；组件库包如需组件测试，用 `// @vitest-environment jsdom` 标注 DOM 环境并自行补充。
 
 ## 文档规范
 
@@ -102,7 +101,7 @@ import { safeNum, formatNumber } from '@my-app/shared';
 
 - **Vue 生态依赖**（vue / pinia / vue-router）一律放 `peerDependencies`，用 `catalog:` 引用——运行时依赖由使用方应用提供，避免重复打包（见 CONTEXT.md 架构决策 2）。
 - **业务工具依赖**（如 lodash-es、axios）按需放 `dependencies`。
-- **构建/测试工具**（vite / typescript / jest / ts-jest）放 `devDependencies`；`vite`、`typescript` 用 `catalog:` 统一版本。
+- **构建/测试工具**（vite / typescript / vitest / @vitest/coverage-v8）放 `devDependencies`，用 `catalog:` 统一版本。
 - 版本基线：Node 22 LTS（`engines.node >=22.0.0`），与根 `package.json` / `.node-version` 一致。
 
 ## 常见问题

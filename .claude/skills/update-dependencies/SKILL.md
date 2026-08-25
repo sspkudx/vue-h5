@@ -11,7 +11,7 @@ description: 按 vue-h5 项目规范检查和更新依赖。覆盖 pnpm 11 供�
 
 **项目依赖结构（务必先确认再动手）**：
 
-- 根 `package.json` 的 `devDependencies`：工具链（eslint/vite/ts/jest 等），普通版本区间，直接改
+- 根 `package.json` 的 `devDependencies`：工具链（eslint/vite/ts/vitest 等），普通版本区间，直接改
 - `apps/*` 的 `dependencies`：运行时依赖（vue/vue-router/pinia/axios/ress）走 **`catalog:` 协议**，版本统一在 `pnpm-workspace.yaml` 的 `catalogs.default` 定义；`@my-app/shared` 是 `workspace:*`
 - `packages/*`：peerDependencies 中 catalog 内依赖同样用 `catalog:`
 

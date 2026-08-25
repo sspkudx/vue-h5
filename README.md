@@ -9,7 +9,7 @@
 - **现代化技术栈**: Vue 3 + TypeScript + Vite + PNPM
 - **Monorepo 架构**: 支持多应用、多包统一管理
 - **AI 智能开发**: 内置 Skills 快速创建应用和包
-- **完整工具链**: ESLint, Stylelint, Prettier, Jest, Vite, Husky + commitlint, GitHub Actions CI
+- **完整工具链**: ESLint, Stylelint, Prettier, Vitest, Vite, Husky + commitlint, GitHub Actions CI
 
 ## ⚡ 快速开始（5 分钟上手）
 
@@ -190,7 +190,7 @@ vue-h5/
 **技能位置**: `./.claude/skills/create-a-package/SKILL.md`
 
 - ✅ 支持四种包类型：工具库、组件库、工具函数集、插件库
-- ✅ 自动配置 TypeScript + Vite（lib 模式）+ Jest 开发环境
+- ✅ 自动配置 TypeScript + Vite（lib 模式）+ Vitest 开发环境
 - ✅ 生成测试框架配置和详细文档
 
 ### 🔧 Monorepo 开发指南
@@ -345,7 +345,7 @@ apps/example-app/
 packages/shared/
 ├── src/
 │   ├── index.ts         # 包入口文件（类型守卫 + 数字工具）
-│   └── __tests__/       # Jest 测试
+│   └── __tests__/       # Vitest 测试
 ├── dist/                # 构建输出（vite lib + tsc d.ts）
 ├── package.json         # 包配置（exports 带 development 条件）
 ├── vite.config.ts       # Vite lib 模式构建配置

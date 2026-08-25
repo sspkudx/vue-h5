@@ -21,6 +21,9 @@ catalogs:
         ress: ^6.0.0
         vue: ^3.5.41
         vue-router: ^5.2.0
+        # 测试框架（vitest + v8 覆盖率，2026-08 起替代 jest/ts-jest）
+        vitest: ^4.1.11
+        '@vitest/coverage-v8': ^4.1.11
         # dev-launcher-web 构建链（与根 devDependencies 同版本）
         '@vitejs/plugin-vue': ^6.0.8
         '@vitejs/plugin-vue-jsx': ^5.1.6

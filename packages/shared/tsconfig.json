@@ -3,8 +3,9 @@
     "compilerOptions": {
         "jsxFactory": "h",
         "jsxFragmentFactory": "Fragment",
-        // TS 6.0 起 types 默认为 []，jest 全局（describe/test/expect）与 node 类型需显式声明
-        "types": ["jest", "node"]
+        // TS 6.0 起 types 默认为 []，node 类型需显式声明；
+        // 测试 API（describe/it/expect）由测试文件显式 `import ... from 'vitest'`，无需全局类型
+        "types": ["node"]
     },
     "include": [
         "src/**/*.ts",

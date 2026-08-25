@@ -24,7 +24,7 @@
 | 样式 | Less + CSS Modules（`*.module.less`，kebab→camel 双导出），`ress` reset |
 | 移动端适配 | postcss-px-to-viewport，自定义单位 `mpx` → `vmin`（viewportWidth 390；横竖屏切换尺寸会变，双刃剑，已知晓） |
 | 包管理 | pnpm 11 workspace（`apps/*` + `packages/*`），registry 指华为云镜像 + `shamefully-hoist`（配置在 `pnpm-workspace.yaml`）；高频共享依赖由 `catalogs.default` 统一版本（`catalog:` 协议） |
-| 测试 | Jest 30 + ts-jest，根配置只覆盖 `packages/**` |
+| 测试 | Vitest 4（v8 覆盖率，阈值 100%），根 `vitest.config.mts` 只覆盖 `packages/**` |
 | 规范 | ESLint 10（flat config）+ Prettier 3 + stylelint 17（BEM 类名约束 + 属性排序） |
 | 构建编排 | `scripts/build.sh` 薄壳委托 `pnpm -r run build`（拓扑排序：先 packages 后 apps，默认 4 并行） |
 
@@ -42,13 +42,13 @@
 1. **monorepo 源码联调**：各包 `package.json` 的 `exports` 带 `"development"` 条件（置于 `types`/`import` 之前，自含 `types`+`default` 指向 `src`）。Vite dev 默认解析该条件 → 包源码热更新；TS 类型层由 `tsconfig.base.json` 的 `customConditions: ["development"]` 命中同一条件 → 类型同步且 typecheck 不依赖先构建 dist。应用无需为 `@my-app/*` 配置 alias 或 tsconfig paths。生产构建解析 `types`/`import` 条件 → dist。这是仓库核心工程价值，新增包必须保留该条件（create-a-package 模板已内置）。
 2. **运行时依赖归各 app 自管**，根 package.json 只放工具链（原先把 vue/pinia 等装在根上 + hoist 兜底，已纠正）。
 3. **catalog 统一版本**：高频共享依赖（vue/vue-router/pinia/axios/ress）在 `pnpm-workspace.yaml` 的 `catalogs.default` 定义版本，各 app/包用 `catalog:` 引用，升级只改一处、全仓一致（2026-08 起）。
-4. **依赖解析**：根 `jest.config.js` 的 moduleNameMapper 用通配规则 `^@my-app/(.*)$` → `packages/$1/src`（新增包自动覆盖）；运行时解析见第 1 条（exports `development` 条件），两处互不依赖。
+4. **依赖解析**：单测（Vitest）走 Vite dev 解析 → 包 `exports` 的 `development` 条件 → src（与开发期一致），无需 moduleNameMapper；类型层同源（第 1 条的 customConditions）；生产构建解析 `types`/`import` → dist。
 5. **开发启动器**：`pnpm dev` 启动本地 Web 控制台（`pnpm dev --cli` 走终端多选，共用 `scripts/dev-launcher/core.mjs` 的发现与进程管理）。Web 控制台前端为 Vue 3 + Vite 子工程（`scripts/dev-launcher/web/`，workspace 包 `dev-launcher-web`，版本走 catalog），`predev` 自动构建产物交 `server.mjs` 托管；后端保持零依赖原生 Node http。每次请求实时扫描 `apps/*`、`packages/*`——新应用/包零配置自动出现；应用端口解析自 `vite.config.ts`，实际端口从 vite 输出（`Local:` 行）校准；`.dev-launcher.json`（gitignore）记忆勾选 + `exclude`/`extra` 兜底；退出时清理整棵进程树（服务以 detached 进程组拉起，pnpm 可能再分进程组，需 pgrep 递归清理），避免残留 dev server。包统一提供 `dev` 脚本（`scripts/watch-package.sh`：先完整构建再并行 vite/tsc watch）。
 
 ## 整改基线决策（2026-08 评审后）
 
 - Node 基线：**22 LTS**；pnpm：**11**（`packageManager` 字段锁定，corepack 启用）。pnpm 11 起配置全部写入 `pnpm-workspace.yaml`（`.npmrc` 仅 registry/auth）；`allowBuilds` 放行 core-js / unrs-resolver。
-- 依赖策略：全部 latest，但更新不激进——采用 pnpm 11 `minimumReleaseAge=1440`（新版本发布满 24h 才被采纳），确需抢新/锁文件已存在的新发布包走 `minimumReleaseAgeExclude` 白名单（当前豁免：csstools 补丁包）。TypeScript 已升 **6.0**（`~6.0.3` 锁定次版本：ts-jest peer `<7`、typescript-eslint peer `<6.1`，7.0 原生版待工具链跟进后再评估）。TS 6 适配点：`baseUrl` 已废弃并移除（paths 相对 tsconfig 解析）；`types` 默认 `[]` 需显式声明（shared 为 `["jest", "node"]`，app 为 `["vite/client", "node"]`）；`rootDir` 不再自动推断（tsconfig.build.json 显式 `./src`）。
+- 依赖策略：全部 latest，但更新不激进——采用 pnpm 11 `minimumReleaseAge=1440`（新版本发布满 24h 才被采纳），确需抢新/锁文件已存在的新发布包走 `minimumReleaseAgeExclude` 白名单（当前豁免：csstools 补丁包）。TypeScript 已升 **6.0**（`~6.0.3` 锁定次版本：typescript-eslint peer `<6.1`，7.0 原生版待工具链跟进后再评估；测试框架 Vitest 4 对 TS 版本无 peer 约束）。TS 6 适配点：`baseUrl` 已废弃并移除（paths 相对 tsconfig 解析）；`types` 默认 `[]` 需显式声明（shared 为 `["node"]`，app 为 `["vite/client", "node"]`）；`rootDir` 不再自动推断（tsconfig.build.json 显式 `./src`）。
 - browserslist：兼容性基线 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），不用 `not dead`；由 @vitejs/plugin-legacy 自动生成 legacy 产物（ES5 + core-js polyfill + SystemJS）。
 - 提交规范：**约定式提交 v1.0.0**（https://www.conventionalcommits.org/zh-hans/v1.0.0/），由 husky `commit-msg` 钩子 + commitlint 强制校验（两个分支均启用）；main 另有 `pre-commit`（lint-staged：prettier + eslint）自动格式化。CI：GitHub Actions（lint + test + build）。
 - 构建工具：已从 Vue CLI 5/webpack 迁移到 **Vite 8**（apps）+ Vite lib 模式（packages），迁移前后功能经浏览器冒烟测试验证一致。

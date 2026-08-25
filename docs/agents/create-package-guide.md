@@ -43,7 +43,6 @@ packages/{package-name}/
 │   └── index.test.ts    # 测试文件
 ├── README.md            # 包的说明文档
 ├── package.json         # 包配置文件
-├── jest.config.js       # Jest 测试配置
 ├── tsconfig.json        # TypeScript 配置文件
 ├── tsconfig.build.json  # TypeScript 构建配置
 └── vite.config.ts      # Vite 构建配置
@@ -75,20 +74,19 @@ packages/{package-name}/
         "prebuild": "pnpm run clean",
         "build": "vite build && tsc -p tsconfig.build.json",
         "dev": "bash ../../scripts/watch-package.sh",
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": [],
     "author": "",
     "license": "MIT",
     "peerDependencies": {},
     "devDependencies": {
-        "@types/jest": "^30.0.0",
-        "jest": "^30.4.2",
         "rimraf": "^6.1.3",
+        "vitest": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "vite": "catalog:",
-        "ts-jest": "^29.4.12",
         "typescript": "catalog:"
     },
     "engines": {
@@ -123,9 +121,9 @@ packages/{package-name}/
         "prebuild": "pnpm run clean",
         "build": "vite build && tsc -p tsconfig.build.json",
         "dev": "bash ../../scripts/watch-package.sh",
-        "test": "jest --config jest.config.js",
-        "test:watch": "jest --config jest.config.js --watch",
-        "test:coverage": "jest --config jest.config.js --coverage"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": [],
     "author": "",
@@ -134,13 +132,11 @@ packages/{package-name}/
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@types/jest": "^30.0.0",
         "@vue/test-utils": "^2.4.5",
-        "jest": "^30.4.2",
-        "jest-environment-jsdom": "^30.4.1",
         "rimraf": "^6.1.3",
+        "vitest": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "vite": "catalog:",
-        "ts-jest": "^29.4.12",
         "typescript": "catalog:"
     },
     "engines": {
@@ -293,7 +289,6 @@ packages/utils/
 │   └── index.test.ts     # 测试文件
 ├── README.md             # 说明文档
 ├── package.json          # name: "@my-app/utils"
-├── jest.config.js        # Jest 配置
 ├── tsconfig.json         # TypeScript 配置
 ├── tsconfig.build.json   # TypeScript 构建配置
 └── vite.config.ts      # Vite 构建配置
@@ -427,19 +422,20 @@ export const logPlugin = {
 
 ## 测试配置
 
-### Jest 配置
+### Vitest 配置
 
-每个包都包含完整的 Jest 测试配置：
+单测由根目录 `vitest.config.mts` 统一驱动（`include` 覆盖 `packages/**`，无需包级配置文件）：
 
-- TypeScript 支持
-- 覆盖率报告
-- 测试文件匹配模式
-- 模块映射配置
+- TypeScript 支持（Vite 原生转译）
+- 覆盖率报告（v8 provider，阈值 100%，见根配置）
+- 测试文件匹配（`**/__tests__/**/*.test.ts` 自动发现）
+- workspace 包解析（走 Vite dev → exports 的 development 条件 → src，无需模块映射）
 
 ### 测试示例
 
 ```typescript
 // __tests__/index.test.ts
+import { describe, expect, it } from 'vitest';
 import { formatDate } from '../src';
 
 describe('formatDate', () => {

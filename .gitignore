@@ -33,3 +33,5 @@ coverage
 
 # 开发启动器本地配置（勾选记忆 + 手工兜底条目）
 .dev-launcher.json
+
+.pnpm-store

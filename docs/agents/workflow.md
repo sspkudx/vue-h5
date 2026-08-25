@@ -196,7 +196,7 @@ pnpm test:coverage
 # 运行特定包的测试
 pnpm -F @my-app/shared test
 
-# 注意：apps 当前无 test 脚本（jest 只覆盖 packages/**，见 business-infrastructure.md 待补清单 P2）
+# 注意：apps 当前无 test 脚本（vitest 只覆盖 packages/**，见 business-infrastructure.md 待补清单 P2）
 # pnpm -F example-app test 会失败，应用测试能力尚未内置
 ```
 

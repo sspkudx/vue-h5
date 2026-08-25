@@ -36,17 +36,17 @@ Vite 约定：所有环境变量必须以 `VITE_` 前缀命名才会注入到客
 
 ## 待补清单（按优先级）
 
-| 优先级 | 事项             | 说明                                                                                    |
-| ------ | ---------------- | --------------------------------------------------------------------------------------- |
-| P0     | 登录与权限       | 路由守卫、token 存取、401 处理与跳转；request 拦截器注入 Authorization                  |
-| P0     | 业务错误提示     | 统一 toast 组件，替换 `handleError` 中裸 `throw`                                        |
-| P1     | Mock 方案        | 本地 mock server（如 vite-plugin-mock 或 json-server）接入代理                          |
-| P1     | 上报体系         | 错误上报（sentry/自建）+ 性能埋点 + 业务埋点                                            |
-| P1     | UI 组件库选型    | 商家端 H5 场景建议 vant；需配按需加载与主题定制                                         |
-| P2     | 应用级测试       | 目前 jest 只覆盖 `packages/**`，apps 无测试；接入 vitest/jest + vue-test-utils 组件测试 |
-| P2     | 请求层增强       | 竞态取消（AbortController）、幂等重试、接口级 loading 约定                              |
-| P2     | Pinia store 示例 | 目前仅创建空 pinia 实例，无业务 store 范式                                              |
-| P2     | 环境变量治理     | 按环境拆分配置（测试/灰度），密钥类变量禁止入客户端代码                                 |
+| 优先级 | 事项 | 说明 |
+| --- | --- | --- |
+| P0 | 登录与权限 | 路由守卫、token 存取、401 处理与跳转；request 拦截器注入 Authorization |
+| P0 | 业务错误提示 | 统一 toast 组件，替换 `handleError` 中裸 `throw` |
+| P1 | Mock 方案 | 本地 mock server（如 vite-plugin-mock 或 json-server）接入代理 |
+| P1 | 上报体系 | 错误上报（sentry/自建）+ 性能埋点 + 业务埋点 |
+| P1 | UI 组件库选型 | 商家端 H5 场景建议 vant；需配按需加载与主题定制 |
+| P2 | 应用级测试 | 目前 vitest 只覆盖 `packages/**`，apps 无测试；接入 @vue/test-utils 组件测试（jsdom 环境） |
+| P2 | 请求层增强 | 竞态取消（AbortController）、幂等重试、接口级 loading 约定 |
+| P2 | Pinia store 示例 | 目前仅创建空 pinia 实例，无业务 store 范式 |
+| P2 | 环境变量治理 | 按环境拆分配置（测试/灰度），密钥类变量禁止入客户端代码 |
 
 ## 新增应用的接入要求
 
