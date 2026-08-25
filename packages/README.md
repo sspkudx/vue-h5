@@ -117,8 +117,8 @@ pnpm build:packages
 
 **2. `TS2307: Cannot find module '@my-app/shared'`（类型层）**
 
-- 确认 `package.json` 的 `exports.types` 指向存在的 `dist/index.d.ts`（或 development 条件的 `src/index.ts`）。
-- 类型层走 `src`（Vite dev + tsconfig），若类型报错但运行时正常，多半是 `dist` 过期——重新 `pnpm build:packages`。
+- 确认包的 `exports` 保留了 `development` 条件（自含 `types`+`default` 指向 `src`），且 `tsconfig.base.json` 的 `customConditions` 含 `"development"`——类型层走 `src`，与 dev 运行时同源，**不依赖 dist**。
+- 若类型报错但运行时正常，多半是包 `exports` 结构或依赖未安装（`pnpm i`）问题；生产构建才需要先 `pnpm build:packages` 生成 dist。
 
 **3. 改包源码后应用无热更新**
 

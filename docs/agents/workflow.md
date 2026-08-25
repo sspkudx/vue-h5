@@ -168,16 +168,17 @@ npx prettier --write src/components/MyComponent.vue
 git add .
 git commit -m "feat: 添加新功能"
 
-# 提交时会自动执行（pre-commit 钩子，仅针对暂存文件）：
-# 1. ESLint --fix（js/ts/vue，含 Prettier 格式化）
-# 2. Stylelint --fix（css/less/vue）
-# 3. Prettier --write（json/yml/md）
+# 提交时会自动执行（pre-commit 钩子）：
+# 1. lint-staged（仅针对暂存文件）：
+#    - ESLint --fix（js/ts/vue，含 Prettier 格式化）
+#    - Stylelint --fix（css/less/vue）
+#    - Prettier --write（json/yml/md）
+# 2. example-app 类型检查（vue-tsc --noEmit）
+# 3. 单元测试（pnpm test，Vitest）
 # commit-msg 钩子：commitlint 强制校验提交信息（约定式提交 v1.0.0，见 https://www.conventionalcommits.org/zh-hans/v1.0.0/）
 ```
 
 > 分支差异：`compat/node-14` 无 pre-commit 格式化钩子（仅手动 `pnpm lint-staged`），但 commit-msg 校验同样强制生效。
-
-> 注意：钩子不自动跑测试，测试请在提交前手动执行 `pnpm test`，或依赖 CI 兜底。
 
 ## 4. 测试
 

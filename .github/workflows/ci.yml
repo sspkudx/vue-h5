@@ -11,13 +11,17 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            # pnpm/action-setup 在 setup-node 之前：保证 pnpm 进入 PATH，
+            # setup-node 的 cache: pnpm 才能定位 pnpm store 并正确缓存
+            # （版本取自 packageManager 字段，corepack 对齐）
+            - uses: pnpm/action-setup@v4
+              with:
+                  run_install: false
+
             - uses: actions/setup-node@v4
               with:
                   node-version-file: .node-version
                   cache: pnpm
-
-            - name: 启用 corepack（对齐 packageManager 声明的 pnpm 版本）
-              run: corepack enable
 
             - name: 安装依赖
               run: pnpm install --frozen-lockfile

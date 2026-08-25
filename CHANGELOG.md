@@ -8,7 +8,7 @@
 
 ### 修复
 
-- **技能模板基线对齐**：`create-a-package` 五个 package.json 模板对齐仓库基线（typescript/vite 走 `catalog:`、@types/jest ^30、engines node >=22.0.0）；Vue 生态依赖移入 `peerDependencies`；移除 `@vue/babel-plugin-jsx` 与 `@vue/vue3-jest`；Vitest 表述统一为 Jest。
+- **技能模板基线对齐**：`create-a-package` 五个 package.json 模板对齐仓库基线（typescript/vite/vitest/@vitest/coverage-v8 走 `catalog:`、engines node >=22.0.0）；Vue 生态依赖移入 `peerDependencies`；移除 `@vue/babel-plugin-jsx` 与 `@vue/vue3-jest`；测试表述统一为 Vitest。
 - **技能模板语法修复**：`create-a-vue-page` tsx 模板的 `defineComponent` 用法与默认导出写法修正（此前为语法错误）；`create-vue-app` tsconfig 模板移除 TS 6.0 已废弃的 `baseUrl`。
 - **`create-skill` 技能去 CatPaw 化**：改写为仓库 `.claude/skills/` 唯一事实来源约定。
 - **文档漂移清理**：重写 `packages/README.md`（对齐 exports `development` 联调方案）；清理 README / apps/README / docs/agents 中的 Rollup、Webpack、vue.config.js、historyApiFallback、幽灵包示例等过期内容；修正 README 快速开始终点衔接（8888 控制台 → 2000 示例应用）。
@@ -21,7 +21,7 @@
 ### 变更
 
 - **`.browserslistrc`**：`chrome 49` → `chrome >= 49`（精确匹配改为范围下限语义，修正注释与实现不符的问题）。
-- **`packages/shared/jest.config.js`**：新增 `coverageThreshold`（100%），强制守护测试质量宣称。
+- **测试质量守护**：`shared` 包 100% 覆盖率阈值强制（现由 `vitest.config.mts` 的 `coverage.thresholds` 承担，原 jest.config.js 已随 v3.9 迁移删除）。
 - **构建编排收敛**：删除自研 `scripts/build-packages.sh`（约 300 行）；`scripts/build.sh` 改为薄壳委托 `pnpm -r run build`（拓扑排序、默认 4 并行、Vite emptyOutDir 清理 dist），保留旧 CLI 参数兼容（`--packages-only` / `--apps-only` / `--clean-only` 等）；`dev:example` 去掉冗余的包预构建（exports `development` 条件下 dev 无需 dist）。
 - **质量门禁强化**：pre-commit 追加 example-app 类型检查与单元测试（lint-staged 只覆盖改动文件）；example-app `lint` 移除 `--fix`（lint 只读）；`scripts/dev-launcher/web` 控制台前端纳入 eslint/prettier 覆盖（此前完全逃过）；CI 的 setup-node 启用 pnpm store 缓存。
 - **解析链路收敛（customConditions）**：包 `exports` 的 `development` 条件改为嵌套形态（自含 `types`+`default` 指向 src，置于 `types`/`import` 之前）；`tsconfig.base.json` 新增 `customConditions: ["development"]`，TS 类型层与 Vite dev 命中同一 `development` 条件 → 源码直读、typecheck 不再依赖先构建 dist；应用 tsconfig 移除硬编码 `@my-app/*` paths（保留 `@/*`）。生产构建仍解析 `types`/`import` → dist。技能模板与全部文档、漂移检查器同步。

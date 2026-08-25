@@ -158,7 +158,7 @@ export default defineConfig(({ mode }) => {
                 less: {},
             },
             modules: {
-                // 同时导出原类名与驼峰类名（about-view → aboutView），对齐 vue-cli 的 exportLocalsConvention
+                // 同时导出原类名与驼峰类名（about-view → aboutView），对齐 css-loader 的 exportLocalsConvention
                 localsConvention: 'camelCase',
                 // 对齐 css-loader 的 localIdentName
                 generateScopedName: '[local]__[hash:base64]',

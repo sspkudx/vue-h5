@@ -18,6 +18,6 @@
         "forceConsistentCasingInFileNames": true,
         "useDefineForClassFields": true,
         "sourceMap": true,
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+        "lib": ["esnext", "dom", "dom.iterable"]
     }
 }
