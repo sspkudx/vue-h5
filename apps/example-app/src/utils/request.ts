@@ -47,4 +47,7 @@ const createRequest = (config: AxiosRequestConfig = {}): AxiosInstance => {
 /** 默认请求实例 */
 const request = createRequest();
 
+// 具名导出 createRequest：便于测试注入自定义 adapter（见 request.test.ts），
+// 业务代码统一使用默认导出的 request 实例
+export { createRequest };
 export default request;

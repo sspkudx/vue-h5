@@ -52,7 +52,7 @@ module.exports = defineConfigWithVueTs(
     },
     {
         name: 'vue-h5/test',
-        files: ['**/__tests__/**/*.{js,ts}', '**/*.test.{js,ts}', '**/*.spec.{js,ts}'],
+        files: ['**/__tests__/**/*.{js,ts,tsx}', '**/*.test.{js,ts,tsx}', '**/*.spec.{js,ts,tsx}'],
         // 测试 API（describe/it/expect）由测试文件显式 `import ... from 'vitest'`，无需全局声明
         rules: {
             'no-empty-function': 'off',

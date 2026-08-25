@@ -49,8 +49,8 @@ pnpm build:packages
 # 构建单个包
 pnpm -F @my-app/shared build
 
-# 运行测试（Vitest，复用根 vitest.config.mts）
-pnpm test              # 只覆盖 packages/**
+# 运行测试（Vitest，复用根 vitest.config.mts；覆盖 packages 单测 + apps 组件测试）
+pnpm test
 pnpm -F @my-app/shared test
 pnpm -F @my-app/shared test:coverage
 
@@ -89,9 +89,9 @@ import { safeNum, formatNumber } from '@my-app/shared';
 ## 测试
 
 - 框架：**Vitest 4**（复用根目录 `vitest.config.mts`，`environment: 'node'`），测试 API 显式 `import { describe, it, expect, vi } from 'vitest'`（tsconfig `types` 无需声明测试框架）。
-- 范围：根 `vitest.config.mts` 的 `include` 仅覆盖 `packages/**`；**apps 暂无测试**（见 `docs/agents/business-infrastructure.md` 待补清单 P2）。
-- 现状：`shared` 包 2 个测试文件覆盖全部导出函数（含边界用例），`TESTING.md` 声明 100% 覆盖率，由 `coverage.thresholds` 强制守护。
-- 注意：仓库**未内置 Vue 组件测试能力**（无 @vue/test-utils 依赖）；组件库包如需组件测试，用 `// @vitest-environment jsdom` 标注 DOM 环境并自行补充。
+- 范围：`packages/**` 的 `include` 覆盖本目录全部纯 TS 包；**apps 组件测试**也已接入（`@vue/test-utils` + jsdom，见 `docs/agents/business-infrastructure.md` 的"应用级测试"）。
+- 现状：`shared` 包 2 个测试文件覆盖全部导出函数（含边界用例），`TESTING.md` 声明 100% 覆盖率，由 `coverage.thresholds` 强制守护（门槛仅限 `packages/**`）。
+- 组件测试：仓库已内置 @vue/test-utils 与 jsdom 依赖；组件库包如需组件测试，用 `// @vitest-environment jsdom` 标注 DOM 环境即可（参考 `apps/example-app` 的示例测试）。
 
 ## 文档规范
 

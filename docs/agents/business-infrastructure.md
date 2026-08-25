@@ -29,6 +29,15 @@ Vite 约定：所有环境变量必须以 `VITE_` 前缀命名才会注入到客
 
 - `app.config.errorHandler`：统一兜底 Vue 组件渲染/生命周期内未捕获错误，当前仅 `console.error`
 
+### 5. 应用级测试（Vitest + @vue/test-utils，2026-08 落地）
+
+- 根 `vitest.config.mts` 已配 `vue()` + `vueJsx()` 插件，`include` 覆盖 `apps/**`；组件测试用文件级 `// @vitest-environment jsdom` 标注 DOM 环境
+- 示例测试（example-app）：
+    - `src/views/PlaygroundPage/PlaygroundPage.test.ts`：SFC 计数器渲染与交互
+    - `src/views/HomeView/index.test.tsx`：TSX 组件 + vue-router mock + `@my-app/shared` 联调
+    - `src/utils/request.test.ts`：axios 拦截器错误映射（注入自定义 adapter；`createRequest` 具名导出为测试而暴露）
+- 覆盖率门槛仍仅限 `packages/**`（apps 组件测试为行为验证，不参与 100% 阈值）
+
 ### 5. 相关配置
 
 - `browserslist`（根目录 `.browserslistrc`）：兼容性基线 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView）
@@ -36,17 +45,16 @@ Vite 约定：所有环境变量必须以 `VITE_` 前缀命名才会注入到客
 
 ## 待补清单（按优先级）
 
-| 优先级 | 事项 | 说明 |
-| --- | --- | --- |
-| P0 | 登录与权限 | 路由守卫、token 存取、401 处理与跳转；request 拦截器注入 Authorization |
-| P0 | 业务错误提示 | 统一 toast 组件，替换 `handleError` 中裸 `throw` |
-| P1 | Mock 方案 | 本地 mock server（如 vite-plugin-mock 或 json-server）接入代理 |
-| P1 | 上报体系 | 错误上报（sentry/自建）+ 性能埋点 + 业务埋点 |
-| P1 | UI 组件库选型 | 商家端 H5 场景建议 vant；需配按需加载与主题定制 |
-| P2 | 应用级测试 | 目前 vitest 只覆盖 `packages/**`，apps 无测试；接入 @vue/test-utils 组件测试（jsdom 环境） |
-| P2 | 请求层增强 | 竞态取消（AbortController）、幂等重试、接口级 loading 约定 |
-| P2 | Pinia store 示例 | 目前仅创建空 pinia 实例，无业务 store 范式 |
-| P2 | 环境变量治理 | 按环境拆分配置（测试/灰度），密钥类变量禁止入客户端代码 |
+| 优先级 | 事项             | 说明                                                                   |
+| ------ | ---------------- | ---------------------------------------------------------------------- |
+| P0     | 登录与权限       | 路由守卫、token 存取、401 处理与跳转；request 拦截器注入 Authorization |
+| P0     | 业务错误提示     | 统一 toast 组件，替换 `handleError` 中裸 `throw`                       |
+| P1     | Mock 方案        | 本地 mock server（如 vite-plugin-mock 或 json-server）接入代理         |
+| P1     | 上报体系         | 错误上报（sentry/自建）+ 性能埋点 + 业务埋点                           |
+| P1     | UI 组件库选型    | 商家端 H5 场景建议 vant；需配按需加载与主题定制                        |
+| P2     | 请求层增强       | 竞态取消（AbortController）、幂等重试、接口级 loading 约定             |
+| P2     | Pinia store 示例 | 目前仅创建空 pinia 实例，无业务 store 范式                             |
+| P2     | 环境变量治理     | 按环境拆分配置（测试/灰度），密钥类变量禁止入客户端代码                |
 
 ## 新增应用的接入要求
 
