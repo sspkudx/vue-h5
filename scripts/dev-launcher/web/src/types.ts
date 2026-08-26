@@ -15,6 +15,8 @@ export interface LauncherEntry {
     description: string;
     port: number | null;
     hasDevScript: boolean;
+    /** build 脚本含 --watch，无 dev 脚本时也按 watch 构建持续运行 */
+    buildIsWatch: boolean;
     /** 来自 .dev-launcher.json 的手工登记条目 */
     extra: boolean;
     status: EntryStatus;

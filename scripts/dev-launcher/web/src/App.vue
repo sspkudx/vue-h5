@@ -4,6 +4,32 @@ import { fetchEntries, saveSelection, startEntry, stopAll } from './api';
 import EntryCard from './components/EntryCard.vue';
 import type { LauncherEntry, SelectionState } from './types';
 
+/** 主题本地存储键 */
+const THEME_KEY = 'dev-launcher-theme';
+type Theme = 'light' | 'dark';
+
+/** 读取主题：localStorage > 系统偏好 > 默认浅色 */
+const resolveInitialTheme = (): Theme => {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'light' || saved === 'dark') {
+        return saved;
+    }
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+const theme = ref<Theme>(resolveInitialTheme());
+
+/** 应用主题到 documentElement 并持久化 */
+const applyTheme = (value: Theme) => {
+    document.documentElement.setAttribute('data-theme', value);
+    localStorage.setItem(THEME_KEY, value);
+};
+
+const toggleTheme = () => {
+    theme.value = theme.value === 'dark' ? 'light' : 'dark';
+    applyTheme(theme.value);
+};
+
 /** 轮询间隔（与原实现一致） */
 const POLL_INTERVAL = 3000;
 
@@ -107,6 +133,7 @@ const onStopAll = async () => {
 let pollingTimer: ReturnType<typeof setInterval> | null = null;
 
 onMounted(() => {
+    applyTheme(theme.value);
     refresh();
     pollingTimer = setInterval(refresh, POLL_INTERVAL);
 });
@@ -120,8 +147,18 @@ onBeforeUnmount(() => {
 
 <template>
     <header class="header">
-        <h1>vue-h5 开发启动器</h1>
-        <p class="subtitle">勾选要启动的应用与包，服务日志实时输出在启动终端</p>
+        <div class="header-title">
+            <h1>vue-h5 开发启动器</h1>
+            <p class="subtitle">勾选要启动的应用与包，服务日志实时输出在启动终端</p>
+        </div>
+        <button
+            type="button"
+            class="theme-toggle"
+            :title="theme === 'dark' ? '切换到浅色' : '切换到深色'"
+            @click="toggleTheme"
+        >
+            {{ theme === 'dark' ? '☀' : '☾' }}
+        </button>
     </header>
 
     <main class="main">
@@ -135,8 +172,12 @@ onBeforeUnmount(() => {
         </section>
 
         <section class="section">
-            <h2>应用 <span class="section-tip">启动 dev server</span></h2>
-            <div class="entry-list">
+            <div class="section-header">
+                <h2>应用</h2>
+                <span class="section-tip">启动 dev server</span>
+                <span class="section-count">{{ appEntries.length }}</span>
+            </div>
+            <div v-if="appEntries.length" class="entry-list">
                 <EntryCard
                     v-for="entry in appEntries"
                     :key="entry.name"
@@ -149,11 +190,16 @@ onBeforeUnmount(() => {
                     @changed="refresh"
                 />
             </div>
+            <div v-else class="empty-state">apps/ 目录下暂无应用</div>
         </section>
 
         <section class="section">
-            <h2>包 <span class="section-tip">有 dev 脚本为 watch 构建，否则构建一次</span></h2>
-            <div class="entry-list">
+            <div class="section-header">
+                <h2>包</h2>
+                <span class="section-tip">有 dev 脚本或 build --watch 为持续构建，否则构建一次</span>
+                <span class="section-count">{{ packageEntries.length }}</span>
+            </div>
+            <div v-if="packageEntries.length" class="entry-list">
                 <EntryCard
                     v-for="entry in packageEntries"
                     :key="entry.name"
@@ -166,10 +212,15 @@ onBeforeUnmount(() => {
                     @changed="refresh"
                 />
             </div>
+            <div v-else class="empty-state">packages/ 目录下暂无包</div>
         </section>
 
         <section v-if="extraEntries.length" class="section">
-            <h2>手工登记条目 <span class="section-tip">来自 .dev-launcher.json 的 extra</span></h2>
+            <div class="section-header">
+                <h2>手工登记条目</h2>
+                <span class="section-tip">来自 .dev-launcher.json 的 extra</span>
+                <span class="section-count">{{ extraEntries.length }}</span>
+            </div>
             <div class="entry-list">
                 <EntryCard
                     v-for="entry in extraEntries"

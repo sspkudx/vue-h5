@@ -1,18 +1,21 @@
 /**
  * 开发启动器核心模块
  * @description 负责：
- * 1. 自动发现 apps/* 与 packages/*（每次调用重新扫描，新增即出现）
+ * 1. 自动发现 workspace 内全部可启动包（读 pnpm-workspace.yaml，每次调用重新扫描，新增即出现）
  * 2. 读取/写入 .dev-launcher.json（记忆上次勾选 + exclude 排除 + extra 手工兜底条目）
  * 3. 进程管理：spawn/kill 服务进程、环形缓冲日志、从 vite 输出校准实际端口
  */
 
 import { execFileSync, spawn } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /** 项目根目录（本文件位于 scripts/dev-launcher/ 下，向上两级） */
 export const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url));
+
+/** 启动器控制台前端自身目录（扫描时排除，避免启动器把自己当条目） */
+const LAUNCHER_WEB_DIR = fileURLToPath(new URL('./web', import.meta.url));
 
 /** 本地配置文件路径（gitignore，记忆勾选 + 手工兜底） */
 const CONFIG_PATH = path.join(ROOT_DIR, '.dev-launcher.json');
@@ -56,20 +59,30 @@ export const saveConfig = config => {
     writeFileSync(CONFIG_PATH, `${JSON.stringify(merged, null, 4)}\n`, 'utf8');
 };
 
+/** vite 配置文件候选（按优先级顺序探测，命中第一个即解析） */
+const VITE_CONFIG_FILES = ['vite.config.ts', 'vite.config.mts', 'vite.config.js', 'vite.config.mjs', 'vite.config.cjs'];
+
 /**
- * 从 vite.config.ts 中解析开发服务器端口
+ * 从 vite 配置中解析开发服务器端口
+ * @description 依次探测 .ts/.mts/.js/.mjs/.cjs 五种文件名，正则匹配 `port: <数字>`；
+ * 兼容 defineConfig 对象写法与函数式写法（函数体内 return 的字面量同样能被正则命中）
  * @param dir - 应用目录
- * @returns 端口号；未显式配置时返回 null（由调用方回退 vite 默认值）
+ * @returns 端口号；未显式配置或无配置文件时返回 null（由调用方回退 vite 默认值）
  */
 const readPortFromViteConfig = dir => {
-    const viteConfigPath = path.join(dir, 'vite.config.ts');
-    if (!existsSync(viteConfigPath)) {
-        return null;
+    for (const file of VITE_CONFIG_FILES) {
+        const configPath = path.join(dir, file);
+        if (!existsSync(configPath)) {
+            continue;
+        }
+        const content = readFileSync(configPath, 'utf8');
+        // 兼容 server.port: 2000 的各种空格写法（含函数式 config 内 return 的字面量）
+        const match = content.match(/port\s*:\s*(\d+)/);
+        if (match) {
+            return Number(match[1]);
+        }
     }
-    const content = readFileSync(viteConfigPath, 'utf8');
-    // 兼容 server.port: 2000 的各种空格写法
-    const match = content.match(/port\s*:\s*(\d+)/);
-    return match ? Number(match[1]) : null;
+    return null;
 };
 
 /** 读取目录下 package.json 的关键字段，缺失时返回空对象 */
@@ -82,53 +95,141 @@ const readPackageMeta = dir => {
 };
 
 /**
+ * 解析 pnpm-workspace.yaml 的 packages 字段（极简手写解析，仅取顶层 packages 列表）
+ * @description 不引入 yaml 依赖：逐行扫描 `packages:` 下的 `- 'glob'` 条目，
+ * 遇到非列表的顶层键即结束；文件缺失时回退默认 `apps/*` + `packages/*`
+ * @returns glob 字符串数组
+ */
+const readWorkspaceGlobs = () => {
+    const wsPath = path.join(ROOT_DIR, 'pnpm-workspace.yaml');
+    if (!existsSync(wsPath)) {
+        return ['apps/*', 'packages/*'];
+    }
+    const content = readFileSync(wsPath, 'utf8');
+    const globs = [];
+    let inPackages = false;
+    for (const line of content.split('\n')) {
+        // 跳过注释行
+        if (/^\s*#/.test(line)) {
+            continue;
+        }
+        // 进入 packages 列表
+        if (/^packages\s*:/.test(line)) {
+            inPackages = true;
+            continue;
+        }
+        if (inPackages) {
+            // 列表项：- 'glob' 或 - glob
+            const itemMatch = line.match(/^\s*-\s*['"]?([^'"]+?)['"]?\s*$/);
+            if (itemMatch) {
+                globs.push(itemMatch[1].trim());
+                continue;
+            }
+            // 遇到顶格非空行（下一个顶层键），列表结束
+            if (/^\S/.test(line)) {
+                inPackages = false;
+            }
+        }
+    }
+    return globs.length ? globs : ['apps/*', 'packages/*'];
+};
+
+/**
+ * 展开 workspace glob 为实际目录绝对路径
+ * @description 仅支持末段含 `*` 的通配（如 `apps/*`、`packages/*`），无 `*` 时视为直接路径；
+ * 通配段过滤为目录且含 package.json（避免扫到 README 等杂项）
+ * @param globStr - pnpm-workspace.yaml 中的 glob 字符串
+ * @returns 目录绝对路径数组
+ */
+const expandGlob = globStr => {
+    const full = path.join(ROOT_DIR, globStr);
+    if (globStr.includes('*')) {
+        const parent = path.dirname(full);
+        if (!existsSync(parent)) {
+            return [];
+        }
+        return readdirSync(parent)
+            .map(name => path.join(parent, name))
+            .filter(dir => {
+                try {
+                    return statSync(dir).isDirectory();
+                } catch {
+                    return false;
+                }
+            });
+    }
+    return existsSync(full) ? [full] : [];
+};
+
+/**
+ * 依据目录相对路径判定条目类型
+ * @description apps/ 下视为应用（dev server），其余视为包（watch 构建/构建一次）；
+ * 与原硬编码行为保持一致，同时兼容 workspace 中其他位置的包
+ */
+const kindOfDir = dir => {
+    const rel = path.relative(ROOT_DIR, dir);
+    return rel.startsWith(`apps${path.sep}`) || rel.startsWith('apps/') ? 'app' : 'package';
+};
+
+/**
  * 扫描全部可启动条目（每次调用实时重扫）
- * @returns 条目数组：{ kind, name, displayName, dir, description, port, hasDevScript, command, extra }
+ * @returns 条目数组：{ kind, name, displayName, dir, description, port, hasDevScript, buildIsWatch, command, extra }
  */
 export const scanEntries = () => {
     const config = loadConfig();
     const excluded = new Set(config.exclude ?? []);
     const entries = [];
+    const seenDirs = new Set();
 
-    // 标准目录扫描：apps/* 视为应用（dev server），packages/* 视为包（watch 构建/构建一次）
-    for (const [kind, subdir] of [
-        ['app', 'apps'],
-        ['package', 'packages'],
-    ]) {
-        const base = path.join(ROOT_DIR, subdir);
-        if (!existsSync(base)) {
-            continue;
-        }
-        for (const name of readdirSync(base)) {
-            if (excluded.has(name)) {
+    // workspace 自动扫描：读 pnpm-workspace.yaml，展开全部 glob，按目录位置判定 app/package
+    for (const globStr of readWorkspaceGlobs()) {
+        for (const dir of expandGlob(globStr)) {
+            // 排除启动器控制台前端自身
+            if (path.resolve(dir) === path.resolve(LAUNCHER_WEB_DIR)) {
                 continue;
             }
-            const dir = path.join(base, name);
+            if (seenDirs.has(dir)) {
+                continue;
+            }
             const pkg = readPackageMeta(dir);
             if (!pkg) {
                 continue; // 跳过 README.md 等非包目录
             }
+            const name = path.basename(dir);
+            if (excluded.has(name)) {
+                continue;
+            }
+            seenDirs.add(dir);
+            const hasDevScript = Boolean(pkg.scripts?.dev);
+            // build 脚本含 --watch / -w 时视为 watch 构建（无 dev 脚本也能持续运行）
+            const buildIsWatch = !hasDevScript && /(^|\s)(--watch|-w)(\b|=)/.test(pkg.scripts?.build ?? '');
             entries.push({
-                kind,
+                kind: kindOfDir(dir),
                 name,
                 displayName: pkg.name ?? name,
                 dir,
                 description: pkg.description ?? '',
                 port: readPortFromViteConfig(dir) ?? VITE_DEFAULT_PORT,
-                hasDevScript: Boolean(pkg.scripts?.dev),
+                hasDevScript,
+                buildIsWatch,
                 command: null,
                 extra: false,
             });
         }
     }
 
-    // 手工兜底条目：目录不在 apps/packages 下或需要自定义命令的场景
+    // 手工兜底条目：目录不在 workspace 下或需要自定义命令的场景
     for (const item of config.extra ?? []) {
         if (!item?.name || excluded.has(item.name)) {
             continue;
         }
         const dir = path.resolve(ROOT_DIR, item.dir ?? item.name);
         const pkg = readPackageMeta(dir) ?? {};
+        if (seenDirs.has(dir)) {
+            continue; // workspace 已收录则跳过，避免重复
+        }
+        seenDirs.add(dir);
+        const hasDevScript = Boolean(item.command) || Boolean(pkg.scripts?.dev);
         entries.push({
             kind: item.kind === 'package' ? 'package' : 'app',
             name: item.name,
@@ -136,7 +237,8 @@ export const scanEntries = () => {
             dir,
             description: item.description ?? pkg.description ?? '',
             port: item.port ?? readPortFromViteConfig(dir) ?? VITE_DEFAULT_PORT,
-            hasDevScript: Boolean(item.command) || Boolean(pkg.scripts?.dev),
+            hasDevScript,
+            buildIsWatch: false,
             command: item.command ?? null,
             extra: true,
         });
@@ -217,7 +319,7 @@ export class ProcessManager {
             return { ok: false, message: '已在运行中' };
         }
 
-        // 命令优先级：extra 自定义命令 > 有 dev 脚本用 dev > 包无 dev 脚本则构建一次
+        // 命令优先级：extra 自定义命令 > 有 dev 脚本用 dev > 否则用 build（含 --watch 时为 watch 构建）
         const command = entry.command ?? `pnpm -F ${entry.displayName} ${entry.hasDevScript ? 'dev' : 'build'}`;
         // detached + 进程组：停止时可连带杀掉 pnpm 派生的 vite/tsc 子进程
         const proc = spawn('bash', ['-c', command], {
@@ -232,7 +334,8 @@ export class ProcessManager {
             logs: [],
             status: 'starting',
             actualPort: null,
-            oneShot: !entry.hasDevScript && entry.kind === 'package' && !entry.command,
+            // 一次性构建：包无 dev 脚本且 build 脚本非 watch，且非 extra 自定义命令
+            oneShot: !entry.hasDevScript && !entry.buildIsWatch && entry.kind === 'package' && !entry.command,
             exitCode: null,
             startedAt: Date.now(),
         };

@@ -38,7 +38,12 @@ const link = computed(() => (props.entry.kind === 'app' && port.value ? `http://
 
 const running = computed(() => props.entry.status === 'running' || props.entry.status === 'starting');
 
+const isRunning = computed(() => props.entry.status === 'running');
+
 const desc = computed(() => props.entry.description || (props.entry.extra ? '手工登记条目' : '（无描述）'));
+
+/** 包模式标签：watch 构建 / 构建一次 */
+const packageMode = computed(() => (props.entry.hasDevScript || props.entry.buildIsWatch ? 'watch 构建' : '构建一次'));
 
 const onCheck = (event: Event) => {
     emit('update:checked', (event.target as HTMLInputElement).checked);
@@ -76,22 +81,22 @@ defineExpose({ loadLogs });
 </script>
 
 <template>
-    <div class="entry-card">
+    <div class="entry-card" :class="{ 'is-running': isRunning }">
         <div class="entry-row">
             <input type="checkbox" :checked="checked" @change="onCheck" />
-            <div>
+            <div class="entry-info">
                 <div class="entry-name">{{ entry.displayName }}</div>
                 <div class="entry-desc">{{ desc }}</div>
             </div>
             <div class="entry-meta">
-                <span v-if="entry.kind === 'app'">端口 {{ port }}</span>
-                <span v-else>{{ entry.hasDevScript ? 'watch 构建' : '构建一次' }}</span>
+                <span v-if="entry.kind === 'app'" class="entry-tag">:{{ port }}</span>
+                <span v-else class="entry-tag">{{ packageMode }}</span>
                 <span class="badge" :class="badgeClass">{{ statusText }}</span>
             </div>
         </div>
-        <div class="entry-row" style="margin-top: 6px">
+        <div class="entry-actions">
             <a v-if="link" :href="link" target="_blank" rel="noopener">打开应用 →</a>
-            <button type="button" class="btn logs-toggle" @click="toggleLogs">
+            <button type="button" class="logs-toggle" @click="toggleLogs">
                 {{ logsOpen ? '收起日志' : '查看日志' }}
             </button>
             <button
