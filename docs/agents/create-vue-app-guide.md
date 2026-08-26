@@ -215,7 +215,7 @@ apps/user-portal/
 ```json
 {
   "scripts": {
-    "dev:user-portal": "./scripts/build-packages.sh --skip-clean && pnpm -F user-portal dev",
+    "dev:user-portal": "pnpm -F user-portal dev",
     "build:user-portal": "pnpm -F user-portal build",
     "lint:user-portal": "pnpm -F user-portal lint"
   }
@@ -244,8 +244,9 @@ apps/user-portal/
 | `src/main.ts` | 应用入口文件，初始化 Vue 应用 |
 | `src/plugins/index.ts` | Vue 插件配置，可添加全局插件 |
 | `src/router/index.ts` | 路由配置，定义应用路由 |
-| `src/views/HomeView/` | 首页组件，包含示例代码 |
-| `src/views/AboutView/` | 关于页面组件，包含示例代码 |
+| `src/views/HomeView/` | 首页组件，含 shared 包联调示例与「关于 / Playground」导航按钮（useRouter 编程式跳转） |
+| `src/views/AboutView/` | 关于页面组件，极简 TSX 示例 |
+| `src/views/PlaygroundPage/` | 演示页，SFC 计数器示例（shallowRef），演示 SFC 与 TSX 写法差异 |
 | `index.htm` | HTML 模板文件 |
 | `.postcssrc.js` | PostCSS 配置（mpx → vmin 移动端适配） |
 | `vue.config.js` | Vue CLI 配置文件 |

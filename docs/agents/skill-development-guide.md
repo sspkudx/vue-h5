@@ -149,7 +149,7 @@ cat apps/new-app/package.json
 **解决方案**:
 ```bash
 # 1. 分析执行时间
-time pnpm run create-app my-app
+# 在 AI 编辑器中观察技能各步骤耗时，定位慢环节（模板渲染、文件写入）
 
 # 2. 检查文件操作
 # 优化文件读写操作

@@ -101,7 +101,7 @@ apps/{app-name}/
 }
 ```
 
-> **说明**：仅声明 `@vue/cli-plugin-eslint`（提供 `vue-cli-service lint` 命令与 lintOnSave）——vue-cli-service 的插件发现机制扫描的是**应用自身**声明的依赖，根目录声明不会被应用识别；**不要**声明 plugin-babel / plugin-typescript：本项目 babel/ts 处理由 vue.config.js 手动配置，声明插件会引入默认规则冲突（tsx 规则缺 babel 配置）与 thread-loader 兼容问题（Node 14 下生产构建崩溃）。插件本体经 pnpm hoisting 共享根 store，不重复安装。其余构建工具链（@vue/cli-service、loader、postcss 插件等）仍统一位于根 devDependencies。
+> **说明**：仅声明 `@vue/cli-plugin-eslint`（提供 `vue-cli-service lint` 命令与 lintOnSave）——vue-cli-service 的插件发现机制扫描的是**应用自身**声明的依赖，根目录声明不会被应用识别；**不要**声明 plugin-babel / plugin-typescript：本项目 babel/ts 处理由 vue.config.js 手动配置，声明插件会引入默认规则冲突（tsx 规则缺 babel 配置）与 thread-loader 兼容问题（Node 14 下生产构建崩溃）。插件本体由 pnpm 统一安装（依赖提升后与根共享同一实例），不重复安装。其余构建工具链（@vue/cli-service、loader、postcss 插件等）仍统一位于根 devDependencies。
 
 ### 5. 配置 vue.config.js
 
@@ -175,7 +175,7 @@ module.exports = defineConfig(() => {
             // 各包 package.json 的 exports 带 "development" 条件指向 src，
             // webpack dev 模式默认解析 development 条件（源码热更新），
             // 生产构建解析 import 条件（exports -> dist），
-            // 可顺带验证 exports 配置的正确性；构建顺序由 scripts/build.sh 保证（先 packages 后 apps）
+            // 可顺带验证 exports 配置的正确性；构建顺序由 pnpm -r run build 拓扑排序保证（先 packages 后 apps）
             config
                 .entry('app')
                 .clear()
@@ -250,27 +250,15 @@ module.exports = defineConfig(() => {
 
 ```json
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "target": "esnext",
-        "module": "esnext",
-        "strict": true,
-        "jsx": "preserve",
-        "jsxImportSource": "vue",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "useDefineForClassFields": true,
-        "sourceMap": true,
-        "baseUrl": ".",
         "types": ["webpack-env"],
+        "baseUrl": ".",
+        // @my-app/* 无需 paths：tsconfig.base.json 的 customConditions: ["development"]
+        // 让 TS 命中包 exports 的 development 条件（src），与 webpack dev 同源解析
         "paths": {
-            "@/*": ["src/*"],
-            "@my-app/shared": ["../../packages/shared/src/index.ts"]
-        },
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+            "@/*": ["src/*"]
+        }
     },
     "include": [
         "src/**/*.ts",
@@ -392,7 +380,11 @@ export default pluginsList;
 ```typescript
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-/** router used by the app */
+/**
+ * 应用路由实例
+ * @description 采用 hash 模式路由（H5 静态部署友好，无需服务端回退配置）；
+ * 所有页面均为路由级懒加载，访问时再加载对应 chunk
+ */
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
@@ -406,9 +398,7 @@ const router = createRouter({
         {
             path: '/about',
             name: 'about',
-            // route level code-splitting
-            // this generates a separate chunk (about.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
+            // 路由级代码分割：该路由单独生成 chunk（webpackChunkName 命名），首次访问时才懒加载
             component() {
                 return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/index');
             },
@@ -417,7 +407,7 @@ const router = createRouter({
             path: '/playground',
             name: 'PlaygroundPage',
             component() {
-                return import(/* webpackChunkName: "HomeView" */ '../views/PlaygroundPage/PlaygroundPage.vue');
+                return import(/* webpackChunkName: "PlaygroundPage" */ '../views/PlaygroundPage/PlaygroundPage.vue');
             },
         },
     ],
@@ -430,27 +420,51 @@ export default router;
 
 ```tsx
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 import { safeNum } from '@my-app/shared';
 import styles from './style.module.less';
 
+/**
+ * 首页示例组件
+ * @description 展示 workspace 包（@my-app/shared）的源码联调效果：
+ * safeNum 将入参安全转换为数字，非法输入兜底为 0
+ */
 const HomeView = defineComponent({
     name: 'HomeView',
     setup() {
+        const router = useRouter();
+
+        const toAbout = () => {
+            router.push('/about');
+        };
+
+        const toPlayground = () => {
+            router.push('/playground');
+        };
+
         const render = () => {
-            // 测试导入的shared包
-            const testString = '123';
-            const testInvalid = 'abc';
-            const num1 = safeNum(testString);
-            const num2 = safeNum(testInvalid);
+            // 示例数据：合法字符串与非法字符串，验证 safeNum 的转换与兜底
+            const validInput = '123';
+            const invalidInput = 'abc';
+            const validNum = safeNum(validInput);
+            const invalidNum = safeNum(invalidInput);
 
             return (
-                <div class={styles.homeView}>
-                    <p class={styles.homeView__text}>Yeah</p>
-                    <p class={[styles.homeView__text, styles.homeView__text_gray]}>hello world</p>
+                <div class={styles['home-view']}>
+                    <p class={styles['home-view__text']}>首页</p>
+                    <p class={[styles['home-view__text'], styles['home-view__text--gray']]}>欢迎使用 vue-h5 模板</p>
                     <div>
-                        <p>测试@shared包导入:</p>
-                        <p>safeNum('123') = {num1}</p>
-                        <p>safeNum('abc') = {num2}</p>
+                        <p>@my-app/shared 包导入示例：</p>
+                        <p>safeNum('123') = {validNum}</p>
+                        <p>safeNum('abc') = {invalidNum}</p>
+                    </div>
+                    <div class={styles['home-view__nav']}>
+                        <button type="button" class={styles['home-view__button']} onClick={toAbout}>
+                            关于
+                        </button>
+                        <button type="button" class={styles['home-view__button']} onClick={toPlayground}>
+                            Playground
+                        </button>
                     </div>
                 </div>
             );
@@ -465,14 +479,40 @@ export default HomeView;
 #### views/HomeView/style.module.less
 
 ```less
-.homeView {
-    &__text {
-        color: #333;
-        font-size: 20px;
-        font-weight: bold;
+.home-view {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
 
-        &_gray {
-            color: #666;
+    &__text {
+        margin-bottom: 12mpx;
+        font-size: 24mpx;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &--gray {
+            color: #818999;
+        }
+    }
+
+    &__nav {
+        display: flex;
+        margin-top: 24mpx;
+    }
+
+    &__button {
+        padding: 8mpx 24mpx;
+        border: none;
+        border-radius: 8mpx;
+        font-size: 24mpx;
+        color: #fff;
+        background: #42b983;
+        cursor: pointer;
+
+        &:first-child {
+            margin-right: 16mpx;
         }
     }
 }
@@ -484,11 +524,15 @@ export default HomeView;
 import { defineComponent } from 'vue';
 import styles from './style.module.less';
 
+/**
+ * 关于页面
+ * @description 极简示例页，演示 TSX 页面组件的基础写法（defineComponent + setup 返回渲染函数）
+ */
 const AboutView = defineComponent({
     name: 'AboutView',
     setup() {
         const render = () => {
-            return <div class={styles['about-view']}>hello world</div>;
+            return <div class={styles['about-view']}>这是关于页面（示例）</div>;
         };
         return render;
     },
@@ -511,6 +555,11 @@ export default AboutView;
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
 
+/**
+ * 演示页：计数器
+ * @description 示例 shallowRef 的基础用法：点击按钮递增计数，
+ * 页面展示当前计数值
+ */
 const countValue = shallowRef(0);
 
 const addCount = () => {
@@ -520,8 +569,8 @@ const addCount = () => {
 
 <template>
     <div class="playground-page">
-        <button class="playground-page__button" type="button" @click="addCount">++</button>
-        <p class="playground-page__text">Current count is: {{ countValue }}</p>
+        <button class="playground-page__button" type="button" @click="addCount">+1</button>
+        <p class="playground-page__text">当前计数：{{ countValue }}</p>
     </div>
 </template>
 
@@ -686,12 +735,12 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 
 1. **应用名称限制**: 应用名称必须符合 npm 包名规范，建议使用小写字母、数字和连字符
 2. **端口冲突**: 需要检查端口是否已被其他应用使用
-3. **workspace 包解析**: 依赖的包（@my-app/*）通过各自 package.json 的 exports `development` 条件指向 src（webpack dev 默认解析，源码热更新），应用**无需**配置 alias；tsconfig.json 的 paths 需指向包源码（如 `../../packages/shared/src/index.ts`）
+3. **workspace 包解析**: 依赖的包（@my-app/*）通过各自 package.json 的 exports `development` 条件指向 src（webpack dev 默认解析，源码热更新），应用**无需**配置 alias；TS 类型层由 tsconfig.base.json 的 `customConditions: ["development"]` 同源解析，应用 tsconfig **无需**为 @my-app/* 配置 paths（保留 `@/*` 指向自身 src）
 4. **依赖管理**: 新应用会自动依赖`@my-app/shared`包；**仅 `@vue/cli-plugin-eslint` 需在应用 package.json 声明**（vue-cli-service 插件发现机制要求，缺失则 `vue-cli-service lint` 命令不存在）；**勿声明 plugin-babel / plugin-typescript**（babel/ts 由 vue.config.js 手动配置，插件默认规则会冲突并在 Node 14 生产构建触发 thread-loader 崩溃）；其余构建工具链（@vue/cli-service、less、postcss-px-to-viewport、postcss-calc 等）统一位于根 devDependencies，经 hoisting 提升后各应用直接可用
 5. **Monorepo 结构**: 需要确保应用在 monorepo 中的正确位置
 6. **scripts 更新**: 务必更新根目录 package.json 的 scripts 字段，添加`dev:{app-name}`、`build:{app-name}`、`lint:{app-name}`脚本
 7. **格式一致性**: 确保新增的 scripts 格式与现有 scripts 保持一致（`pnpm -F {app-name} {command}`）
-8. **兼容性基线**: 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一），由根目录 `.browserslistrc` + babel 转译 + core-js polyfill 保证。新建应用**无需**单独配置 browserslist，构建产物中 `-legacy` 文件即为基线产物（Chrome 49 自动加载，现代浏览器加载 `type="module"` 产物）。不要降低根目录 `.browserslistrc` 的基线：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持）
+8. **兼容性基线**: 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一），由根目录 `.browserslistrc`（`chrome >= 49` 范围下限语义）+ babel 转译 + core-js polyfill 保证。新建应用**无需**单独配置 browserslist。因基线包含不支持 ES Module 的目标，`vue-cli-service build` 会自动开启 differential loading：构建产物中 `-legacy` 文件即为基线产物（Chrome 49 等老设备经 nomodule 加载），现代浏览器加载 `type="module"` 产物。不要降低根目录 `.browserslistrc` 的基线：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持）
 9. **移动端适配**: 必须创建 `.postcssrc.js`（见第 9 节），这是项目统一的移动端适配基线（`mpx` → `vmin`，viewportWidth 390）；样式中的尺寸使用 `mpx` 单位编写，stylelint 已放行该单位（`unit-no-unknown` ignoreUnits）
 
 ## 错误处理

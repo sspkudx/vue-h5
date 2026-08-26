@@ -76,7 +76,7 @@ cp -r apps/example-app apps/my-app
 ```json
 {
     "scripts": {
-        "dev:my-app": "./scripts/build-packages.sh --skip-clean && pnpm -F my-app dev",
+        "dev:my-app": "pnpm -F my-app dev",
         "build:my-app": "pnpm -F my-app build",
         "lint:my-app": "pnpm -F my-app lint"
     }

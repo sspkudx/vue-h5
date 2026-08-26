@@ -141,23 +141,30 @@ AI 技能会引导你完成创建过程：
       "types": "dist/index.d.ts",
       "exports": {
         ".": {
+          "development": {
+            "types": "./src/index.ts",
+            "default": "./src/index.ts"
+          },
+          "types": "./dist/index.d.ts",
           "import": "./dist/index.js",
           "require": "./dist/index.js"
         }
       },
       "scripts": {
-        "clean": "rimraf dist",
-        "prebuild": "pnpm run clean",
         "build": "rollup -c rollup.config.ts --configPlugin typescript",
-        "dev": "rollup -c rollup.config.ts --configPlugin typescript --watch"
+        "test": "jest --config jest.config.js",
+        "test:watch": "jest --config jest.config.js --watch",
+        "test:coverage": "jest --config jest.config.js --coverage"
       },
       "keywords": [],
       "author": "",
       "license": "MIT",
+      "sideEffects": false,
+      "files": ["dist"],
       "peerDependencies": {},
       "devDependencies": {},
       "engines": {
-        "node": ">= 14"
+        "node": ">=14.18.0"
       }
     }
     EOF
@@ -180,9 +187,6 @@ pnpm build:shared
 
 # 运行 shared 包测试
 pnpm test:shared
-
-# 开发模式（监听文件变化）
-cd packages/shared && pnpm run dev
 ```
 
 ### 2. 创建新包后
@@ -193,10 +197,7 @@ cd packages/shared && pnpm run dev
 # 进入包目录
 cd packages/utils
 
-# 开发模式
-pnpm run dev
-
-# 构建生产版本
+# 构建生产版本（dev 场景无需构建，应用直接解析 src）
 pnpm run build
 
 # 运行测试（如果添加了测试）
@@ -230,69 +231,47 @@ pnpm -F my-app add @my-app/utils
 #### 步骤 2: 在应用中导入和使用
 
 ```typescript
-// 在 Vue 组件或工具文件中导入
-import { safeNum, formatDate } from '@my-app/utils';
-import { formatCurrency } from '@my-app/utils/currency';
-import { Button, Modal } from '@my-app/ui-components';
+// 在 Vue 组件或工具文件中导入（以 @my-app/shared 为例）
+import { defineComponent } from 'vue';
+import { safeNum, formatNumber } from '@my-app/shared';
 
-// 在 Vue 组件中使用
 export default defineComponent({
+    name: 'PriceDemo',
     setup() {
-        // 使用工具函数
+        // safeNum：非法输入兜底为 0；formatNumber：固定小数位格式化
         const price = safeNum('123.45');
-        const formattedDate = formatDate(new Date());
-        const formattedPrice = formatCurrency(price, 'USD');
+        const formattedPrice = formatNumber(price, 2);
 
         return () => (
             <div>
                 <h1>使用共享包示例</h1>
                 <p>价格: {formattedPrice}</p>
-                <p>日期: {formattedDate}</p>
-                {/* 使用组件库 */}
-                <Button onClick={() => console.log('点击')}>提交</Button>
-                <Modal visible={true}>内容</Modal>
             </div>
         );
     },
 });
 ```
 
-#### 步骤 3: 配置 TypeScript 路径映射（已自动配置）
+#### 步骤 3: 确认解析链路（无需额外配置）
 
-创建包时，TypeScript 配置已自动设置路径映射。检查应用的 `tsconfig.json`：
+应用对 workspace 包**零 alias、零 paths 配置**，解析链单一事实来源：
 
-```json
-{
-    "compilerOptions": {
-        "paths": {
-            "@my-app/shared": ["../../packages/shared/dist/index"],
-            "@my-app/*": ["../../packages/*/dist/index"]
-        }
-    }
-}
-```
+- **运行时**：包 package.json 的 exports `development` 条件指向 `src/index.ts`（webpack dev 默认解析该条件，源码热更新）；生产构建解析 `import` 条件 → `dist/index.js`
+- **类型层**：仓库顶层 `tsconfig.base.json` 声明 `customConditions: ["development"]`，TS 类型检查与 webpack dev 同源解析
 
 #### 步骤 4: 构建和开发
 
 ```bash
-# 1. 构建所有包（确保包已构建）
-pnpm build:packages
+# dev 场景无需预构建包（webpack 直接解析 src）
+pnpm -F my-app dev
 
-# 2. 启动应用开发服务器（会自动重新构建依赖的包）
-pnpm dev:my-app
-
-# 或者在包的开发模式下工作
-cd packages/utils && pnpm run dev
-# 这会监听包文件变化，自动重新构建
+# 生产构建全部 packages + apps（pnpm -r run build 拓扑排序，依赖先构建）
+pnpm build
 ```
 
 #### 步骤 5: 处理类型声明
 
-包的 TypeScript 类型声明会自动包含在构建产物中。确保：
-
-1. 包已正确构建：`pnpm run build`
-2. 包的 `dist/index.d.ts` 文件存在
-3. 在应用中正确导入类型
+类型层直接解析包源码（`src/index.ts`），dev 场景无需先构建 dist；生产发布由 `build` 产出 `dist/index.d.ts`（经 `tsconfig.build.json` 的 declaration 链）。
 
 ### 4. 工作区引用机制
 
@@ -422,15 +401,10 @@ pnpm why @my-app/utils
 #### 开发模式下的热重载
 
 ```bash
-# 在包目录启动开发模式（监听文件变化）
-cd packages/utils
-pnpm run dev
+# 包代码联调（无需包级 watch：应用 dev 经 exports development 条件直接解析包源码）
+pnpm dev:my-app
 
-# 在另一个终端启动应用
-cd apps/my-app
-pnpm run dev
-
-# 修改包代码，应用会自动重新构建并热重载
+# 修改 packages/ 下的包源码，应用侧热更新直接生效
 ```
 
 #### 类型检查
@@ -566,14 +540,10 @@ TypeScript 构建配置：
 ### 1. 本地开发
 
 ```bash
-# 进入包目录
-cd packages/my-package
+# 进入应用目录联调（无需包级 watch：应用 dev 直接解析包源码）
+cd apps/my-app
 
-# 开发模式（监听文件变化）
-pnpm run dev
-
-# 在另一个终端中，在应用中引用并测试
-# 修改会自动热重载
+# 启动应用后修改 packages/my-package 的源码，热更新直接生效
 ```
 
 ### 2. 构建发布
@@ -1055,8 +1025,7 @@ npx tsc --noEmit
 
 # 2. 开发工具包
 cd packages/utils
-# 编辑 src/index.ts 添加工具函数
-pnpm run dev  # 开发模式，监听文件变化
+# 编辑 src/index.ts 添加工具函数（应用侧经 exports development 条件直接解析源码，无需构建）
 
 # 3. 构建工具包
 pnpm run build  # 生产构建，生成 dist/ 目录

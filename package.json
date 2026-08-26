@@ -6,7 +6,7 @@
         "dev:example": "pnpm -F example-app dev",
         "build:example": "pnpm -F example-app build",
         "build:shared": "pnpm -F @my-app/shared build",
-        "build:packages": "./scripts/build-packages.sh",
+        "build:packages": "pnpm --filter \"./packages/**\" run build",
         "build": "sh ./scripts/build.sh",
         "lint": "eslint \"apps/**/src/**/*.{js,jsx,ts,tsx,vue}\" \"packages/**/src/**/*.{js,jsx,ts,tsx}\" --ext .js,.jsx,.ts,.tsx,.vue",
         "lint:fix": "eslint \"apps/**/src/**/*.{js,jsx,ts,tsx,vue}\" \"packages/**/src/**/*.{js,jsx,ts,tsx}\" --ext .js,.jsx,.ts,.tsx,.vue --fix",
@@ -19,6 +19,7 @@
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage",
         "test:shared": "pnpm -F @my-app/shared test",
+        "check:docs": "node scripts/check-docs-drift.js",
         "prepare": "husky install"
     },
     "lint-staged": {
@@ -81,7 +82,7 @@
         "stylelint": "^15.11.0",
         "stylelint-config-prettier": "^8.0.2",
         "stylelint-config-recommended-less": "^3.0.1",
-        "stylelint-config-recommended-vue": "^1.4.0",
+        "stylelint-config-recommended-vue": "^1.6.1",
         "stylelint-config-standard": "^34.0.0",
         "stylelint-less": "^3.0.1",
         "stylelint-order": "^6.0.4",
@@ -93,6 +94,7 @@
     "engines": {
         "node": ">=14.18.0"
     },
+    "packageManager": "pnpm@7.33.7",
     "pnpm": {
         "overrides": {
             "stylelint-config-html": "1.1.0",

@@ -120,8 +120,11 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
             "types": "./dist/index.d.ts",
-            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -174,8 +177,11 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
             "types": "./dist/index.d.ts",
-            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -225,8 +231,11 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
             "types": "./dist/index.d.ts",
-            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -286,8 +295,11 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
             "types": "./dist/index.d.ts",
-            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -349,8 +361,11 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
             "types": "./dist/index.d.ts",
-            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
@@ -476,23 +491,10 @@ export default defineConfig([
 
 ```json
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "target": "esnext",
-        "module": "esnext",
-        "strict": true,
-        "jsx": "preserve",
-        "jsxImportSource": "vue",
         "jsxFactory": "h",
         "jsxFragmentFactory": "Fragment",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "useDefineForClassFields": true,
-        "sourceMap": true,
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
         "baseUrl": "./"
     },
     "include": [
@@ -508,6 +510,8 @@ export default defineConfig([
     "exclude": ["node_modules"]
 }
 ```
+
+> 说明：`moduleResolution: bundler` 与 `customConditions: ["development"]` 已收敛在仓库顶层 `tsconfig.base.json`，包自身无需重复声明。
 
 ### 7. 配置 tsconfig.build.json
 
@@ -1571,8 +1575,7 @@ MIT License © 2024 My App
 6. **测试文件**:
 
     ```typescript
-    // __tests__/index.test.ts
-    import { describe, it, expect } from 'vitest';
+    // __tests__/index.test.ts（Jest 全局 API，无需 import）
     import { safeNum } from '../src';
 
     describe('utils', () => {
@@ -1808,7 +1811,7 @@ MIT License © 2024 My App
 ### 8. 测试要求
 
 -   鼓励为包添加单元测试
--   使用 Vitest 进行测试
+-   使用 Jest 进行测试
 -   测试覆盖率建议达到 80% 以上
 -   为每个导出项提供测试用例
 

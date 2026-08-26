@@ -717,15 +717,17 @@ const sanitizedHtml = computed(() => DOMPurify.sanitize(userInput.value));
 保护敏感配置信息：
 
 ```typescript
-// 使用环境变量
-const apiKey = import.meta.env.VITE_API_KEY;
+// 使用环境变量（Vue CLI 约定：VUE_APP_ 前缀，运行时经 process.env 读取）
+const apiKey = process.env.VUE_APP_API_KEY;
 
 // 不要在代码中硬编码敏感信息
 // 错误：const apiKey = 'sk_live_1234567890';
-// 正确：const apiKey = import.meta.env.VITE_API_KEY;
+// 正确：const apiKey = process.env.VUE_APP_API_KEY;
 ```
 
 ## 文档注释规范
+
+> **注释语言约定**：注释统一使用中文（示例代码、工具配置等同样适用），避免中英文混用；技术术语（DOM、webpack、axios、chunk 等专有名词）可保留英文原词。行内注释简短说明"为什么"，JSDoc 说明"是什么/怎么用"。
 
 ### 1. JSDoc 注释
 为公共 API 添加 JSDoc 注释：

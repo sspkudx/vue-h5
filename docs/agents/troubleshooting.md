@@ -61,18 +61,21 @@ pnpm i --force
 # packages/{name}/package.json:
 # "exports": {
 #   ".": {
+#     "development": {
+#       "types": "./src/index.ts",
+#       "default": "./src/index.ts"
+#     },
 #     "types": "./dist/index.d.ts",
-#     "development": "./src/index.ts",
 #     "import": "./dist/index.js"
 #   }
 # }
 # webpack dev 模式默认解析 development 条件（源码热更新），
 # 生产构建解析 import 条件（exports -> dist）；应用无需也不应配置 alias
 
-# 4. 检查 tsconfig.json 中的路径映射（类型检查直接指向源码）
-# "paths": {
-#   "@my-app/shared": ["../../packages/shared/src/index.ts"]
-# }
+# 4. 确认 tsconfig 解析条件（类型层与 webpack dev 同源，无需 @my-app/* 的 paths）
+# 仓库顶层 tsconfig.base.json 已声明：
+# "customConditions": ["development"]
+# 应用 tsconfig 只保留自身路径映射（如 "@/*": ["src/*"]）
 
 # 5. 验证包产物是否存在（仅生产构建场景必需）
 ls -la packages/shared/dist/
@@ -80,7 +83,7 @@ ls -la packages/shared/dist/
 
 #### 预防措施
 - dev 场景修改包源码后无需重新构建（webpack 直接解析 src，热更新生效）
-- 生产构建（`pnpm build`）前确保包已重新构建（build.sh 保证先 packages 后 apps）
+- 生产构建（`pnpm build`）前确保包已重新构建（`pnpm -r run build` 按依赖拓扑排序，保证先 packages 后 apps）
 - 使用 workspace:* 引用本地包
 - 保持包版本一致
 
@@ -640,10 +643,10 @@ VUE_APP_VERSION=1.0.0
 
 ### 环境变量使用
 ```typescript
-// 在代码中使用环境变量
-const apiUrl = import.meta.env.VUE_APP_API_URL;
-const isDebug = import.meta.env.VUE_APP_DEBUG === 'true';
-const version = import.meta.env.VUE_APP_VERSION;
+// 在代码中使用环境变量（Vue CLI 约定：process.env 读取 VUE_APP_ 前缀变量）
+const apiUrl = process.env.VUE_APP_API_URL;
+const isDebug = process.env.VUE_APP_DEBUG === 'true';
+const version = process.env.VUE_APP_VERSION;
 ```
 
 ## 监控和日志
@@ -687,7 +690,7 @@ window.addEventListener('load', measurePerformance);
 // 开发环境详细日志，生产环境简化日志
 const logger = {
   info: (...args: any[]) => {
-    if (import.meta.env.VUE_APP_DEBUG === 'true') {
+    if (process.env.VUE_APP_DEBUG === 'true') {
       console.log('[INFO]', ...args);
     }
   },
@@ -757,7 +760,7 @@ indexedDB.databases().then((dbs) => {
 
 # 3. 重置应用状态
 # 在应用启动时重置状态
-if (import.meta.env.VUE_APP_RESET_STATE === 'true') {
+if (process.env.VUE_APP_RESET_STATE === 'true') {
   store.reset();
 }
 ```

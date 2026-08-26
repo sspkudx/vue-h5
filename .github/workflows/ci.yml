@@ -9,14 +9,16 @@ jobs:
     lint-test-build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
 
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: 14
-
+            # pnpm 先于 setup-node 安装：setup-node 的 cache: pnpm 才能定位 store 并正确缓存
             - name: 安装 pnpm 7（Node 14 兼容版本）
               run: npm install -g pnpm@7
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 14
+                  cache: pnpm
 
             - name: 安装依赖
               run: pnpm install --frozen-lockfile
@@ -29,6 +31,9 @@ jobs:
 
             - name: Prettier 检查
               run: pnpm format:check
+
+            - name: 文档/模板漂移检查（README/docs/技能模板 vs 真实代码）
+              run: pnpm check:docs
 
             - name: 单元测试
               run: pnpm test

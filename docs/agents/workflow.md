@@ -37,10 +37,10 @@ pnpm dev:my-app
 ```bash
 # 启动多个应用（在不同终端中；需先创建对应应用并更新根 scripts）
 # 终端 1
-pnpm dev:app1
+pnpm dev:my-app
 
 # 终端 2
-pnpm dev:app2
+pnpm dev:user-portal
 
 # 终端 3 - 包代码联调（无需独立进程：应用 dev 通过 exports development 条件直接解析包源码）
 # 修改 packages/shared/src/ 下的代码，应用侧热更新直接生效
@@ -369,11 +369,11 @@ import { MyComponent } from '@my-app/other-app/components';
 cd apps/{app-name}
 pnpm install
 
-# 独立开发
-pnpm dev
+# 独立开发（从根目录）
+pnpm -F {app-name} dev
 
-# 独立构建
-pnpm build
+# 独立构建（从根目录）
+pnpm -F {app-name} build
 ```
 
 ### 8.3 应用间通信
@@ -478,7 +478,7 @@ pnpm format
 git add .
 git commit -m "feat: add feature"
 
-# 6. 构建验证（生产构建前需先构建包：build.sh 保证先 packages 后 apps）
+# 6. 构建验证（pnpm -r run build 按依赖拓扑排序，自动先 packages 后 apps）
 pnpm build
 ```
 

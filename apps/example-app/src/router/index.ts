@@ -1,6 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-/** router used by the app */
+/**
+ * 应用路由实例
+ * @description 采用 hash 模式路由（H5 静态部署友好，无需服务端回退配置）；
+ * 所有页面均为路由级懒加载，访问时再加载对应 chunk
+ */
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
@@ -14,9 +18,7 @@ const router = createRouter({
         {
             path: '/about',
             name: 'about',
-            // route level code-splitting
-            // this generates a separate chunk (about.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
+            // 路由级代码分割：该路由单独生成 chunk（webpackChunkName 命名），首次访问时才懒加载
             component() {
                 return import(/* webpackChunkName: "AboutView" */ '../views/AboutView/index');
             },
@@ -25,7 +27,7 @@ const router = createRouter({
             path: '/playground',
             name: 'PlaygroundPage',
             component() {
-                return import(/* webpackChunkName: "HomeView" */ '../views/PlaygroundPage/PlaygroundPage.vue');
+                return import(/* webpackChunkName: "PlaygroundPage" */ '../views/PlaygroundPage/PlaygroundPage.vue');
             },
         },
     ],

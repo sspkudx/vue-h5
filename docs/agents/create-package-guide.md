@@ -58,20 +58,20 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
             "types": "./dist/index.d.ts",
-            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
     },
     "scripts": {
-        "clean": "rimraf dist",
-        "prebuild": "pnpm run clean",
         "build": "rollup -c rollup.config.ts --configPlugin typescript",
-        "dev": "rollup -c rollup.config.ts --configPlugin typescript --watch",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:coverage": "jest --coverage"
+        "test": "jest --config jest.config.js",
+        "test:watch": "jest --config jest.config.js --watch",
+        "test:coverage": "jest --config jest.config.js --coverage"
     },
     "keywords": [],
     "author": "",
@@ -102,20 +102,20 @@ packages/{package-name}/
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
+            "development": {
+                "types": "./src/index.ts",
+                "default": "./src/index.ts"
+            },
             "types": "./dist/index.d.ts",
-            "development": "./src/index.ts",
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         }
     },
     "scripts": {
-        "clean": "rimraf dist",
-        "prebuild": "pnpm run clean",
         "build": "rollup -c rollup.config.ts --configPlugin typescript",
-        "dev": "rollup -c rollup.config.ts --configPlugin typescript --watch",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:coverage": "jest --coverage"
+        "test": "jest --config jest.config.js",
+        "test:watch": "jest --config jest.config.js --watch",
+        "test:coverage": "jest --config jest.config.js --coverage"
     },
     "keywords": [],
     "author": "",
@@ -148,9 +148,8 @@ packages/{package-name}/
 
 ### tsconfig.json
 
-- **继承项目根配置**: 继承根目录的 TypeScript 配置
-- **JSX 支持**（针对组件库）: 支持 Vue JSX 语法
-- **路径别名配置**: 配置包内部路径别名
+- **继承仓库顶层配置**: `extends` 根目录的 `tsconfig.base.json`（含 moduleResolution bundler 与 customConditions development 解析基线）
+- **JSX 支持**（针对组件库）: 支持 Vue JSX 语法（jsxFactory h / Fragment）
 - **严格类型检查**: 启用所有严格类型检查选项
 
 ## 使用方式
@@ -195,11 +194,11 @@ packages/{package-name}/
 # 进入包目录
 cd packages/{package-name}
 
-# 启动开发模式（监听文件变化）
-pnpm run dev
+# 构建生产版本（dev 联调无需包级 watch：应用经 exports development 条件直接解析包源码）
+pnpm run build
 
 # 或者从根目录运行
-pnpm -F @my-app/{package-name} dev
+pnpm -F @my-app/{package-name} build
 ```
 
 ### 3. 构建生产版本
@@ -258,9 +257,9 @@ import { login, logout } from '@my-app/auth-helpers';
 import { logPlugin } from '@my-app/vue-plugins';
 ```
 
-### 3. 确保路径映射正确
+### 3. 确保解析链路正确
 
-应用的 `vue.config.js` 和 `tsconfig.json` 会自动配置包别名映射，无需手动配置。
+应用对 workspace 包零 alias、零 paths 配置：运行时走包 exports 的 `development` 条件（dev 解析 src / 生产解析 dist），类型层由 `tsconfig.base.json` 的 `customConditions: ["development"]` 同源解析，无需手动配置。
 
 ## 示例
 
@@ -490,7 +489,7 @@ pnpm i --force
 ```bash
 # 检查 TypeScript 配置
 cd packages/{package-name}
-pnpm tsc --noEmit
+npx tsc --noEmit
 ```
 
 #### 3. 构建失败
