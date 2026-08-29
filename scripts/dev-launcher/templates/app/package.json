@@ -1,0 +1,22 @@
+{
+    "name": "{{app-name}}",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vue-tsc --noEmit && vite build",
+        "typecheck": "vue-tsc --noEmit",
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,vue}\""
+    },
+    "dependencies": {
+        "@my-app/shared": "workspace:*",
+        "axios": "catalog:",
+        "pinia": "catalog:",
+        "ress": "catalog:",
+        "vue": "catalog:",
+        "vue-router": "catalog:"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "description": ""
+}

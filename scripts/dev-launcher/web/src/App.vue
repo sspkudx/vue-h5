@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { fetchEntries, saveSelection, startEntry, stopAll } from './api';
+import CreateDialog from './components/CreateDialog.vue';
 import EntryCard from './components/EntryCard.vue';
 import type { LauncherEntry, SelectionState } from './types';
 
@@ -132,6 +133,17 @@ const onStopAll = async () => {
 
 let pollingTimer: ReturnType<typeof setInterval> | null = null;
 
+/** 新建对话框状态（kind 指定初始 tab） */
+const createDialog = ref<'app' | 'package' | null>(null);
+
+const onCreateSuccess = async () => {
+    await refresh();
+};
+
+const closeCreateDialog = () => {
+    createDialog.value = null;
+};
+
 onMounted(() => {
     applyTheme(theme.value);
     refresh();
@@ -175,6 +187,7 @@ onBeforeUnmount(() => {
             <div class="section-header">
                 <h2>应用</h2>
                 <span class="section-tip">启动 dev server</span>
+                <button type="button" class="section-create" @click="createDialog = 'app'">＋ 新建应用</button>
                 <span class="section-count">{{ appEntries.length }}</span>
             </div>
             <div v-if="appEntries.length" class="entry-list">
@@ -197,6 +210,7 @@ onBeforeUnmount(() => {
             <div class="section-header">
                 <h2>包</h2>
                 <span class="section-tip">有 dev 脚本或 build --watch 为持续构建，否则构建一次</span>
+                <button type="button" class="section-create" @click="createDialog = 'package'">＋ 新建包</button>
                 <span class="section-count">{{ packageEntries.length }}</span>
             </div>
             <div v-if="packageEntries.length" class="entry-list">
@@ -236,4 +250,6 @@ onBeforeUnmount(() => {
             </div>
         </section>
     </main>
+
+    <CreateDialog v-if="createDialog" :kind="createDialog" @created="onCreateSuccess" @close="closeCreateDialog" />
 </template>

@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### 新增
+
+- **启动器页面创建应用/包**：`scripts/dev-launcher/scaffold.mjs` 将 create-vue-app / create-a-package 技能的程序化流程落地（名称/端口校验、模板复制 + 占位替换、可选写根 scripts、后台 `pnpm install`）；新增 `scripts/dev-launcher/templates/` 文件模板（`templates/app/` 单 HomeView（.vue）应用模板、`templates/package/` 四种类型变体）；`server.mjs` 增加 `POST /api/create-app`、`/api/create-package`、`/api/pkg-install` 与 `GET /api/pkg-install/status`；Web 控制台新增「＋ 新建应用 / ＋ 新建包」入口与 `CreateDialog.vue` 模态表单；新条目创建后经实时扫描自动出现在列表，不自动启动。
+
 ### 修复
 
 - **技能模板基线对齐**：`create-a-package` 五个 package.json 模板对齐仓库基线（typescript/vite/vitest/@vitest/coverage-v8 走 `catalog:`、engines node >=22.0.0）；Vue 生态依赖移入 `peerDependencies`；移除 `@vue/babel-plugin-jsx` 与 `@vue/vue3-jest`；测试表述统一为 Vitest。

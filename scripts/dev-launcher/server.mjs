@@ -11,6 +11,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadConfig, ProcessManager, ROOT_DIR, saveConfig, scanEntries } from './core.mjs';
+import { createApp, createPackage, pkgInstallState, runPkgInstall } from './scaffold.mjs';
 
 /** 控制台默认端口，可用 --port 或环境变量 DEV_LAUNCHER_PORT 覆盖 */
 export const DEFAULT_PORT = 8888;
@@ -129,8 +130,65 @@ export const startServer = (options = {}) => {
             return;
         }
 
+        // pnpm install 状态（前端轮询展示）
+        if (req.method === 'GET' && url.pathname === '/api/pkg-install/status') {
+            sendJson(res, 200, {
+                ok: true,
+                running: pkgInstallState.running,
+                done: pkgInstallState.done,
+                exitCode: pkgInstallState.exitCode,
+                logs: pkgInstallState.logs,
+            });
+            return;
+        }
+
         if (req.method === 'POST') {
             const body = await readJsonBody(req);
+
+            // 新建应用（模板来自 templates/app/，可选更新根 package.json scripts）
+            if (url.pathname === '/api/create-app') {
+                try {
+                    const result = createApp({
+                        name: body.name,
+                        port: body.port ?? 3000,
+                        withScripts: body.withScripts !== false,
+                    });
+                    const message = result.scripts
+                        ? `已创建 ${result.dir}（${result.files.length} 个文件），并添加 ${result.scripts.join('、')} 根脚本`
+                        : `已创建 ${result.dir}（${result.files.length} 个文件）`;
+                    sendJson(res, 200, { ok: true, message, ...result });
+                    return;
+                } catch (err) {
+                    sendJson(res, 400, { ok: false, message: err.message });
+                    return;
+                }
+            }
+
+            // 新建依赖包（模板来自 templates/package/，按类型展开）
+            if (url.pathname === '/api/create-package') {
+                try {
+                    const result = createPackage({
+                        name: body.name,
+                        description: body.description,
+                        type: body.type,
+                        withTests: body.withTests !== false,
+                    });
+                    const testsNote = result.tests ? `，并附测试 ${result.tests.join('、')}` : '';
+                    const message = `已创建 ${result.dir}（${result.files.length} 个文件${testsNote}）`;
+                    sendJson(res, 200, { ok: true, message, ...result });
+                    return;
+                } catch (err) {
+                    sendJson(res, 400, { ok: false, message: err.message });
+                    return;
+                }
+            }
+
+            // 后台执行 pnpm install（新包首次入 workspace 锁文件时使用）
+            if (url.pathname === '/api/pkg-install') {
+                const result = runPkgInstall(line => console.log(`[pnpm install] ${line}`));
+                sendJson(res, result.ok ? 200 : 409, result);
+                return;
+            }
 
             // 启动条目
             if (url.pathname === '/api/start') {

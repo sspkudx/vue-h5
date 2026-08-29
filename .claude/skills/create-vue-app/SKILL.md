@@ -674,6 +674,7 @@ fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2) +
 9. **兼容性基线**: 项目兼容性基线为 **Chrome 49**（桌面端 + 移动端统一，含 Android WebView），由根目录 `.browserslistrc` + `@vitejs/plugin-legacy` 保证。新建应用**无需**单独配置 browserslist，`legacy()` 插件自动读取根目录 `.browserslistrc` 并生成 legacy 产物（ES5 + core-js polyfill + SystemJS，`nomodule` 加载），现代浏览器加载 `type="module"` 产物。不要降低根目录 `.browserslistrc` 的基线：Vue 3 依赖 Proxy/Reflect（Chrome 49 起支持）
 10. **移动端适配**: 必须创建 `.postcssrc.js`（见第 9 节），这是项目统一的移动端适配基线（`mpx` → `vmin`，viewportWidth 390，见 CONTEXT.md）；样式中的尺寸使用 `mpx` 单位编写，stylelint 已放行该单位（`unit-no-unknown` ignoreUnits）
 11. **开发启动器自动发现**: 新应用无需向启动器（根目录 `pnpm dev` / `pnpm dev --cli`）登记——它每次请求实时扫描 `apps/*`，从 `vite.config.ts` 解析端口、`package.json` 读取描述，新增应用自动出现在 Web 控制台与 CLI 多选列表中；`dev:{app-name}` 直连脚本仍保留，两种方式并行不悖
+12. **页面快速创建**: Web 控制台（`pnpm dev`）的「＋ 新建应用」可一键生成新应用（模板见 `scripts/dev-launcher/templates/app/`，与本节示例基线同源），表单支持自定义端口、勾选是否更新根 package.json 的 dev/build/lint 脚本；创建成功后不自动启动，新应用经实时扫描自动出现在列表
 
 ## 错误处理
 

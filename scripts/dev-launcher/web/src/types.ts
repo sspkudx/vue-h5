@@ -47,6 +47,39 @@ export interface ActionResponse {
     message: string;
 }
 
+/** 新建应用请求 */
+export interface CreateAppRequest {
+    name: string;
+    port?: number;
+    /** 是否同时更新根 package.json 的 dev/build/lint:{name} 脚本（默认 true） */
+    withScripts?: boolean;
+}
+
+/** 新建包请求 */
+export interface CreatePackageRequest {
+    name: string;
+    description?: string;
+    type: 'utility' | 'component' | 'helper' | 'plugin';
+    withTests?: boolean;
+}
+
+/** 创建成功响应（含生成文件清单） */
+export interface CreateResponse extends ActionResponse {
+    dir: string;
+    files: string[];
+    scripts?: string[];
+    tests?: string[];
+}
+
+/** pnpm install 状态 */
+export interface PkgInstallStatusResponse {
+    ok: boolean;
+    running: boolean;
+    done: boolean;
+    exitCode: number | null;
+    logs: string[];
+}
+
 /** 状态徽标文案映射 */
 export const STATUS_TEXT: Record<string, string> = {
     stopped: '未启动',

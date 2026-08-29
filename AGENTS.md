@@ -122,6 +122,7 @@ vue-h5 项目的 AI 智能开发技能文档采用模块化结构，包含以下
 
 | 版本 | 日期 | 更新内容 |
 | --- | --- | --- |
+| v3.12 | 2026-08-29 | 启动器页面创建应用/包：新增 scripts/dev-launcher/scaffold.mjs + templates/（app 单 HomeView(.vue)、package 四类型变体）；server.mjs 增 /api/create-app、/api/create-package、/api/pkg-install(+status)；Web 控制台「＋ 新建应用/包」+ CreateDialog.vue；创建后经实时扫描自动出现在列表，不自动启动 |
 | v3.11 | 2026-08-23 | E2E 测试落地（Playwright）：playwright.config.ts（webServer 拉起 example-app、移动端 viewport）+ e2e/ 3 个冒烟用例；@playwright/test 进 catalog；pnpm test:e2e；CI 独立 e2e job（--with-deps chromium + 失败报告工件） |
 | v3.10 | 2026-08-23 | P2 应用级测试落地：vitest.config.mts 加 vue/vueJsx 插件并覆盖 apps/**；新增 @vue/test-utils + jsdom（catalog）；example-app 3 个示例测试（SFC/TSX+路由 mock/request 拦截器）；request.ts 具名导出 createRequest；覆盖率门槛仍仅限 packages/** |
 | v3.9 | 2026-08-23 | 测试框架 Jest → Vitest 4：根 vitest.config.mts（v8 覆盖率 100% 阈值）；删除根/shared jest.config.js；测试显式 import 'vitest'（tsconfig types 简化为 ["node"]）；vitest/@vitest/coverage-v8 进 catalog；测试走 Vite dev 解析（无需 moduleNameMapper）；技能模板/文档/漂移检查器（jest 禁词化）同步 |
