@@ -624,6 +624,8 @@ export function deepClone<T>(obj: T): T {
 
 组件库应该遵循良好的组件结构，支持按需导入和完整导入。
 
+> **样式单位约定**：组件样式尺寸一律使用 `mpx` 单位（如 `padding: 8mpx 16mpx`），这不是笔误，而是项目统一的移动端适配基线——由消费方应用根目录 `.postcssrc.js` 中的 postcss-px-to-viewport（`unitToConvert: 'mpx'`，viewportWidth 390）在应用构建时统一转换为 `vmin`（见 `apps/example-app/.postcssrc.js`、CONTEXT.md「移动端适配」）。包自身**无需也不应**添加 postcss 配置；stylelint 已通过 `unit-no-unknown` 的 `ignoreUnits` 放行 `mpx`。
+
 **组件库目录结构**：
 
 ```
@@ -677,8 +679,6 @@ src/
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from 'vue';
-
 export interface ButtonProps {
     type?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
     size?: 'small' | 'medium' | 'large';
@@ -710,13 +710,13 @@ function handleClick(event: MouseEvent) {
     align-items: center;
     justify-content: center;
     border: none;
-    border-radius: 4px;
+    border-radius: 4mpx;
     cursor: pointer;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 14mpx;
     font-weight: 500;
     line-height: 1;
-    padding: 8px 16px;
+    padding: 8mpx 16mpx;
     transition: all 0.2s ease-in-out;
 
     &-primary {
@@ -738,13 +738,13 @@ function handleClick(event: MouseEvent) {
     }
 
     &-small {
-        padding: 4px 8px;
-        font-size: 12px;
+        padding: 4mpx 8mpx;
+        font-size: 12mpx;
     }
 
     &-large {
-        padding: 12px 24px;
-        font-size: 16px;
+        padding: 12mpx 24mpx;
+        font-size: 16mpx;
     }
 
     &-disabled {
@@ -788,8 +788,6 @@ export type { ButtonProps } from './Button.vue';
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from 'vue';
-
 export interface InputProps {
     modelValue?: string;
     label?: string;

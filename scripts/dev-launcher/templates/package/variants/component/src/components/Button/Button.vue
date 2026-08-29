@@ -5,8 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from 'vue';
-
 export interface ButtonProps {
     type?: 'primary' | 'secondary' | 'danger';
     disabled?: boolean;
@@ -29,6 +27,9 @@ const handleClick = (event: MouseEvent) => {
 </script>
 
 <style lang="less" scoped>
+/* mpx 是项目自定义的待转换单位（非笔误）：由应用端 .postcssrc.js 的
+   postcss-px-to-viewport（unitToConvert: 'mpx'，viewportWidth: 390）统一转为 vmin，
+   包自身无需配置 postcss。参见 apps/example-app/.postcssrc.js */
 .btn {
     display: inline-flex;
     align-items: center;
