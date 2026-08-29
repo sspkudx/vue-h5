@@ -155,7 +155,7 @@ packages/{package-name}/
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.12",
-        "typescript": "^5.9.3"
+        "typescript": "~5.1.6"
     },
     "peerDependencies": {},
     "engines": {
@@ -204,7 +204,7 @@ packages/{package-name}/
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.12",
-        "typescript": "^5.9.3"
+        "typescript": "~5.1.6"
     },
     "engines": {
         "node": ">= 14.18.0"
@@ -267,7 +267,7 @@ packages/{package-name}/
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.12",
-        "typescript": "^5.9.3"
+        "typescript": "~5.1.6"
     },
     "engines": {
         "node": ">= 14.18.0"
@@ -330,7 +330,7 @@ packages/{package-name}/
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.12",
-        "typescript": "^5.9.3"
+        "typescript": "~5.1.6"
     },
     "engines": {
         "node": ">= 14.18.0"
@@ -399,7 +399,7 @@ packages/{package-name}/
         "rollup": "^3.30.0",
         "rollup-plugin-dts": "^6.4.1",
         "ts-jest": "^29.4.12",
-        "typescript": "^5.9.3"
+        "typescript": "~5.1.6"
     },
     "engines": {
         "node": ">= 14.18.0"

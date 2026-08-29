@@ -187,7 +187,11 @@ const STALE_TERMS = [
     { re: /@vitejs\/plugin-legacy/, msg: '本分支为 vue-cli differential loading（自动 legacy/module 双产物），无 Vite legacy 插件', except: ['AGENTS.md', 'CONTEXT.md'] },
     { re: /build-packages\.sh/, msg: '构建编排已收敛为 pnpm -r run build，build-packages.sh 已删除', except: ['AGENTS.md', 'CONTEXT.md'] },
     { re: /vue\.config\.js 已迁移|已迁移 Vite|迁移到 Vite/, msg: '本分支构建工具链为 Vue CLI/webpack，不存在 Vite 迁移', except: ['AGENTS.md', 'CONTEXT.md'] },
-    { re: /TypeScript [67]\.\d 基线|typescript":\s*"\^(6|7)\./, msg: '本分支 TypeScript 基线为 ^5.9（main 为 6.x）', except: ['AGENTS.md', 'CONTEXT.md'] },
+    {
+        re: /TypeScript (5\.[2-9]|[67])\.\d 基线|typescript":\s*"\^(5\.[2-9]|[67])\./,
+        msg: '本分支 TypeScript 基线为 ~5.1.6（@typescript-eslint v5 仅官方支持 <5.2.0，且 Node 14 无法升级 v6+；main 为 6.x）',
+        except: ['AGENTS.md', 'CONTEXT.md'],
+    },
 ];
 
 function checkStaleTerms(file, lines, errors) {
@@ -222,7 +226,7 @@ function checkSkillBaselines(errors) {
         for (const [re, msg] of [
             [/\bvitest\b/i, '不应出现 vitest（本分支测试框架为 Jest 29）'],
             [/catalog:/, '不应出现 catalog:（pnpm 7 不支持）'],
-            [/"typescript":\s*"\^6\./, 'typescript 版本超出本分支基线（应 ^5.9）'],
+            [/"typescript":\s*"\^(5\.[2-9]|[67])\./, 'typescript 版本超出本分支基线（应 ~5.1.6，@typescript-eslint v5 仅支持 <5.2.0）'],
             [/"node":\s*">=\s*(16|18|20|22)/, 'engines.node 回退异常（本分支基线 >= 14.18.0）'],
         ]) {
             const m = text.match(re);
