@@ -757,8 +757,6 @@ src/
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from 'vue';
-
 export interface ButtonProps {
     type?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
     size?: 'small' | 'medium' | 'large';
@@ -868,8 +866,6 @@ export type { ButtonProps } from './Button.vue';
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from 'vue';
-
 export interface InputProps {
     modelValue?: string;
     label?: string;
