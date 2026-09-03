@@ -1,7 +1,7 @@
-const { defineConfigWithVueTs, vueTsConfigs } = require('@vue/eslint-config-typescript');
-const pluginVue = require('eslint-plugin-vue');
-const eslintConfigPrettier = require('eslint-config-prettier');
-const globals = require('globals');
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
+import pluginVue from 'eslint-plugin-vue';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import globals from 'globals';
 
 const baseRules = {
     semi: ['error', 'always'],
@@ -36,7 +36,7 @@ const baseRules = {
     yoda: ['error', 'never'],
 };
 
-module.exports = defineConfigWithVueTs(
+export default defineConfigWithVueTs(
     pluginVue.configs['flat/essential'],
     vueTsConfigs.recommended,
     {

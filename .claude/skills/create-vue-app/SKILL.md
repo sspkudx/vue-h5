@@ -564,7 +564,7 @@ module.exports = {
 };
 ```
 
-> **说明**：Vite 通过 postcss-load-config 自动加载应用根目录的 `.postcssrc.js`，无需在 vite.config.ts 内联 `css.postcss`；`postcss-px-to-viewport` / `postcss-calc` 属构建工具链，统一位于根 devDependencies（经 `shamefullyHoist` 提升，与 vite/less 同理），应用**无需也不应**在自己的 package.json 重复声明；该文件是 CJS 工具配置，已被根 `eslint.config.js` 的 ignores（`**/.postcssrc.js`）放行，`require()` 写法不会触发 lint 报错。
+> **说明**：Vite 通过 postcss-load-config 自动加载应用根目录的 `.postcssrc.js`，无需在 vite.config.ts 内联 `css.postcss`；`postcss-px-to-viewport` / `postcss-calc` 属构建工具链，统一位于根 devDependencies（经 `shamefullyHoist` 提升，与 vite/less 同理），应用**无需也不应**在自己的 package.json 重复声明；该文件是 CJS 工具配置，已被根 `eslint.config.mjs` 的 ignores（`**/.postcssrc.js`）放行，`require()` 写法不会触发 lint 报错。
 
 ### 10. 更新根目录的 package.json
 

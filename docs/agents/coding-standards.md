@@ -572,7 +572,7 @@ refactor/improve-performance # 代码重构
 
 ### 1. ESLint（flat config）
 
-配置文件为根目录 `eslint.config.js`（ESLint 10 flat config，非旧版 `.eslintrc.js`）：
+配置文件为根目录 `eslint.config.mjs`（ESLint 10 flat config，ESM 写法，非旧版 `.eslintrc.js`）：
 
 - **基础预设**：`@vue/eslint-config-typescript`（`defineConfigWithVueTs`）+ `eslint-plugin-vue` 的 `flat/essential` + `vueTsConfigs.recommended`，末尾以 `eslint-config-prettier` 关闭与 Prettier 冲突的规则
 - **关键规则**（`vue-h5/base`）：
